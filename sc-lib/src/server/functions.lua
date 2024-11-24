@@ -11,6 +11,6 @@ function Core.Functions:RegisterModule(name, func, prefix)
 
     Core.Modules[name] = {
         ["Function"] = func,
-        ["Prefix"] = prefix or false -- als standaard kan de functie zonder prefix worden aangeroepen.
+        ["Prefix"] = prefix or false
     }
 end
