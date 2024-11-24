@@ -1,7 +1,10 @@
+local resourceName = GetCurrentResourceName()
 local isServerSide = IsDuplicityVersion()
+local isClientSide = not isServerSide
+
 
 if isServerSide then
-    local function loadModules()
+    (function()
         local success, err = pcall(function()
             local modules = exports["sc-core"]:GetModules()
 
@@ -15,11 +18,9 @@ if isServerSide then
         end)
 
         if not success then
-            print("^1[Error]^0: Failed to load modules: " .. err)
+            print(("^1[Error]^0: Failed to load modules for resource %s: %s"):format(resourceName, err))
         else
-            print("^2[Success]^0: Modules loaded successfully.")
+            print(("^2[Success]^0: Modules loaded successfully for resource: %s"):format(resourceName))
         end
-    end
-
-    loadModules()
+    end)();
 end
