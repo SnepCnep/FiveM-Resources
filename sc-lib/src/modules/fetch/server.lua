@@ -16,4 +16,4 @@ local function fetch(url, ...)
     return Citizen.Await(p);
 end;
 
-Core.Functions:RegisterModule("Fetch", fetch, true);
+Core.Functions:RegisterModule("fetch", fetch, true);
