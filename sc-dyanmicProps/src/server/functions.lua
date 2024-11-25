@@ -1,7 +1,8 @@
+
 function SC.Functions:RayCastCamera()
     local camRot = GetGameplayCamRot()
     local camPos = GetGameplayCamCoord()
-    local dir = Exios.Functions.Utils.RotationToDirection(camRot)
+    local dir = SC.Functions:RotationToDirection(camRot)
     local dest = camPos + (dir * 7.0)
     local ray = StartShapeTestRay(camPos, dest, 17, -1, 0)
     local _, hit, endPos, surfaceNormal, entityHit = GetShapeTestResult(ray)
