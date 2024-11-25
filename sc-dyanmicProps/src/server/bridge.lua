@@ -38,3 +38,16 @@ end)()
 
 
 -- //[[Shared Functions]]\\ --
+function SC.Bridge.Functions:getFrameWork()
+    return SC.Bridge.Framework
+end
+
+function SC.Bridge.Functions:getJob(source)
+    -- [[ESX Framework]]
+    if SC.Bridge.Framework == "esx" then
+        local xPlayer = SC.Bridge.SharedData.GetPlayerFromId(source)
+        return xPlayer.job.name
+    end
+
+    return nil
+end
