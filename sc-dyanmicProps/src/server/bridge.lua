@@ -32,6 +32,8 @@ SC["Bridge"] = {
     if success then
         return print("[SC-DynamicProps] QB-Core Detected.")
     end
+
+    -- No Framework Detected
     print("[SC-DynamicProps] No Framework Detected.")
 end)()
 
