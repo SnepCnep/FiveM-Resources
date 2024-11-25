@@ -12,8 +12,9 @@ Coming soon
 2. Extract the files to your `resources` folder.
 3. Add `start sc-dynamicProps` to your `server.cfg`.
 
-## Credits
-- Array (Exios)
+## How to create a prop?
+- Coming soon
+
 
 ## License
 This project is licensed under the MIT License.
