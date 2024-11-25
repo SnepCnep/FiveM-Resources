@@ -1,1 +1,2 @@
-SC = { ["Functions"] = {}, ["Bridge"] = {} }
+SC = { ["Functions"] = {} }
+
