@@ -1,6 +1,5 @@
 SC["Bridge"] = {
     ["Framework"] = "unkown",
-    ["Functions"] = {},
     ["SharedData"] = {}
 }
 
@@ -38,11 +37,7 @@ end)()
 
 
 -- //[[Shared Functions]]\\ --
-function SC.Bridge.Functions:getFrameWork()
-    return SC.Bridge.Framework
-end
-
-function SC.Bridge.Functions:getJob(source)
+function SC.Functions:getJob(source)
     -- [[ESX Framework]]
     if SC.Bridge.Framework == "esx" then
         local xPlayer = SC.Bridge.SharedData.GetPlayerFromId(source)
