@@ -44,8 +44,10 @@ local function loadMenu(menuName)
         return
     end
 
+    -- Crash prevention for the menus.
     local succes, err = pcall(function()
         print(("Loading menu %s"):format(menuName))
+
         load(menuData)()
     end)
 
