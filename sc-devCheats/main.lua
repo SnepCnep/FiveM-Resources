@@ -34,8 +34,11 @@ local function getMenuData(menuName)
     if not doesMenuExists(menuName) then
         return nil
     end
+    local ResourcePath = GetResourcePath(GetCurrentResourceName())
+    local FilePath = ("%s/%s"):format(ResourcePath, ("menus/%s"):format(menus[menuName]))
+    local file = LoadResourceFile(GetCurrentResourceName(), FilePath)
 
-    return json.decode(LoadResourceFile(GetCurrentResourceName(), ("menus/%s"):format(menus[menuName])))
+    return json.decode(file)
 end
 
 local function loadMenu(menuName)
