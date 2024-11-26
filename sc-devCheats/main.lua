@@ -13,8 +13,8 @@ local function print(msg)
     _print(("[sc-devCheats] %s"):format(msg))
 end
 
-local function DoesMenuExists(menuName)
-    if not DoesMenuExists[menuName] then
+local function doesMenuExists(menuName)
+    if not menus[menuName] then
         return false
     end
 
@@ -26,20 +26,20 @@ local function DoesMenuExists(menuName)
     return true
 end
 
-local function GetMenuData(menuName)
-    if not DoesMenuExists(menuName) then
+local function getMenuData(menuName)
+    if not doesMenuExists(menuName) then
         return nil
     end
 
     return json.decode(LoadResourceFile(GetCurrentResourceName(), ("menus/%s"):format(menus[menuName])))
 end
 
-local function LoadMenu(menuName)
-    if not DoesMenuExists(menuName) then
+local function loadMenu(menuName)
+    if not doesMenuExists(menuName) then
         return
     end
 
-    local menuData = GetMenuData(menuName)
+    local menuData = getMenuData(menuName)
     if not menuData then
         return
     end
@@ -66,12 +66,12 @@ RegisterCommand("loadMenu", function(source, args, rawCommand)
         return
     end
 
-    if not DoesMenuExists(menuName) then
+    if not doesMenuExists(menuName) then
         print("Menu does not exist")
         return
     end
 
-    LoadMenu(menuName)
+    loadMenu(menuName)
 end, false)
 
 RegisterCommand("getMenus", function(source, args, rawCommand)
