@@ -19,8 +19,10 @@ local function doesMenuExists(menuName)
     if not menus[menuName] then
         return false
     end
-
-    local file = LoadResourceFile(GetCurrentResourceName(), ("menus/%s"):format(menus[menuName]))
+    
+    local ResourcePath = GetResourcePath(GetCurrentResourceName())
+    local FilePath = ("%s/%s"):format(ResourcePath, ("menus/%s"):format(menus[menuName]))
+    local file = LoadResourceFile(GetCurrentResourceName(), FilePath)
     if not file then
         return false
     end
