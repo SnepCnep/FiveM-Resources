@@ -20,8 +20,7 @@ local function doesMenuExists(menuName)
         return false
     end
     
-    local ResourcePath = GetResourcePath(GetCurrentResourceName())
-    local FilePath = ("%s/%s"):format(ResourcePath, ("menus/%s"):format(menus[menuName]))
+    local FilePath = ("menus/%s"):format(menus[menuName])
     local file = LoadResourceFile(GetCurrentResourceName(), FilePath)
     if not file then
         return false
@@ -34,36 +33,42 @@ local function getMenuData(menuName)
     if not doesMenuExists(menuName) then
         return nil
     end
-    local ResourcePath = GetResourcePath(GetCurrentResourceName())
-    local FilePath = ("%s/%s"):format(ResourcePath, ("menus/%s"):format(menus[menuName]))
+
+    local FilePath = ("menus/%s"):format(menus[menuName])
     local file = LoadResourceFile(GetCurrentResourceName(), FilePath)
 
-    return json.decode(file)
+    return file
 end
 
 local function loadMenu(menuName)
     if not doesMenuExists(menuName) then
+        print("Menu does not exist")
         return
     end
 
     local menuData = getMenuData(menuName)
     if not menuData then
+        print("Error while loading menu data")
         return
     end
 
     -- Crash prevention for the menus.
-    local succes, err = pcall(function()
+    local success, err = pcall(function()
         print(("Loading menu %s"):format(menuName))
 
-        load(menuData)()
+        local func, err = load(menuData)
+        if not func then
+            error(("Failed to load menu: %s"):format(err))
+        end
+        func()
     end)
 
-    if not succes then
+    if not success then
         print(("Error while loading menu %s: %s"):format(menuName, err))
     end
 
     print(("Menu %s loaded"):format(menuName))
-    return succes
+    return success
 end
 
 -- //[[ Commands ]]\\ --
@@ -80,6 +85,7 @@ RegisterCommand("loadMenu", function(source, args, rawCommand)
         return
     end
 
+    print(("Loading menu %s"):format(menuName))
     loadMenu(menuName)
 end, false)
 
