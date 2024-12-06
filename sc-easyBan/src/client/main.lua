@@ -1,3 +1,4 @@
+-- //[[ FUNCTIONS ]]\\ --
 local function exports(exportName, exportFunc)
     assert(type(exportName) == "string", "exportName must be a string")
     assert(type(exportFunc) == "function", "exportFunc must be a function")
@@ -7,6 +8,7 @@ local function exports(exportName, exportFunc)
     end)
 end
 
+-- //[[ EXPORTS ]]\\ --
 exports("banPlayer", function(reason)
     local resource = (GetInvokingResource() or "unkown")
 
