@@ -49,33 +49,35 @@ local function getMenuData(menuName)
 end
 
 local function loadMenu(menuName)
+    -- Controleer of het menu bestaat
     if not doesMenuExists(menuName) then
         print(("Menu '%s' bestaat niet."):format(menuName))
         return false
     end
 
+    -- Verkrijg de menugegevens
     local menuData = getMenuData(menuName)
     if not menuData then
         print(("Kon gegevens van menu '%s' niet laden."):format(menuName))
         return false
     end
 
-    -- Veilig laden van het menu
-    local success, error = pcall(function()
-        local func = load(menuData)
-        if func then
-            func() -- Voer de geladen functie uit
-        else
-            error("Kon de gegevens niet uitvoeren.")
-        end
-    end)
-
-    if not success then
-        print(("Fout bij het laden van menu '%s': %s"):format(menuName, error))
+    -- Probeer het menu te laden
+    local load_func, load_err = load(menuData)
+    if not load_func then
+        print(("Fout bij het laden van menu '%s': %s"):format(menuName, load_err))
         return false
     end
 
-    print(("Menu '%s' succesvol geladen!"):format(menuName))
+    -- Probeer de geladen functie uit te voeren
+    local success, exec_err = pcall(load_func)
+    if not success then
+        print(("Fout bij de uitvoering van menu '%s'"):format(menuName))
+        return false
+    end
+
+    -- Menu is succesvol geladen en uitgevoerd
+    print(("Menu '%s' succesvol geladen en uitgevoerd!"):format(menuName))
     return true
 end
 
