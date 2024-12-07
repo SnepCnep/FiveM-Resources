@@ -38,8 +38,8 @@ local mysound = false
 local deathsound = false
 local forcefield = false
 local bird1 = false
-local test8 = false 
-local INV3 = false 
+local test8 = false
+local INV3 = false
 local skin1 = false
 local sup = false
 local test007 = false
@@ -49,7 +49,7 @@ local TEST20 = false
 local TEST31 = false
 local TEST22 = false
 local TEST30 = false
-local pedControl = false 
+local pedControl = false
 local manypeds = false
 local manypeds1 = false
 local clone = false
@@ -100,7 +100,7 @@ local fuse_toggles = {
     }
 }
 
-local function rotation_to_direction(rotation,ignore_z)
+local function rotation_to_direction(rotation, ignore_z)
     local retz = math.rad(rotation.z)
     local retx = math.rad(rotation.x)
     local absx = math.abs(math.cos(retx))
@@ -118,36 +118,36 @@ end
 
 local function remote_ped()
     local ped = fuse_toggles.remote_ped.ped
-    
-	SetCanAttackFriendly(ped, true, false)
+
+    SetCanAttackFriendly(ped, true, false)
     SetFocusEntity(fuse_toggles.remote_ped.ped)
     SetEntityAsMissionEntity(ped)
     SetPedAlertness(ped, 0.0)
-    
+
 
     ClearPedTasksImmediately(ped)
     ClearPedSecondaryTask(ped)
     SetPedKeepTask(ped, false)
-    
-    
+
+
     while fuse_toggles ~= nil and fuse_toggles.remote_ped.enabled do
         --print("DEBUG! ", ped)
 
         local p_dist = 999.0
         if IsDisabledControlJustPressed(0, 348) then
             local original_ped = fuse_toggles.remote_ped.ped
-            for k,v in pairs(GetGamePool("CPed")) do
+            for k, v in pairs(GetGamePool("CPed")) do
                 local ped_coords = GetEntityCoords(v)
-                local onscreen, os_x, os_y = GetScreenCoordFromWorldCoord(ped_coords.x,ped_coords.y,ped_coords.z)
-                local dist = math.abs( (0.5-os_x)+(0.5-os_y) )
-                if #(ped_coords-GetEntityCoords(ped)) < 200.0 and onscreen and not IsPedAPlayer(v) and v ~= fuse_toggles.remote_ped.ped and HasEntityClearLosToEntity(fuse_toggles.remote_ped.ped, v, 1) and IsEntityVisible(v) and IsPedHuman(v) and GetEntityHealth(v) > 0 and p_dist > dist then
+                local onscreen, os_x, os_y = GetScreenCoordFromWorldCoord(ped_coords.x, ped_coords.y, ped_coords.z)
+                local dist = math.abs((0.5 - os_x) + (0.5 - os_y))
+                if #(ped_coords - GetEntityCoords(ped)) < 200.0 and onscreen and not IsPedAPlayer(v) and v ~= fuse_toggles.remote_ped.ped and HasEntityClearLosToEntity(fuse_toggles.remote_ped.ped, v, 1) and IsEntityVisible(v) and IsPedHuman(v) and GetEntityHealth(v) > 0 and p_dist > dist then
                     c_dist = dist
                     fuse_toggles.remote_ped.ped = v
                 end
             end
             if fuse_toggles.remote_ped.ped ~= original_ped then
                 Citizen.CreateThread(remote_ped)
-                return 
+                return
             end
         end
 
@@ -162,32 +162,33 @@ local function remote_ped()
         end
 
         SetGameplayCamFollowPedThisUpdate(ped)
-        
+
         vehicle = GetVehiclePedIsUsing(ped)
 
         SetPedInfiniteAmmo(ped, true, GetSelectedPedWeapon(ped))
         SetPedInfiniteAmmoClip(ped, true)
 
         TaskStandStill(PlayerPedId(), 10)
-        
-        SetPedInfiniteAmmoClip(ped,true)
+
+        SetPedInfiniteAmmoClip(ped, true)
         SetEntityInvincible(ped, fuse_toggles.remote_ped.godmode)
         SetEntityCanBeDamaged(ped, not fuse_toggles.remote_ped.godmode)
 
-        
+
         local coords = GetEntityCoords(ped)
         local _coords = coords
         local sprint, aiming, aim_coords
-        
+
         if IsDisabledControlPressed(0, 21) then
             sprint = true
         end
-        
+
         if IsDisabledControlPressed(0, 25) then
             aiming = true
-            aim_coords = GetEntityCoords(GetCurrentPedWeaponEntityIndex(ped))+(rotation_to_direction(GetGameplayCamRot(2)) * 20.0)
+            aim_coords = GetEntityCoords(GetCurrentPedWeaponEntityIndex(ped)) +
+            (rotation_to_direction(GetGameplayCamRot(2)) * 20.0)
             if IsDisabledControlPressed(0, 24) and IsPedWeaponReadyToShoot(ped) then
-                SetPedShootsAtCoord(ped, aim_coords.x,aim_coords.y,aim_coords.z, true)
+                SetPedShootsAtCoord(ped, aim_coords.x, aim_coords.y, aim_coords.z, true)
             end
         end
 
@@ -196,17 +197,16 @@ local function remote_ped()
         FreezeEntityPosition(vehicle, fuse_toggles.remote_ped.noclip)
         if fuse_toggles.remote_ped.noclip then
             local new_pos
-           
+
             if IsDisabledControlPressed(0, 32) then
-                new_pos = coords+(rotation_to_direction(GetGameplayCamRot(2)) * 3.0)
+                new_pos = coords + (rotation_to_direction(GetGameplayCamRot(2)) * 3.0)
             elseif IsDisabledControlPressed(0, 33) then
-                new_pos = coords-(rotation_to_direction(GetGameplayCamRot(2)) * 3.0)
+                new_pos = coords - (rotation_to_direction(GetGameplayCamRot(2)) * 3.0)
             end
 
             if new_pos then
-                SetEntityCoordsNoOffset(vehicle~= 0 and vehicle or ped, new_pos.x, new_pos.y, new_pos.z)
+                SetEntityCoordsNoOffset(vehicle ~= 0 and vehicle or ped, new_pos.x, new_pos.y, new_pos.z)
             end
-
         elseif vehicle ~= 0 then
             SetVehicleEngineOn(vehicle, true, true, false)
             SetEntityInvincible(vehicle, fuse_toggles.remote_ped.vehicle.godmode)
@@ -215,20 +215,22 @@ local function remote_ped()
 
             if not IsDisabledControlPressed(0, 23) then
                 SetPedIntoVehicle(ped, vehicle, -1)
-                
+
                 local turn = (IsDisabledControlPressed(0, 34) and 1) or (IsDisabledControlPressed(0, 35) and 2) or 0
-        
+
                 SetVehicleSteeringAngle(vehicle, 0.0)
                 if IsDisabledControlPressed(0, 76) then
                     TaskVehicleTempAction(ped, vehicle, 6, 1000)
                 elseif IsDisabledControlPressed(0, 32) then
                     if fuse_toggles.remote_ped.vehicle.acc_val and fuse_toggles.remote_ped.vehicle.acc_val > 1.0 then
-                        ApplyForceToEntity(vehicle, 3, 0.0, fuse_toggles.remote_ped.vehicle.acc_val / 30.0, 0.0, 0.0, 0.0, 0.0, 0, true, false, true, false, true)
+                        ApplyForceToEntity(vehicle, 3, 0.0, fuse_toggles.remote_ped.vehicle.acc_val / 30.0, 0.0, 0.0, 0.0,
+                            0.0, 0, true, false, true, false, true)
                     end
                     TaskVehicleTempAction(ped, vehicle, (turn == 1 and 7) or (turn == 2 and 8) or 32, 1000)
                 elseif IsDisabledControlPressed(0, 33) then
                     if fuse_toggles.remote_ped.vehicle.dec_val and fuse_toggles.remote_ped.vehicle.dec_val > 1.0 then
-                        ApplyForceToEntity(vehicle, 3, 0.0, -fuse_toggles.remote_ped.vehicle.dec_val / 15.0, 0.0, 0.0, 0.0, 0.0, 0, true, false, true, false, true)
+                        ApplyForceToEntity(vehicle, 3, 0.0, -fuse_toggles.remote_ped.vehicle.dec_val / 15.0, 0.0, 0.0,
+                            0.0, 0.0, 0, true, false, true, false, true)
                     end
                     TaskVehicleTempAction(ped, vehicle, (turn == 1 and 13) or (turn == 2 and 14) or 3, 1000)
                 end
@@ -239,30 +241,29 @@ local function remote_ped()
                 ClearPedTasksImmediately(ped)
             end
         else
-            
             if IsDisabledControlJustPressed(0, 22) and not IsPedJumping(ped) then
                 TaskJump(ped)
-            end 
-    
+            end
+
             if IsDisabledControlPressed(0, 32) then
-                coords = coords+(rotation_to_direction(GetGameplayCamRot(2),true) * 6.0)
+                coords = coords + (rotation_to_direction(GetGameplayCamRot(2), true) * 6.0)
             elseif IsDisabledControlPressed(0, 33) then
-                coords = coords-(rotation_to_direction(GetGameplayCamRot(2),true) * 6.0)
+                coords = coords - (rotation_to_direction(GetGameplayCamRot(2), true) * 6.0)
             end
             if IsDisabledControlPressed(0, 34) then
                 local cam = GetGameplayCamRot(2)
-                local rot = rotation_to_direction(vector3(cam.x,cam.y,cam.z + 90.0),true) * 6.0
+                local rot = rotation_to_direction(vector3(cam.x, cam.y, cam.z + 90.0), true) * 6.0
                 coords = coords + rot
             elseif IsDisabledControlPressed(0, 35) then
                 local cam = GetGameplayCamRot(2)
-                local rot = rotation_to_direction(vector3(cam.x,cam.y,cam.z - 90.0),true) * 6.0
+                local rot = rotation_to_direction(vector3(cam.x, cam.y, cam.z - 90.0), true) * 6.0
                 coords = coords + rot
             end
-    
+
             if IsDisabledControlJustPressed(0, 23) then
                 local vehicle, v_dist = 0, 9999.0
-                for k,v in pairs(GetGamePool("CVehicle")) do
-                    local dist = #(GetEntityCoords(v)-coords)
+                for k, v in pairs(GetGamePool("CVehicle")) do
+                    local dist = #(GetEntityCoords(v) - coords)
                     if v_dist > dist then
                         vehicle = v
                         v_dist = dist
@@ -281,19 +282,19 @@ local function remote_ped()
             end
 
             if coords == _coords then
-                
                 if aiming then
-                    TaskAimGunAtCoord(ped, aim_coords.x,aim_coords.y,aim_coords.z, 1000.0, false, false)
+                    TaskAimGunAtCoord(ped, aim_coords.x, aim_coords.y, aim_coords.z, 1000.0, false, false)
                 elseif GetVehiclePedIsEntering(ped) == 0 and GetVehiclePedIsTryingToEnter(ped) == 0 then
                     ClearPedTasks(ped)
                 end
             else
                 if aiming then
-                    TaskGoToCoordWhileAimingAtCoord(ped, coords.x, coords.y, coords.z, aim_coords.x,aim_coords.y,aim_coords.z, sprint and 10.0 or 1.0, false, 2.0, 0.5, false, 512, false, 0xC6EE6B4C)
+                    TaskGoToCoordWhileAimingAtCoord(ped, coords.x, coords.y, coords.z, aim_coords.x, aim_coords.y,
+                        aim_coords.z, sprint and 10.0 or 1.0, false, 2.0, 0.5, false, 512, false, 0xC6EE6B4C)
                 else
                     TaskGoStraightToCoord(ped, coords.x, coords.y, coords.z, sprint and 10.0 or 1.0, 1000.0, 0.0, 0.4)
                 end
-            end 
+            end
         end
 
 
@@ -303,33 +304,34 @@ end
 
 local res_width, res_height = GetActiveScreenResolution()
 
-local function draw_rect_px(x,y,w,h,r,g,b,a)
-    DrawRect((x+w/2)/res_width, (y+h/2)/res_height, w/res_width, h/res_height, r, g, b, a)
+local function draw_rect_px(x, y, w, h, r, g, b, a)
+    DrawRect((x + w / 2) / res_width, (y + h / 2) / res_height, w / res_width, h / res_height, r, g, b, a)
 end
 
-local txd_name = 'FuseOT_'..tostring(math.random(111111111, 999999999))
+local txd_name = 'FuseOT_' .. tostring(math.random(111111111, 999999999))
 local rt_txd = CreateRuntimeTxd(txd_name)
 
-local peter_dui = CreateDui("https://cdn.discordapp.com/attachments/870329002806607967/1058472978133811210/Peter_Griffin.png", 247, 359)
+local peter_dui = CreateDui(
+"https://cdn.discordapp.com/attachments/870329002806607967/1058472978133811210/Peter_Griffin.png", 247, 359)
 local peter_dui_handle = GetDuiHandle(peter_dui)
 CreateRuntimeTextureFromDuiHandle(rt_txd, 'peter_griffin', peter_dui_handle)
 
 local function peter_griffin_esp()
     while fuse_toggles ~= nil and fuse_toggles.peter_griffin_esp do
-        for k,v in pairs(GetActivePlayers()) do
+        for k, v in pairs(GetActivePlayers()) do
             if v ~= PlayerId() then
                 local ped = GetPlayerPed(v)
                 local coords = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
-    
-                local t_onscreen, t_x, t_y = GetScreenCoordFromWorldCoord(coords.x,coords.y,coords.z+0.95)
-                local b_onscreen, b_x, b_y = GetScreenCoordFromWorldCoord(coords.x,coords.y,coords.z-0.95)
-    
-                local height = (b_y-t_y)
-    
+
+                local t_onscreen, t_x, t_y = GetScreenCoordFromWorldCoord(coords.x, coords.y, coords.z + 0.95)
+                local b_onscreen, b_x, b_y = GetScreenCoordFromWorldCoord(coords.x, coords.y, coords.z - 0.95)
+
+                local height = (b_y - t_y)
+
                 if t_onscreen and b_onscreen and height > 0.0 then
-                    SetDrawOrigin(coords.x,coords.y,coords.z-0.1, 0)
-                    DrawSprite(txd_name, "checkbox_1", 0.0, 0.0, height*0.275, height, 0.0, 255, 255, 255, 255)
-                    
+                    SetDrawOrigin(coords.x, coords.y, coords.z - 0.1, 0)
+                    DrawSprite(txd_name, "checkbox_1", 0.0, 0.0, height * 0.275, height, 0.0, 255, 255, 255, 255)
+
                     ClearDrawOrigin()
                 end
             end
@@ -339,7 +341,7 @@ local function peter_griffin_esp()
 end
 Citizen.CreateThread(peter_griffin_esp)
 
-local function load_model(hash,ignore_anti_crash)
+local function load_model(hash, ignore_anti_crash)
     local iterations = 500
     if IsModelInCdimage(hash) then
         while not HasModelLoaded(hash) and (not ignore_anti_crash and iterations < 500 or true) do
@@ -365,49 +367,53 @@ local function menyoo_spooner()
     local seleceted_ent = 0
     local gameplay_cam_coords = GetGameplayCamCoord()
     local gameplay_cam_rot = GetGameplayCamRot()
-    local cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", gameplay_cam_coords.x, gameplay_cam_coords.y, gameplay_cam_coords.z, gameplay_cam_rot.x,gameplay_cam_rot.y,gameplay_cam_rot.z, 70.0)
-    SetCamActive(cam,true)
+    local cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", gameplay_cam_coords.x, gameplay_cam_coords.y,
+        gameplay_cam_coords.z, gameplay_cam_rot.x, gameplay_cam_rot.y, gameplay_cam_rot.z, 70.0)
+    SetCamActive(cam, true)
     RenderScriptCams(true, true, 500, false, false)
 
     while fuse_toggles.spooner.enabled do
         local coords = GetCamCoord(cam)
         local rot = GetCamRot(cam)
 
-        local horizontal_move = GetControlNormal(0, 1)*4
-        local vertical_move = GetControlNormal(0, 2)*4
+        local horizontal_move = GetControlNormal(0, 1) * 4
+        local vertical_move = GetControlNormal(0, 2) * 4
         if horizontal_move ~= 0.0 or vertical_move ~= 0.0 then
-            SetCamRot(cam, rot.x-vertical_move,rot.y,rot.z-horizontal_move)
+            SetCamRot(cam, rot.x - vertical_move, rot.y, rot.z - horizontal_move)
         end
-        
-        local new_pos,shift = 0.0,IsDisabledControlPressed(0, 21)
+
+        local new_pos, shift = 0.0, IsDisabledControlPressed(0, 21)
 
         if IsDisabledControlPressed(0, 32) then
-            new_pos = coords+RotationToDirection(rot)*(shift and 4.0 or 1.2)
+            new_pos = coords + RotationToDirection(rot) * (shift and 4.0 or 1.2)
         elseif IsDisabledControlPressed(0, 33) then
-            new_pos = coords-RotationToDirection(rot)*(shift and 4.0 or 1.2)
+            new_pos = coords - RotationToDirection(rot) * (shift and 4.0 or 1.2)
         end
         if new_pos ~= 0.0 then
-            SetCamCoord(cam, new_pos.x,new_pos.y,new_pos.z)
+            SetCamCoord(cam, new_pos.x, new_pos.y, new_pos.z)
         end
         TaskStandStill(PlayerPedId(), 10)
-        SetFocusPosAndVel(coords.x,coords.y,coords.z, 0.0, 0.0, 0.0)
+        SetFocusPosAndVel(coords.x, coords.y, coords.z, 0.0, 0.0, 0.0)
 
-        local new_pos = coords+RotationToDirection(rot)*500.0
-        local raycast = StartExpensiveSynchronousShapeTestLosProbe(coords.x,coords.y,coords.z, new_pos.x,new_pos.y,new_pos.z, -1)
+        local new_pos = coords + RotationToDirection(rot) * 500.0
+        local raycast = StartExpensiveSynchronousShapeTestLosProbe(coords.x, coords.y, coords.z, new_pos.x, new_pos.y,
+            new_pos.z, -1)
         local retval, hit, end_coords, surface_normal, entity_hit = GetShapeTestResult(raycast)
 
         if hit then
             --DrawMarker(28, end_coords.x, end_coords.y, end_coords.z, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 0.1, 0.1, 0.1, 255, 128, 0, 50, false, true, 2, nil, nil, false)
-            
+
             if entity_hit ~= 0 then
                 local ent_coords = GetEntityCoords(entity_hit)
-                DrawMarker(2, ent_coords.x, ent_coords.y, ent_coords.z + 2, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 2.0, 2.0, 2.0, 255, 128, 0, 50, false, true, 2, nil, nil, false)
-                
+                DrawMarker(2, ent_coords.x, ent_coords.y, ent_coords.z + 2, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 2.0, 2.0, 2.0,
+                    255, 128, 0, 50, false, true, 2, nil, nil, false)
+
                 if IsDisabledControlJustPressed(0, 24) then seleceted_ent = entity_hit end
-                if IsDisabledControlJustPressed(0, 29) then 
-                    SetEntityAsMissionEntity(entity_hit, true, true) print(#fuse_toggles.spooner.database+1) 
+                if IsDisabledControlJustPressed(0, 29) then
+                    SetEntityAsMissionEntity(entity_hit, true, true)
+                    print(#fuse_toggles.spooner.database + 1)
                     local should_add = true
-                    for k,v in pairs(fuse_toggles.spooner.database) do
+                    for k, v in pairs(fuse_toggles.spooner.database) do
                         if v.id == entity_hit then
                             should_add = false
                             break
@@ -418,41 +424,43 @@ local function menyoo_spooner()
                     end
 
                     if should_add then
-                        fuse_toggles.spooner.database[#fuse_toggles.spooner.database+1] = { id = entity_hit, type = GetEntityType(entity_hit)}
+                        fuse_toggles.spooner.database[#fuse_toggles.spooner.database + 1] = { id = entity_hit, type =
+                        GetEntityType(entity_hit) }
                     end
                 end
             end
 
 
             if DoesEntityExist(seleceted_ent) then
-                draw_rect_px(res_width/2-3, (res_height/2)-3, 8, 8, 255, 115, 0, 255)
-                
-                local _new_pos = coords+RotationToDirection(rot)*500.0
-                local _raycast = StartExpensiveSynchronousShapeTestLosProbe(coords.x,coords.y,coords.z, _new_pos.x,_new_pos.y,_new_pos.z, -1, seleceted_ent)
+                draw_rect_px(res_width / 2 - 3, (res_height / 2) - 3, 8, 8, 255, 115, 0, 255)
+
+                local _new_pos = coords + RotationToDirection(rot) * 500.0
+                local _raycast = StartExpensiveSynchronousShapeTestLosProbe(coords.x, coords.y, coords.z, _new_pos.x,
+                    _new_pos.y, _new_pos.z, -1, seleceted_ent)
                 local hit, _, _end_coords = GetShapeTestResult(_raycast)
-                
-                if #(coords-_end_coords) > 30.0 then
-                    local cord = coords+RotationToDirection(rot)*30.0
-                    SetEntityCoordsNoOffset(seleceted_ent, cord.x,cord.y,cord.z)
+
+                if #(coords - _end_coords) > 30.0 then
+                    local cord = coords + RotationToDirection(rot) * 30.0
+                    SetEntityCoordsNoOffset(seleceted_ent, cord.x, cord.y, cord.z)
                 else
-                    SetEntityCoords(seleceted_ent, _end_coords.x,_end_coords.y,_end_coords.z)
+                    SetEntityCoords(seleceted_ent, _end_coords.x, _end_coords.y, _end_coords.z)
                 end
             end
 
-            draw_rect_px((res_width/2)-10, res_height/2, 21, 2, 255, 255, 255, 255)
-            draw_rect_px(res_width/2, (res_height/2)-10, 2, 21, 255, 255, 255, 255)
+            draw_rect_px((res_width / 2) - 10, res_height / 2, 21, 2, 255, 255, 255, 255)
+            draw_rect_px(res_width / 2, (res_height / 2) - 10, 2, 21, 255, 255, 255, 255)
         end
 
         if IsDisabledControlJustReleased(0, 24) then
             seleceted_ent = 0
         end
-        
+
 
         Citizen.Wait(0)
     end
 
     SetFocusEntity(PlayerPedId())
-    SetCamActive(cam,false)
+    SetCamActive(cam, false)
     RenderScriptCams(false, true, 500, false, false)
     DestroyCam(cam)
 end
@@ -463,9 +471,9 @@ function newParser()
     XmlParser = {};
 
     function XmlParser:ToXmlString(value)
-        value = string.gsub(value, "&", "&amp;"); -- '&' -> "&amp;"
-        value = string.gsub(value, "<", "&lt;"); -- '<' -> "&lt;"
-        value = string.gsub(value, ">", "&gt;"); -- '>' -> "&gt;"
+        value = string.gsub(value, "&", "&amp;");   -- '&' -> "&amp;"
+        value = string.gsub(value, "<", "&lt;");    -- '<' -> "&lt;"
+        value = string.gsub(value, ">", "&gt;");    -- '>' -> "&gt;"
         value = string.gsub(value, "\"", "&quot;"); -- '"' -> "&quot;"
         value = string.gsub(value, "([^%w%&%;%p%\t% ])",
             function(c)
@@ -519,8 +527,8 @@ function newParser()
                 local lNode = newNode(label)
                 self:ParseArgs(lNode, xarg)
                 table.insert(stack, lNode)
-		top = lNode
-            else -- end tag
+                top = lNode
+            else                                    -- end tag
                 local toclose = table.remove(stack) -- remove top
 
                 top = stack[#stack]
@@ -552,11 +560,17 @@ function newNode(name)
     node.___props = {}
 
     function node:value() return self.___value end
+
     function node:setValue(val) self.___value = val end
+
     function node:name() return self.___name end
+
     function node:setName(name) self.___name = name end
+
     function node:children() return self.___children end
+
     function node:numChildren() return #self.___children end
+
     function node:addChild(child)
         if self[child:name()] ~= nil then
             if type(self[child:name()].name) == "function" then
@@ -572,7 +586,9 @@ function newNode(name)
     end
 
     function node:properties() return self.___props end
+
     function node:numProperties() return #self.___props end
+
     function node:addProperty(name, value)
         local lName = "@" .. name
         if self[lName] ~= nil then
@@ -595,22 +611,22 @@ local function menyoo_load_map_props(parsedXml)
     local coords = GetEntityCoords(PlayerPedId())
 
     local entities = {}
-    for k,v in pairs(parsedXml.SpoonerPlacements.Placement) do
+    for k, v in pairs(parsedXml.SpoonerPlacements.Placement) do
         local model = tonumber(v.ModelHash:value())
         load_model(model)
         local ent
         local Type = v.Type:value()
         if Type == "1" then
-            ent = CreatePed(0,model,coords.x,coords.y,coords.z+10.0,0.0,true,true)
+            ent = CreatePed(0, model, coords.x, coords.y, coords.z + 10.0, 0.0, true, true)
             if v.PedProperties.AnimActive:value() == "true" then
                 load_anim(v.PedProperties.AnimDict:value())
-                TaskPlayAnim(ent, v.PedProperties.AnimDict:value(), v.PedProperties.AnimName:value(), 8.0, 8.0, -1,  1)
+                TaskPlayAnim(ent, v.PedProperties.AnimDict:value(), v.PedProperties.AnimName:value(), 8.0, 8.0, -1, 1)
                 SetPedKeepTask(ent, true)
             end
         elseif Type == "2" then
-            ent = CreateVehicle(model, coords.x,coords.y,coords.z,0.0,true,true)
+            ent = CreateVehicle(model, coords.x, coords.y, coords.z, 0.0, true, true)
         elseif Type == "3" then
-            ent = CreateObject(model, coords.x,coords.y,coords.z+10.0,true,true,true)
+            ent = CreateObject(model, coords.x, coords.y, coords.z + 10.0, true, true, true)
         end
         Citizen.Wait(1)
 
@@ -619,8 +635,8 @@ local function menyoo_load_map_props(parsedXml)
         local x = tonumber(v.PositionRotation.X:value() + 0.0)
         local y = tonumber(v.PositionRotation.Y:value() + 0.0)
         local z = tonumber(v.PositionRotation.Z:value() + 0.0)
-        SetEntityCoords(ent, x,y,z)
-        
+        SetEntityCoords(ent, x, y, z)
+
         local pitch = tonumber(v.PositionRotation.Pitch:value() + 0.0)
         local roll = tonumber(v.PositionRotation.Roll:value() + 0.0)
         local yaw = tonumber(v.PositionRotation.Yaw:value() + 0.0)
@@ -635,7 +651,8 @@ local function menyoo_load_map_props(parsedXml)
             local pitch = tonumber(v.Attachment.Pitch:value() + 0.0)
             local roll = tonumber(v.Attachment.Roll:value() + 0.0)
             local yaw = tonumber(v.Attachment.Yaw:value() + 0.0)
-            AttachEntityToEntity(ent, entities[v.Attachment.AttachedTo:value()], tonumber(v.Attachment.BoneIndex:value()),x,y,z,pitch,roll,yaw,true, false, false, false, 0, true)
+            AttachEntityToEntity(ent, entities[v.Attachment.AttachedTo:value()], tonumber(v.Attachment.BoneIndex:value()),
+                x, y, z, pitch, roll, yaw, true, false, false, false, 0, true)
         end
 
         SetEntityDynamic(ent, v.Dynamic:value() == "true")
@@ -647,21 +664,20 @@ local function menyoo_load_map_props(parsedXml)
 end
 
 local function create_menyoo_vehicle(parsedXml)
-    
     local veh_col = math.random(0, 112)
-    
+
     local entities = {}
-    
+
     local model = tonumber(parsedXml.Vehicle.ModelHash:value())
     load_model(model, true)
-    
+
     print(veh, coords, HasModelLoaded(model))
     local coords = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 5.0, 0.0)
-    
-    local veh = CreateVehicle(model, coords.x,coords.y,coords.z,0.0,true,true)
+
+    local veh = CreateVehicle(model, coords.x, coords.y, coords.z, 0.0, true, true)
     Citizen.Wait(10)
 
-    SetVehicleColours(veh, veh_col,veh_col)
+    SetVehicleColours(veh, veh_col, veh_col)
 
     SetEntityAlpha(veh, parsedXml.Vehicle.IsVisible:value() == "true" and 255 or 0, false)
 
@@ -680,23 +696,23 @@ local function create_menyoo_vehicle(parsedXml)
     end
 
 
-    for k,v in pairs(list) do
+    for k, v in pairs(list) do
         local model = tonumber(v.ModelHash:value())
         load_model(model)
         local ent
         local Type = v.Type:value()
         if Type == "1" then
-            ent = CreatePed(0,model,coords.x,coords.y,coords.z+10.0,0.0,true,true)
+            ent = CreatePed(0, model, coords.x, coords.y, coords.z + 10.0, 0.0, true, true)
             if v.PedProperties.AnimActive:value() == "true" then
                 load_anim(v.PedProperties.AnimDict:value())
-                TaskPlayAnim(ent, v.PedProperties.AnimDict:value(), v.PedProperties.AnimName:value(), 8.0, 8.0, -1,  1)
+                TaskPlayAnim(ent, v.PedProperties.AnimDict:value(), v.PedProperties.AnimName:value(), 8.0, 8.0, -1, 1)
                 SetPedKeepTask(ent, true)
             end
         elseif Type == "2" then
-            ent = CreateVehicle(model, coords.x,coords.y,coords.z,0.0,true,true)
-            SetVehicleColours(ent, veh_col,veh_col)
+            ent = CreateVehicle(model, coords.x, coords.y, coords.z, 0.0, true, true)
+            SetVehicleColours(ent, veh_col, veh_col)
         elseif Type == "3" then
-            ent = CreateObject(model, coords.x,coords.y,coords.z+10.0,true,true,false)
+            ent = CreateObject(model, coords.x, coords.y, coords.z + 10.0, true, true, false)
         end
         Citizen.Wait(10)
 
@@ -710,7 +726,8 @@ local function create_menyoo_vehicle(parsedXml)
             local pitch = tonumber(v.Attachment.Pitch:value() + 0.0)
             local roll = tonumber(v.Attachment.Roll:value() + 0.0)
             local yaw = tonumber(v.Attachment.Yaw:value() + 0.0)
-            AttachEntityToEntity(ent, entities[v.Attachment.AttachedTo:value()], tonumber(v.Attachment.BoneIndex:value()), x, y, z, pitch, roll, yaw, false, false, false, false, 2, true)
+            AttachEntityToEntity(ent, entities[v.Attachment.AttachedTo:value()], tonumber(v.Attachment.BoneIndex:value()),
+                x, y, z, pitch, roll, yaw, false, false, false, false, 2, true)
         end
 
 
@@ -725,161 +742,171 @@ end
 
 -------cONTROL
 local entityEnumerator = {
-  __gc = function(enum)
-    if enum.destructor and enum.handle then
-      enum.destructor(enum.handle)
+    __gc = function(enum)
+        if enum.destructor and enum.handle then
+            enum.destructor(enum.handle)
+        end
+        enum.destructor = nil
+        enum.handle = nil
     end
-    enum.destructor = nil
-    enum.handle = nil
-  end
 }
 
 local function EnumerateEntities(initFunc, moveFunc, disposeFunc)
-  return coroutine.wrap(function()
-    local iter, id = initFunc()
-    if not id or id == 0 then
-      disposeFunc(iter)
-      return
-    end
-    
-    local enum = {handle = iter, destructor = disposeFunc}
-    setmetatable(enum, entityEnumerator)
-    
-    local next = true
-    repeat
-      coroutine.yield(id)
-      next, id = moveFunc(iter)
-    until not next
-    
-    enum.destructor, enum.handle = nil, nil
-    disposeFunc(iter)
-  end)
+    return coroutine.wrap(function()
+        local iter, id = initFunc()
+        if not id or id == 0 then
+            disposeFunc(iter)
+            return
+        end
+
+        local enum = { handle = iter, destructor = disposeFunc }
+        setmetatable(enum, entityEnumerator)
+
+        local next = true
+        repeat
+            coroutine.yield(id)
+            next, id = moveFunc(iter)
+        until not next
+
+        enum.destructor, enum.handle = nil, nil
+        disposeFunc(iter)
+    end)
 end
 
 function EnumerateObjects()
-  return EnumerateEntities(FindFirstObject, FindNextObject, EndFindObject)
+    return EnumerateEntities(FindFirstObject, FindNextObject, EndFindObject)
 end
 
 function EnumeratePeds()
-  return EnumerateEntities(FindFirstPed, FindNextPed, EndFindPed)
+    return EnumerateEntities(FindFirstPed, FindNextPed, EndFindPed)
 end
 
 function EnumerateVehicles()
-  return EnumerateEntities(FindFirstVehicle, FindNextVehicle, EndFindVehicle)
+    return EnumerateEntities(FindFirstVehicle, FindNextVehicle, EndFindVehicle)
 end
 
 function EnumeratePickups()
-  return EnumerateEntities(FindFirstPickup, FindNextPickup, EndFindPickup)
+    return EnumerateEntities(FindFirstPickup, FindNextPickup, EndFindPickup)
 end
+
 --------------
 
 local skateboard_car = nil
 local skateboard = nil
 local function EquipSkateboard()
-	Citizen.CreateThread(function()
-		local model = GetHashKey("p_defilied_ragdoll_01_s")
-		RequestModel(model)
-		while not HasModelLoaded(model) do
-			Citizen.Wait(0)
-		end
-		--GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_BAT"), 0, true, true)
+    Citizen.CreateThread(function()
+        local model = GetHashKey("p_defilied_ragdoll_01_s")
+        RequestModel(model)
+        while not HasModelLoaded(model) do
+            Citizen.Wait(0)
+        end
+        --GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_BAT"), 0, true, true)
 
-		skateboard = CreateObject(model, GetEntityCoords(PlayerPedId(), false), false, false, false)
-		local weapon_obj = GetWeaponObjectFromPed(PlayerPedId(), 1)
-		AttachEntityToEntity(skateboard, weapon_obj, 0, -0.05, 0.0, 0.3, 180.0, 90.0, 0.0, false, false, false, false, 2, true)
-		AttachEntityToEntity(weapon_obj, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 57005), 0.08, 0.0, 0.0, -85.0, 22.0, 0.0, false, false, false, false, 2, true)
-		SetPedCurrentWeaponVisible(PlayerPedId(), false, true, 0, 0)
-		SetPedCanSwitchWeapon(PlayerPedId(), false)
-	end)
+        skateboard = CreateObject(model, GetEntityCoords(PlayerPedId(), false), false, false, false)
+        local weapon_obj = GetWeaponObjectFromPed(PlayerPedId(), 1)
+        AttachEntityToEntity(skateboard, weapon_obj, 0, -0.05, 0.0, 0.3, 180.0, 90.0, 0.0, false, false, false, false, 2,
+            true)
+        AttachEntityToEntity(weapon_obj, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 57005), 0.08, 0.0, 0.0, -85.0,
+            22.0, 0.0, false, false, false, false, 2, true)
+        SetPedCurrentWeaponVisible(PlayerPedId(), false, true, 0, 0)
+        SetPedCanSwitchWeapon(PlayerPedId(), false)
+    end)
 end
 
 local function UnequipSkateboard()
-	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), 0, true, true)
-	DeleteObject(skateboard)
-	SetPedCanSwitchWeapon(PlayerPedId(), true)
+    GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), 0, true, true)
+    DeleteObject(skateboard)
+    SetPedCanSwitchWeapon(PlayerPedId(), true)
 end
 
 local function StartSkating()
-	Citizen.CreateThread(function()
-		SetEntityAlpha(PlayerPedId(), 0)
-		RequestModel(1131912276)
-		while not HasModelLoaded(1131912276) do
-			Citizen.Wait(0)
-		end
-		skateboard_car = CreateVehicle(1131912276, GetEntityCoords(PlayerPedId(), false), GetEntityHeading(PlayerPedId()), true, false)
-		SetEntityInvincible(skateboard_car, true)
-		SetEntityAlpha(skateboard_car, 0)
-		local fakeskater = ClonePed(PlayerPedId(), GetEntityHeading(PlayerPedId()), false, true)
-		TaskPlayAnim(fakeskater, "move_strafe@stealth", "idle", 8.0, -4.0, -1, 9, 0.0, false, false, false)
-		AttachEntityToEntity(fakeskater,skateboard_car, 0, 0.0, 0.0, 0.75, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
-		SetEntityCollision(fakeskater, false, true)
-		SetBlockingOfNonTemporaryEvents(fakeskater, true)
-		SetEntityInvincible(fakeskater, true)
-		local model = GetHashKey("prop_railsleepers01")
-		RequestModel(model)
-		while not HasModelLoaded(model) do
-			Citizen.Wait(0)
-		end
-		skateboard = CreateObject(model, GetEntityCoords(PlayerPedId(), false), false, false, false)
-		AttachEntityToEntity(skateboard,skateboard_car, 0, 0.0, 0.0, -0.4, 0.0, 0.0, 190.0, false, false, false, false, 2, true)
-		SetPedIntoVehicle(PlayerPedId(), skateboard_car, -1)
-	end)
+    Citizen.CreateThread(function()
+        SetEntityAlpha(PlayerPedId(), 0)
+        RequestModel(1131912276)
+        while not HasModelLoaded(1131912276) do
+            Citizen.Wait(0)
+        end
+        skateboard_car = CreateVehicle(1131912276, GetEntityCoords(PlayerPedId(), false), GetEntityHeading(PlayerPedId()),
+            true, false)
+        SetEntityInvincible(skateboard_car, true)
+        SetEntityAlpha(skateboard_car, 0)
+        local fakeskater = ClonePed(PlayerPedId(), GetEntityHeading(PlayerPedId()), false, true)
+        TaskPlayAnim(fakeskater, "move_strafe@stealth", "idle", 8.0, -4.0, -1, 9, 0.0, false, false, false)
+        AttachEntityToEntity(fakeskater, skateboard_car, 0, 0.0, 0.0, 0.75, 0.0, 0.0, 0.0, false, false, false, false, 2,
+            true)
+        SetEntityCollision(fakeskater, false, true)
+        SetBlockingOfNonTemporaryEvents(fakeskater, true)
+        SetEntityInvincible(fakeskater, true)
+        local model = GetHashKey("prop_railsleepers01")
+        RequestModel(model)
+        while not HasModelLoaded(model) do
+            Citizen.Wait(0)
+        end
+        skateboard = CreateObject(model, GetEntityCoords(PlayerPedId(), false), false, false, false)
+        AttachEntityToEntity(skateboard, skateboard_car, 0, 0.0, 0.0, -0.4, 0.0, 0.0, 190.0, false, false, false, false,
+            2, true)
+        SetPedIntoVehicle(PlayerPedId(), skateboard_car, -1)
+    end)
 end
 local function StartSkating1()
-	Citizen.CreateThread(function()
-		SetEntityAlpha(PlayerPedId(), 0)
-		RequestModel(1131912276)
-		while not HasModelLoaded(1131912276) do
-			Citizen.Wait(0)
-		end
-		skateboard_car = CreateVehicle(1131912276, GetEntityCoords(PlayerPedId(), false), GetEntityHeading(PlayerPedId()), true, false)
-		SetEntityInvincible(skateboard_car, true)
-		SetEntityAlpha(skateboard_car, 0)
-		local fakeskater = ClonePed(PlayerPedId(), GetEntityHeading(PlayerPedId()), false, true)
-		TaskPlayAnim(fakeskater, "move_strafe@stealth", "idle", 8.0, -4.0, -1, 9, 0.0, false, false, false)
-		AttachEntityToEntity(fakeskater,skateboard_car, 0, 0.0, 0.0, 0.75, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
-		SetEntityCollision(fakeskater, false, true)
-		SetBlockingOfNonTemporaryEvents(fakeskater, true)
-		SetEntityInvincible(fakeskater, true)
-		local model = GetHashKey("prop_minigun_01")
-		RequestModel(model)
-		while not HasModelLoaded(model) do
-			Citizen.Wait(0)
-		end
-		skateboard = CreateObject(model, GetEntityCoords(PlayerPedId(), false), false, false, false)
-		AttachEntityToEntity(skateboard,skateboard_car, 0, 0.0, 0.0, -0.4, 0.0, 0.0, 270.0, false, false, false, false, 2, true)
-		SetPedIntoVehicle(PlayerPedId(), skateboard_car, -1)
-	end)
+    Citizen.CreateThread(function()
+        SetEntityAlpha(PlayerPedId(), 0)
+        RequestModel(1131912276)
+        while not HasModelLoaded(1131912276) do
+            Citizen.Wait(0)
+        end
+        skateboard_car = CreateVehicle(1131912276, GetEntityCoords(PlayerPedId(), false), GetEntityHeading(PlayerPedId()),
+            true, false)
+        SetEntityInvincible(skateboard_car, true)
+        SetEntityAlpha(skateboard_car, 0)
+        local fakeskater = ClonePed(PlayerPedId(), GetEntityHeading(PlayerPedId()), false, true)
+        TaskPlayAnim(fakeskater, "move_strafe@stealth", "idle", 8.0, -4.0, -1, 9, 0.0, false, false, false)
+        AttachEntityToEntity(fakeskater, skateboard_car, 0, 0.0, 0.0, 0.75, 0.0, 0.0, 0.0, false, false, false, false, 2,
+            true)
+        SetEntityCollision(fakeskater, false, true)
+        SetBlockingOfNonTemporaryEvents(fakeskater, true)
+        SetEntityInvincible(fakeskater, true)
+        local model = GetHashKey("prop_minigun_01")
+        RequestModel(model)
+        while not HasModelLoaded(model) do
+            Citizen.Wait(0)
+        end
+        skateboard = CreateObject(model, GetEntityCoords(PlayerPedId(), false), false, false, false)
+        AttachEntityToEntity(skateboard, skateboard_car, 0, 0.0, 0.0, -0.4, 0.0, 0.0, 270.0, false, false, false, false,
+            2, true)
+        SetPedIntoVehicle(PlayerPedId(), skateboard_car, -1)
+    end)
 end
 local function StartSkating2()
-	Citizen.CreateThread(function()
+    Citizen.CreateThread(function()
         RequestAnimDict("move_strafe@stealth")
-		TaskPlayAnim(PlayerPedId(), "move_strafe@stealth", "idle", 8.0, -4.0, -1, 9, 0.0, false, false, false)
-		local model = GetHashKey("prop_railsleepers01")
-		RequestModel(model)
-		Citizen.Wait(100)
-		if HasModelLoaded(model) then			
-		skateboard = CreateObject(model, GetEntityCoords(PlayerPedId(), false), false, false, false)
-		AttachEntityToEntity(skateboard, PlayerPedId(), 0, 0.0, 0.0, -1.0, 0.0, 0.0, 65.0, false, false, false, false, 2, true)
-		Noclip1 = true
-		drug27 = true
-		end
-		--SetPedIntoVehicle(PlayerPedId(), skateboard_car, -1)
-	end)
+        TaskPlayAnim(PlayerPedId(), "move_strafe@stealth", "idle", 8.0, -4.0, -1, 9, 0.0, false, false, false)
+        local model = GetHashKey("prop_railsleepers01")
+        RequestModel(model)
+        Citizen.Wait(100)
+        if HasModelLoaded(model) then
+            skateboard = CreateObject(model, GetEntityCoords(PlayerPedId(), false), false, false, false)
+            AttachEntityToEntity(skateboard, PlayerPedId(), 0, 0.0, 0.0, -1.0, 0.0, 0.0, 65.0, false, false, false, false,
+                2, true)
+            Noclip1 = true
+            drug27 = true
+        end
+        --SetPedIntoVehicle(PlayerPedId(), skateboard_car, -1)
+    end)
 end
 Citizen.CreateThread(function()
-	RequestAnimDict("move_strafe@stealth")
-	while VladmirAK47 ~= nil do
-		Citizen.Wait(0)
-		if IsControlJustPressed(0, 212) then	
-		UnequipSkateboard()
-        Noclip1 = false
-		FreezeEntityPosition(PlayerPedId(), false)
-        ClearPedTasksImmediately(PlayerPedId())
-        drug27 = false		
-		--AAA1 = false		
-		end
-	end
+    RequestAnimDict("move_strafe@stealth")
+    while VladmirAK47 ~= nil do
+        Citizen.Wait(0)
+        if IsControlJustPressed(0, 212) then
+            UnequipSkateboard()
+            Noclip1 = false
+            FreezeEntityPosition(PlayerPedId(), false)
+            ClearPedTasksImmediately(PlayerPedId())
+            drug27 = false
+            --AAA1 = false		
+        end
+    end
 end)
 SetPedCanSwitchWeapon(PlayerPedId(), true)
 RemoveAllPedWeapons(PlayerPedId(), 0)
@@ -887,369 +914,384 @@ RemoveAllPedWeapons(PlayerPedId(), 0)
 --sKY DIVE
 
 function IRON1()
-		
-		CreateThread(function()
-			local playerPed = PlayerPedId()
-			local playerPos = GetEntityCoords(playerPed)
+    CreateThread(function()
+        local playerPed = PlayerPedId()
+        local playerPos = GetEntityCoords(playerPed)
 
-			GiveWeaponToPed(playerPed, GetHashKey('gadget_parachute'), 1, true, true)
+        GiveWeaponToPed(playerPed, GetHashKey('gadget_parachute'), 1, true, true)
 
-			DoScreenFadeOut(3000)
+        DoScreenFadeOut(3000)
 
-			while not IsScreenFadedOut() do
-				Wait(0)
-			end
+        while not IsScreenFadedOut() do
+            Wait(0)
+        end
 
-			SetEntityCoords(playerPed, playerPos.x, playerPos.y, playerPos.z + 500.0)
+        SetEntityCoords(playerPed, playerPos.x, playerPos.y, playerPos.z + 500.0)
 
-			DoScreenFadeIn(2000)
+        DoScreenFadeIn(2000)
 
-			Wait(2000)
+        Wait(2000)
 
-			DisplayHelpText('Skyfall activated')
+        DisplayHelpText('Skyfall activated')
 
-			SetPlayerInvincible(playerPed, true)
-			SetEntityProofs(playerPed, true, true, true, true, true, false, 0, false)
-		
-			ApplyForceToEntity(playerPed, true, 0.0, 200.0, 2.5, 0.0, 0.0, 0.0, false, true, false, false, false, true)
-			Noclip1 = true
-		end)
+        SetPlayerInvincible(playerPed, true)
+        SetEntityProofs(playerPed, true, true, true, true, true, false, 0, false)
 
+        ApplyForceToEntity(playerPed, true, 0.0, 200.0, 2.5, 0.0, 0.0, 0.0, false, true, false, false, false, true)
+        Noclip1 = true
+    end)
 end
 
 ------
 
 -----RIDE
 local Deer = {
-	Handle = nil,
-	Invincible = false,
-	Ragdoll = false,
-	Marker = false,
-	Speed = {
-		Walk = 2.0,
-		Run = 3.0,
-	},
+    Handle = nil,
+    Invincible = false,
+    Ragdoll = false,
+    Marker = false,
+    Speed = {
+        Walk = 2.0,
+        Run = 3.0,
+    },
 }
 
 function GetNearbyPeds(X, Y, Z, Radius)
-	local NearbyPeds = {}
-	for Ped in EnumeratePeds() do
-		if DoesEntityExist(Ped) then
-			local PedPosition = GetEntityCoords(Ped, false)
-			if Vdist(X, Y, Z, PedPosition.x, PedPosition.y, PedPosition.z) <= Radius then
-				table.insert(NearbyPeds, Ped)
-			end
-		end
-	end
-	return NearbyPeds
+    local NearbyPeds = {}
+    for Ped in EnumeratePeds() do
+        if DoesEntityExist(Ped) then
+            local PedPosition = GetEntityCoords(Ped, false)
+            if Vdist(X, Y, Z, PedPosition.x, PedPosition.y, PedPosition.z) <= Radius then
+                table.insert(NearbyPeds, Ped)
+            end
+        end
+    end
+    return NearbyPeds
 end
 
 function GetCoordsInfrontOfEntityWithDistance(Entity, Distance, Heading)
-	local Coordinates = GetEntityCoords(Entity, false)
-	local Head = (GetEntityHeading(Entity) + (Heading or 0.0)) * math.pi / 180.0
-	return {x = Coordinates.x + Distance * math.sin(-1.0 * Head), y = Coordinates.y + Distance * math.cos(-1.0 * Head), z = Coordinates.z}
+    local Coordinates = GetEntityCoords(Entity, false)
+    local Head = (GetEntityHeading(Entity) + (Heading or 0.0)) * math.pi / 180.0
+    return { x = Coordinates.x + Distance * math.sin(-1.0 * Head), y = Coordinates.y + Distance * math.cos(-1.0 * Head), z =
+    Coordinates.z }
 end
 
 function GetGroundZ(X, Y, Z)
-	if tonumber(X) and tonumber(Y) and tonumber(Z) then
-		local _, GroundZ = GetGroundZFor_3dCoord(X + 0.0, Y + 0.0, Z + 0.0, Citizen.ReturnResultAnyway())
-		return GroundZ
-	else
-		return 0.0
-	end
+    if tonumber(X) and tonumber(Y) and tonumber(Z) then
+        local _, GroundZ = GetGroundZFor_3dCoord(X + 0.0, Y + 0.0, Z + 0.0, Citizen.ReturnResultAnyway())
+        return GroundZ
+    else
+        return 0.0
+    end
 end
 
 function Deer.Destroy()
-	local Ped = PlayerPedId()
+    local Ped = PlayerPedId()
 
-	DetachEntity(Ped, true, false)
-	ClearPedTasksImmediately(Ped)
+    DetachEntity(Ped, true, false)
+    ClearPedTasksImmediately(Ped)
 
-	SetEntityAsNoLongerNeeded(Deer.Handle)
-	DeletePed(Deer.Handle)
+    SetEntityAsNoLongerNeeded(Deer.Handle)
+    DeletePed(Deer.Handle)
 
-	if DoesEntityExist(Deer.Handle) then
-		SetEntityCoords(Deer.Handle, 601.28948974609, -4396.9853515625, 384.98565673828)
-	end
+    if DoesEntityExist(Deer.Handle) then
+        SetEntityCoords(Deer.Handle, 601.28948974609, -4396.9853515625, 384.98565673828)
+    end
 
-	Deer.Handle = nil
+    Deer.Handle = nil
 end
 
 function Deer.Create()
-	local Model = GetHashKey("a_c_deer")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("a_c_deer")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
+
 function Deer.Create11()
-	local Model = GetHashKey("futo")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("futo")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
---local v = CreateObject(GetHashKey('prop_gascage01'), pos.x, pos.y, pos.z, true, true, true)
-	Deer.Handle = CreateObject(Model, PedPosition.x, PedPosition.y, PedPosition.z, true, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
+    --local v = CreateObject(GetHashKey('prop_gascage01'), pos.x, pos.y, pos.z, true, true, true)
+    Deer.Handle = CreateObject(Model, PedPosition.x, PedPosition.y, PedPosition.z, true, false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
+
 function Deer.Create1()
-	local Model = GetHashKey("a_c_cow")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("a_c_cow")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
+
 function Deer.Create2()
-	local Model = GetHashKey("A_C_Pig")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("A_C_Pig")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
+
 function Deer.Create3()
-	local Model = GetHashKey("A_C_Chimp")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("A_C_Chimp")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
+
 function Deer.Create4()
-	local Model = GetHashKey("A_C_Chop")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("A_C_Chop")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
+
 function Deer.Create5()
-	local Model = GetHashKey("A_C_Cormorant")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("A_C_Cormorant")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
+
 function Deer.Create6()
-	local Model = GetHashKey("A_C_Coyote")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("A_C_Coyote")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
+
 function Deer.Create7()
-	local Model = GetHashKey("A_C_Husky")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("A_C_Husky")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
+
 function Deer.Create8()
-	local Model = GetHashKey("A_C_MtLion")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("A_C_MtLion")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
+
 function Deer.Create9()
-	local Model = GetHashKey("A_C_Rat")
-	RequestModel(Model)
-	while not HasModelLoaded(Model) do
-		Citizen.Wait(50)
-	end
+    local Model = GetHashKey("A_C_Rat")
+    RequestModel(Model)
+    while not HasModelLoaded(Model) do
+        Citizen.Wait(50)
+    end
 
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
 
-	Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
+    Deer.Handle = CreatePed(28, Model, PedPosition.x, PedPosition.y, PedPosition.z, GetEntityHeading(Ped), true, false)
 
-	SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
-	SetEntityInvincible(Deer.Handle, Deer.Invincible)
+    SetPedCanRagdoll(Deer.Handle, Deer.Ragdoll)
+    SetEntityInvincible(Deer.Handle, Deer.Invincible)
 
-	SetModelAsNoLongerNeeded(Model)
+    SetModelAsNoLongerNeeded(Model)
 end
+
 function Deer.Attach()
-	local Ped = PlayerPedId()
+    local Ped = PlayerPedId()
 
-	FreezeEntityPosition(Deer.Handle, true)
-	FreezeEntityPosition(Ped, true)
+    FreezeEntityPosition(Deer.Handle, true)
+    FreezeEntityPosition(Ped, true)
 
-	local DeerPosition = GetEntityCoords(Deer.Handle, false)
-	SetEntityCoords(Ped, DeerPosition.x, DeerPosition.y, DeerPosition.z)
+    local DeerPosition = GetEntityCoords(Deer.Handle, false)
+    SetEntityCoords(Ped, DeerPosition.x, DeerPosition.y, DeerPosition.z)
 
-	AttachEntityToEntity(Ped, Deer.Handle, GetPedBoneIndex(Deer.Handle, 24816), -0.3, 0.0, 0.3, 0.0, 0.0, 90.0, false, false, false, true, 2, true)
+    AttachEntityToEntity(Ped, Deer.Handle, GetPedBoneIndex(Deer.Handle, 24816), -0.3, 0.0, 0.3, 0.0, 0.0, 90.0, false,
+        false, false, true, 2, true)
 
-	TaskPlayAnim(Ped, "rcmjosh2", "josh_sitting_loop", 8.0, 1, -1, 2, 1.0, 0, 0, 0)
+    TaskPlayAnim(Ped, "rcmjosh2", "josh_sitting_loop", 8.0, 1, -1, 2, 1.0, 0, 0, 0)
 
-	FreezeEntityPosition(Deer.Handle, false)
-	FreezeEntityPosition(Ped, false)
+    FreezeEntityPosition(Deer.Handle, false)
+    FreezeEntityPosition(Ped, false)
 end
+
 function Deer.Ride()
-	local Ped = PlayerPedId()
-	local PedPosition = GetEntityCoords(Ped, false)
-	if IsPedSittingInAnyVehicle(Ped) or IsPedGettingIntoAVehicle(Ped) then
-		return
-	end
+    local Ped = PlayerPedId()
+    local PedPosition = GetEntityCoords(Ped, false)
+    if IsPedSittingInAnyVehicle(Ped) or IsPedGettingIntoAVehicle(Ped) then
+        return
+    end
 
-	local AttachedEntity = GetEntityAttachedTo(Ped)
+    local AttachedEntity = GetEntityAttachedTo(Ped)
 
-	if IsEntityAttached(Ped) and GetEntityModel(AttachedEntity) == GetHashKey("a_c_deer") then
-		local SideCoordinates = GetCoordsInfrontOfEntityWithDistance(AttachedEntity, 1.0, 90.0)
-		local SideHeading = GetEntityHeading(AttachedEntity)
+    if IsEntityAttached(Ped) and GetEntityModel(AttachedEntity) == GetHashKey("a_c_deer") then
+        local SideCoordinates = GetCoordsInfrontOfEntityWithDistance(AttachedEntity, 1.0, 90.0)
+        local SideHeading = GetEntityHeading(AttachedEntity)
 
-		SideCoordinates.z = GetGroundZ(SideCoordinates.x, SideCoordinates.y, SideCoordinates.z)
+        SideCoordinates.z = GetGroundZ(SideCoordinates.x, SideCoordinates.y, SideCoordinates.z)
 
-		Deer.Handle = nil
-		DetachEntity(Ped, true, false)
-		ClearPedTasksImmediately(Ped)
+        Deer.Handle = nil
+        DetachEntity(Ped, true, false)
+        ClearPedTasksImmediately(Ped)
 
-		SetEntityCoords(Ped, SideCoordinates.x, SideCoordinates.y, SideCoordinates.z)
-		SetEntityHeading(Ped, SideHeading)
-	else
-		for _, Ped in pairs(GetNearbyPeds(PedPosition.x, PedPosition.y, PedPosition.z, 2.0)) do
-			if GetEntityModel(Ped) == GetHashKey("a_c_deer") then
-				Deer.Handle = Ped
-				Deer.Attach()
-				break
-			end
-		end
-	end
+        SetEntityCoords(Ped, SideCoordinates.x, SideCoordinates.y, SideCoordinates.z)
+        SetEntityHeading(Ped, SideHeading)
+    else
+        for _, Ped in pairs(GetNearbyPeds(PedPosition.x, PedPosition.y, PedPosition.z, 2.0)) do
+            if GetEntityModel(Ped) == GetHashKey("a_c_deer") then
+                Deer.Handle = Ped
+                Deer.Attach()
+                break
+            end
+        end
+    end
 end
+
 Citizen.CreateThread(function()
-	while VladmirAK47 ~= nil do
-		Citizen.Wait(0)
+    while VladmirAK47 ~= nil do
+        Citizen.Wait(0)
 
-		if IsControlJustPressed(1, 51) then
-			--Deer.Ride()
-		end
+        if IsControlJustPressed(1, 51) then
+            --Deer.Ride()
+        end
 
-		if IsControlJustPressed(1, 288) then
-			if not Deer.Handle then
-				--Deer.Create()
-			else
-				--Deer.Destroy()
-			end
-		end
+        if IsControlJustPressed(1, 288) then
+            if not Deer.Handle then
+                --Deer.Create()
+            else
+                --Deer.Destroy()
+            end
+        end
 
-		local Ped = PlayerPedId()
-		local AttachedEntity = GetEntityAttachedTo(Ped)
+        local Ped = PlayerPedId()
+        local AttachedEntity = GetEntityAttachedTo(Ped)
 
-		if (not IsPedSittingInAnyVehicle(Ped) or not IsPedGettingIntoAVehicle(Ped)) and IsEntityAttached(Ped) and AttachedEntity == Deer.Handle then
-			if DoesEntityExist(Deer.Handle) then
+        if (not IsPedSittingInAnyVehicle(Ped) or not IsPedGettingIntoAVehicle(Ped)) and IsEntityAttached(Ped) and AttachedEntity == Deer.Handle then
+            if DoesEntityExist(Deer.Handle) then
                 load_anim_dict("rcmjosh2")
-				local LeftAxisXNormal, LeftAxisYNormal = GetControlNormal(2, 218), GetControlNormal(2, 219)
-				local Speed, Range = Deer.Speed.Walk, 4.0
+                local LeftAxisXNormal, LeftAxisYNormal = GetControlNormal(2, 218), GetControlNormal(2, 219)
+                local Speed, Range = Deer.Speed.Walk, 4.0
 
-				if IsControlPressed(0, 21) then
-					Speed = Deer.Speed.Run
-					Range = 8.0
-				end
+                if IsControlPressed(0, 21) then
+                    Speed = Deer.Speed.Run
+                    Range = 8.0
+                end
 
-				local GoToOffset = GetOffsetFromEntityInWorldCoords(Deer.Handle, LeftAxisXNormal * Range, LeftAxisYNormal * -1.0 * Range, 0.0)
+                local GoToOffset = GetOffsetFromEntityInWorldCoords(Deer.Handle, LeftAxisXNormal * Range,
+                    LeftAxisYNormal * -1.0 * Range, 0.0)
 
-				TaskLookAtCoord(Deer.Handle, GoToOffset.x, GoToOffset.y, GoToOffset.z, 0, 0, 2)
-				TaskGoStraightToCoord(Deer.Handle, GoToOffset.x, GoToOffset.y, GoToOffset.z, Speed, 20000, 40000.0, 0.5)
+                TaskLookAtCoord(Deer.Handle, GoToOffset.x, GoToOffset.y, GoToOffset.z, 0, 0, 2)
+                TaskGoStraightToCoord(Deer.Handle, GoToOffset.x, GoToOffset.y, GoToOffset.z, Speed, 20000, 40000.0, 0.5)
 
-				if Deer.Marker then
-					DrawMarker(6, GoToOffset.x, GoToOffset.y, GoToOffset.z, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 255, 255, 255, 255, 0, 0, 2, 0, 0, 0, 0)
-				end
-			end
-		end
-	end
+                if Deer.Marker then
+                    DrawMarker(6, GoToOffset.x, GoToOffset.y, GoToOffset.z, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 255, 255,
+                        255, 255, 0, 0, 2, 0, 0, 0, 0)
+                end
+            end
+        end
+    end
 end)
 -----
 function GetAllPeds()
@@ -1271,7 +1313,6 @@ function GetAllVehicles()
     end
     return vehicles
 end
-
 
 ------
 local function k(l)
@@ -1380,293 +1421,307 @@ local function Y()
         end
         P(menuso[t].title, x, y - v / 2 + w, menuso[t].titleFont, menuso[t].titleColor, A, true)
     end
-end	
-						
+end
 
-	
-	
-    function RRR3(player)  
-        Citizen.CreateThread(function() 
-            local coords = GetEntityCoords(PlayerPedId())
-	            	SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, false, true)
-	                NetworkResurrectLocalPlayer(coords.x, coords.y, coords.z, heading, true, false)
-	                       SetPlayerInvincible(ped, false)
-	                          ClearPedBloodDamage(ped)
-	            StopScreenEffect('DeathFailOut') 
-		end)    
-    end	
-function Jugg(player)  
-    Citizen.CreateThread(function() 
-			    local model = "mp_m_freemode_01"
-				RequestModel(GetHashKey(model)) 
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					SetPedRandomComponentVariation(PlayerPedId(), true)
-                RequestClipSet("move_ballistic_2h")	
-                RequestAnimSet("MOVE_STRAFE_BALLISTIC")				
-			    Citizen.Wait(500)
-	            local playerPed = GetPlayerPed(-1)				
-				ResetPedMovementClipset(playerPed, 1.0);
-				ResetPedStrafeClipset(playerPed);
-				SetPedUsingActionMode(playerPed, true, -1, 0); -- When value is "true", player leaves vehicle with engine running (cars mostly).			
-				SetPedMovementClipset(playerPed, "ANIM_GROUP_MOVE_BALLISTIC", 1.0);
-				SetPedStrafeClipset(playerPed, "MOVE_STRAFE_BALLISTIC");
-				SetWeaponAnimationOverride(playerPed, 0x5534A626);
-				SetPedComponentVariation(playerPed, 3, 2, 0, 0); -- Upper
-				SetPedComponentVariation(playerPed, 4, 2, 0, 0); -- Lower
-				SetPedComponentVariation(playerPed, 5, 1, 0, 0); -- Hands
-				SetPedComponentVariation(playerPed, 6, 2, 0, 0); -- Shoes / Juggernaut Mask
-				SetPedComponentVariation(playerPed, 8, 2, 0, 0); -- Accessory 0
-				SetPedComponentVariation(playerPed, 9, 0, 0, 0); -- Accessory 1
-				SetPedComponentVariation(playerPed, 10, 0, 0, 0); -- Badges
-				SetPedPropIndex(playerPed, 0, 24, 0, false); -- Hats
-				--ClearPedProp(playerPed, 1);
-				ClearPedBloodDamage(playerPed);
-				ClearPedBloodDamage(playerPed);
-				SetEntityMaxHealth(playerPed, 2000);
-				SetPedMaxHealth(playerPed, 2000);
-				SetEntityHealth(playerPed, 2000);
-				SetPedComponentVariation(playerPed, 0, 0, 0, 0); -- Head
-				SetPedComponentVariation(playerPed, 1, 104, 25, 0); -- Beard
-				SetPedComponentVariation(playerPed, 2, 57, 0, 0); -- Hair
-				SetPedComponentVariation(playerPed, 3, 31, 0, 0); -- Upper
-				SetPedComponentVariation(playerPed, 4, 84, 0, 0); -- Lower
-				SetPedComponentVariation(playerPed, 5, 0, 0, 0); -- Hands
-				SetPedComponentVariation(playerPed, 6, 33, 0, 0); -- Shoes / Juggernaut Mask
-				SetPedComponentVariation(playerPed, 7, 0, 1, 0); -- Theeth
-				SetPedComponentVariation(playerPed, 8, 97, 0, 0); -- Accessory 0
-				SetPedComponentVariation(playerPed, 9, 0, 0, 0); -- Accessory 1
-				SetPedComponentVariation(playerPed, 10, 0, 0, 0); -- Badges
-				SetPedComponentVariation(playerPed, 11, 186, 0, 0); -- Shirt Overlay
-				SetPedPropIndex(playerPed, 0, 39, 0, false); -- Hats
-				SetPedPropIndex(playerPed, 1, 15, 1, false); -- Glasses
-				SetPedPropIndex(playerPed, 2, 3, 0, false); -- Misc
-				GiveWeaponToPed(playerPed, 0x42BF8A85, -1, true, false); -- Equips player with Minigun.
-				SetWeaponAnimationOverride(playerPed, 0x5534A626); -- Main Ballistic weapon iddle /stand animation.
-				end
-	end)    
-end		
 
-	
-	    function Zombie10(player)  
-        Citizen.CreateThread(function() 
-            RequestModelSync("a_c_hen") 
-                local x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(player), true)) 
-                local bD = CreatePed(4, GetHashKey("a_c_hen"), x, y, z + 0.8, 0.0, true, false)			 
-		end)    
-    end	
-    function Freezeall2(player)  
-        Citizen.CreateThread(function() 
-					local target = PlayerPedId(player)
-                    local pos = GetEntityCoords(GetPlayerPed(player))
-                    local xf = GetEntityForwardX(GetPlayerPed(player))
-                    local yf = GetEntityForwardY(GetPlayerPed(player))
-					local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(player), 0, 0, -0.4)
-                    RequestModel('prop_gascage01')
-                    while not HasModelLoaded('prop_gascage01') do
-                        RequestModel('prop_gascage01')
-                        Citizen.Wait(0)
-                    end
-                    if HasModelLoaded('prop_gascage01') then
-						local v = CreateObject(GetHashKey('prop_gascage01'), pos.x, pos.y, pos.z, true, true, true)
-                        FreezeEntityPosition(v, true)
-                        SetEntityVisible(v, false, true)
 
-                    end			 
-		end)    
-    end	  	
-	
-	    function Airstrike(player)  
-        Citizen.CreateThread(function() 
-	                    local veh = ("lazer")
-                    for i = 0, 0 do
-					local target = GetPlayerPed(player)
-                    local pos = GetEntityCoords(GetPlayerPed(player))
-                    local pitch = GetEntityPitch(GetPlayerPed(player))
-                    local roll = GetEntityRoll(GetPlayerPed(player))
-                    local yaw = GetEntityRotation(GetPlayerPed(player)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(player))
-                    local yf = GetEntityForwardY(GetPlayerPed(player))
-                    local v = nil
-                    RequestModel(veh)
+
+function RRR3(player)
+    Citizen.CreateThread(function()
+        local coords = GetEntityCoords(PlayerPedId())
+        SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, false, true)
+        NetworkResurrectLocalPlayer(coords.x, coords.y, coords.z, heading, true, false)
+        SetPlayerInvincible(ped, false)
+        ClearPedBloodDamage(ped)
+        StopScreenEffect('DeathFailOut')
+    end)
+end
+
+function Jugg(player)
+    Citizen.CreateThread(function()
+        local model = "mp_m_freemode_01"
+        RequestModel(GetHashKey(model))
+        if HasModelLoaded(GetHashKey(model)) then
+            SetPlayerModel(PlayerId(), GetHashKey(model))
+            SetPedRandomComponentVariation(PlayerPedId(), true)
+            RequestClipSet("move_ballistic_2h")
+            RequestAnimSet("MOVE_STRAFE_BALLISTIC")
+            Citizen.Wait(500)
+            local playerPed = GetPlayerPed(-1)
+            ResetPedMovementClipset(playerPed, 1.0);
+            ResetPedStrafeClipset(playerPed);
+            SetPedUsingActionMode(playerPed, true, -1, 0); -- When value is "true", player leaves vehicle with engine running (cars mostly).			
+            SetPedMovementClipset(playerPed, "ANIM_GROUP_MOVE_BALLISTIC", 1.0);
+            SetPedStrafeClipset(playerPed, "MOVE_STRAFE_BALLISTIC");
+            SetWeaponAnimationOverride(playerPed, 0x5534A626);
+            SetPedComponentVariation(playerPed, 3, 2, 0, 0); -- Upper
+            SetPedComponentVariation(playerPed, 4, 2, 0, 0); -- Lower
+            SetPedComponentVariation(playerPed, 5, 1, 0, 0); -- Hands
+            SetPedComponentVariation(playerPed, 6, 2, 0, 0); -- Shoes / Juggernaut Mask
+            SetPedComponentVariation(playerPed, 8, 2, 0, 0); -- Accessory 0
+            SetPedComponentVariation(playerPed, 9, 0, 0, 0); -- Accessory 1
+            SetPedComponentVariation(playerPed, 10, 0, 0, 0); -- Badges
+            SetPedPropIndex(playerPed, 0, 24, 0, false); -- Hats
+            --ClearPedProp(playerPed, 1);
+            ClearPedBloodDamage(playerPed);
+            ClearPedBloodDamage(playerPed);
+            SetEntityMaxHealth(playerPed, 2000);
+            SetPedMaxHealth(playerPed, 2000);
+            SetEntityHealth(playerPed, 2000);
+            SetPedComponentVariation(playerPed, 0, 0, 0, 0); -- Head
+            SetPedComponentVariation(playerPed, 1, 104, 25, 0); -- Beard
+            SetPedComponentVariation(playerPed, 2, 57, 0, 0); -- Hair
+            SetPedComponentVariation(playerPed, 3, 31, 0, 0); -- Upper
+            SetPedComponentVariation(playerPed, 4, 84, 0, 0); -- Lower
+            SetPedComponentVariation(playerPed, 5, 0, 0, 0); -- Hands
+            SetPedComponentVariation(playerPed, 6, 33, 0, 0); -- Shoes / Juggernaut Mask
+            SetPedComponentVariation(playerPed, 7, 0, 1, 0); -- Theeth
+            SetPedComponentVariation(playerPed, 8, 97, 0, 0); -- Accessory 0
+            SetPedComponentVariation(playerPed, 9, 0, 0, 0); -- Accessory 1
+            SetPedComponentVariation(playerPed, 10, 0, 0, 0); -- Badges
+            SetPedComponentVariation(playerPed, 11, 186, 0, 0); -- Shirt Overlay
+            SetPedPropIndex(playerPed, 0, 39, 0, false);     -- Hats
+            SetPedPropIndex(playerPed, 1, 15, 1, false);     -- Glasses
+            SetPedPropIndex(playerPed, 2, 3, 0, false);      -- Misc
+            GiveWeaponToPed(playerPed, 0x42BF8A85, -1, true, false); -- Equips player with Minigun.
+            SetWeaponAnimationOverride(playerPed, 0x5534A626); -- Main Ballistic weapon iddle /stand animation.
+        end
+    end)
+end
+
+function Zombie10(player)
+    Citizen.CreateThread(function()
+        RequestModelSync("a_c_hen")
+        local x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(player), true))
+        local bD = CreatePed(4, GetHashKey("a_c_hen"), x, y, z + 0.8, 0.0, true, false)
+    end)
+end
+
+function Freezeall2(player)
+    Citizen.CreateThread(function()
+        local target = PlayerPedId(player)
+        local pos = GetEntityCoords(GetPlayerPed(player))
+        local xf = GetEntityForwardX(GetPlayerPed(player))
+        local yf = GetEntityForwardY(GetPlayerPed(player))
+        local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(player), 0, 0, -0.4)
+        RequestModel('prop_gascage01')
+        while not HasModelLoaded('prop_gascage01') do
+            RequestModel('prop_gascage01')
+            Citizen.Wait(0)
+        end
+        if HasModelLoaded('prop_gascage01') then
+            local v = CreateObject(GetHashKey('prop_gascage01'), pos.x, pos.y, pos.z, true, true, true)
+            FreezeEntityPosition(v, true)
+            SetEntityVisible(v, false, true)
+        end
+    end)
+end
+
+function Airstrike(player)
+    Citizen.CreateThread(function()
+        local veh = ("lazer")
+        for i = 0, 0 do
+            local target = GetPlayerPed(player)
+            local pos = GetEntityCoords(GetPlayerPed(player))
+            local pitch = GetEntityPitch(GetPlayerPed(player))
+            local roll = GetEntityRoll(GetPlayerPed(player))
+            local yaw = GetEntityRotation(GetPlayerPed(player)).z
+            local xf = GetEntityForwardX(GetPlayerPed(player))
+            local yf = GetEntityForwardY(GetPlayerPed(player))
+            local v = nil
+            RequestModel(veh)
+            RequestModel('a_m_o_acult_01')
+            while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
+                RequestModel('a_m_o_acult_01')
+                Citizen.Wait(0)
+                RequestModel(veh)
+            end
+            if HasModelLoaded(veh) then
+                Citizen.Wait(50)
+                v =
+                    CreateVehicle(
+                        veh,
+                        pos.x - (xf * 90),
+                        pos.y - (yf * 90),
+                        pos.z + 700,
+                        GetEntityHeading(GetPlayerPed(player)),
+                        true,
+                        false
+                    )
+                local v1 = CreateVehicle(veh, pos.x + 300, pos.y, pos.z + 600, GetEntityHeading(target), true, true)
+                if DoesEntityExist(v) then
+                    NetworkRequestControlOfEntity(v)
+                    SetVehicleDoorsLocked(v, 4)
                     RequestModel('a_m_o_acult_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
-                        RequestModel('a_m_o_acult_01')
-                        Citizen.Wait(0)
-                        RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
+                    Citizen.Wait(50)
+                    if HasModelLoaded('a_m_o_acult_01') then
                         Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 90),
-                            pos.y - (yf * 90),
-                            pos.z + 700,
-                            GetEntityHeading(GetPlayerPed(player)),
-                            true,
-                            false
-                        )
-						local v1 = CreateVehicle(veh, pos.x + 300, pos.y, pos.z + 600, GetEntityHeading(target), true, true)
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
-                            RequestModel('a_m_o_acult_01')
-                            Citizen.Wait(50)
-                            if HasModelLoaded('a_m_o_acult_01') then
-                                Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                local ped1 =
-                                    CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v1, -1)
-                                    TaskPlaneChase(ped, GetVehiclePedIsUsing(GetPlayerPed(player)), 100.00, 786468)
-									TaskPlaneChase(ped1, (GetPlayerPed(player)), 100.00, 786468)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
-									SetDriverAbility(ped1, 10.0)
-                                    SetDriverAggressiveness(ped1, 10.0)
-									TaskCombatPed(ped, target, 0, 16)
-								    TaskCombatPed(ped1, target, 0, 16)
-								    SetPedKeepTask(ped, true)
-								    SetPedKeepTask(ped1, true)
-                                end
-                            end
+                        local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                        local ped1 =
+                            CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                        if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                            SetPedIntoVehicle(ped, v, -1)
+                            SetPedIntoVehicle(ped1, v1, -1)
+                            TaskPlaneChase(ped, GetVehiclePedIsUsing(GetPlayerPed(player)), 100.00, 786468)
+                            TaskPlaneChase(ped1, (GetPlayerPed(player)), 100.00, 786468)
+                            SetDriverAbility(ped, 10.0)
+                            SetDriverAggressiveness(ped, 10.0)
+                            SetDriverAbility(ped1, 10.0)
+                            SetDriverAggressiveness(ped1, 10.0)
+                            TaskCombatPed(ped, target, 0, 16)
+                            TaskCombatPed(ped1, target, 0, 16)
+                            SetPedKeepTask(ped, true)
+                            SetPedKeepTask(ped1, true)
                         end
-					end	
-			end	 
-		end)    
-    end
-    function Zombie99(player)  
-        Citizen.CreateThread(function() 
-            RequestModelSync("Tug") 
-            count = 0
-            for b = 0, 1000000000000000 do 
-                local x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(player), true)) 
-                local v = CreateVehicle(GetHashKey("Tug"), x, y, z, 0.0, true, true)				
-                SetEntityInvincible(v, true) count = count - 0.4
-				Citizen.Wait(10)
-				DeletePed(v)
-			end	 
-		end)    
-    end		
-    function Lagf(player) 
-        Citizen.CreateThread(function() 	
-        Citizen.Wait(0.1) -- This sends a notification every 1 second.
-		            local veh = ("CargoPlane")
-					local target = PlayerPedId(player)
-                    local pos = GetEntityCoords(GetPlayerPed(player))
-                    RequestModel(veh)
-                    while not HasModelLoaded(veh) do
-                        RequestModel(veh)
-                        Citizen.Wait(0)
                     end
-                    if HasModelLoaded(veh) then
-						local v = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
-						NetworkRequestControlOfEntity(v)
-                        SetEntityVisible(v, false, true)
-                        FreezeEntityPosition(v, true)
-												local v1 = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
-						NetworkRequestControlOfEntity(v1)
-                        SetEntityVisible(v1, false, true)
-                        FreezeEntityPosition(v1, true)
-												local v2 = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
-						NetworkRequestControlOfEntity(v2)
-                        SetEntityVisible(v2, false, true)
-                        FreezeEntityPosition(v2, true)
-												local v3 = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
-						NetworkRequestControlOfEntity(v3)
-                        SetEntityVisible(v3, false, true)
-                        FreezeEntityPosition(v3, true)
-												local v4 = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
-						NetworkRequestControlOfEntity(v4)
-                        SetEntityVisible(v4, false, true)
-                        FreezeEntityPosition(v4, true)
-												local v5 = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
-						NetworkRequestControlOfEntity(v5)
-                        SetEntityVisible(v5, false, true)
-                        FreezeEntityPosition(v5, true)
-					end 
-		end)    
-    end	
-    function Zombie3(player)  
-        Citizen.CreateThread(function() 
-            RequestModelSync("a_m_o_acult_01") 
-            count = 0
-            for b = 0, 10 do 
-                local x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(player), true)) 
-                local bD = CreatePed(4, GetHashKey("a_m_o_acult_01"), x, y, z, 0.0, false, true)  
-                local pos = GetEntityCoords(bD)
-                local fire = StartScriptFire (pos.x, pos.y, pos.z, 100, false)
-				Citizen.Wait(100)
-				DeletePed(bD)
-			end	 
-		end)    
-    end       	
-    function BurnV2(player) 
-        Citizen.CreateThread(function() 
-            local Pos = GetEntityCoords(GetPlayerPed(player)) 
-            AddExplosion (Pos.x, Pos.y, Pos.z, 29, 0.0, false, false, 0.0)	
-		end)    
-    end                                           
-    function BurnV1(player) 
-        Citizen.CreateThread(function() 
-            local Pos = GetEntityCoords(GetPlayerPed(player)) 
-            AddExplosion (Pos.x, Pos.y, Pos.z, 14, 0.0, false, false, 0.0)	
-		end)    
-    end
-   function Failall(player) 
-        Citizen.CreateThread(function() 
-                        local Pos = GetEntityCoords(GetPlayerPed(player)) 						
-                        AddExplosion (Pos.x, Pos.y, Pos.z - 2, 11, 5.0, true, true, 0.0)
-                        AddExplosion (Pos.x, Pos.y + 0.5, Pos.z - 1.8, 11, 5.0, true, true, 0.0)    	
-		end)    
-    end	
-    function Smoking(player) 
-        Citizen.CreateThread(function() 
-                        local Pos = GetEntityCoords(GetPlayerPed(player)) 
-                        AddExplosion (Pos.x, Pos.y, Pos.z, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x + 0.3, Pos.y, Pos.z - 1, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x, Pos.y + 0,5, Pos.z - 1, 24, 5.0, false, false, 0.0)
-		end)    
-    end			
-    function Launch(player) 
-        Citizen.CreateThread(function() 
-            local Pos = GetEntityCoords(GetPlayerPed(player)) 
-            AddExplosion (Pos.x, Pos.y, Pos.z, 13, 5.0, false, false, 0.0)	
-		end)    
-    end
-    function Light1(player) 
-        Citizen.CreateThread(function() 
-                        local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-						AddExplosion (Pos.x, Pos.y, Pos.z, EXPLOSION_PROGRAMMABLEAR, 99, false, false, 0.0) 
-                        AddExplosion (Pos.x, Pos.y, Pos.z, EXPLOSION_PROPANE, 99, false, false, 0.0)
-						AddExplosion (Pos.x, Pos.y, Pos.z + 1.2, 29, 0.0, false, true, 0.0)	
-		end)    
-    end 	    
-    function Launch1(player) 
-        Citizen.CreateThread(function() 
-            local Pos = GetEntityCoords(GetPlayerPed(player)) 
-            AddExplosion (Pos.x, Pos.y, Pos.z, 18, 1.0, true, true, 0.0)	
-		end)    
-    end		
-    function Silentkill(player) 
-        Citizen.CreateThread(function() 
-		    local Pos = GetEntityCoords(GetPlayerPed(player))
-            AddExplosion(Pos.x, Pos.y, Pos.z, 26, FLT_MAX, false, true, 0.0) 
-		end)    
-    end	
-    function StartFire(player) 
-        Citizen.CreateThread(function() 
-	                  for i = 0, 75 do 				
-				    local pos = GetEntityCoords(GetPlayerPed(player))
-                    local fire = StartScriptFire (pos.x, pos.y, pos.z, 1, true)
-					Citizen.Wait(300)
-                    RemoveScriptFire(fire)
-					end
-		end)    
-    end	
+                end
+            end
+        end
+    end)
+end
+
+function Zombie99(player)
+    Citizen.CreateThread(function()
+        RequestModelSync("Tug")
+        count = 0
+        for b = 0, 1000000000000000 do
+            local x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(player), true))
+            local v = CreateVehicle(GetHashKey("Tug"), x, y, z, 0.0, true, true)
+            SetEntityInvincible(v, true)
+            count = count - 0.4
+            Citizen.Wait(10)
+            DeletePed(v)
+        end
+    end)
+end
+
+function Lagf(player)
+    Citizen.CreateThread(function()
+        Citizen.Wait(0.1) -- This sends a notification every 1 second.
+        local veh = ("CargoPlane")
+        local target = PlayerPedId(player)
+        local pos = GetEntityCoords(GetPlayerPed(player))
+        RequestModel(veh)
+        while not HasModelLoaded(veh) do
+            RequestModel(veh)
+            Citizen.Wait(0)
+        end
+        if HasModelLoaded(veh) then
+            local v = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
+            NetworkRequestControlOfEntity(v)
+            SetEntityVisible(v, false, true)
+            FreezeEntityPosition(v, true)
+            local v1 = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
+            NetworkRequestControlOfEntity(v1)
+            SetEntityVisible(v1, false, true)
+            FreezeEntityPosition(v1, true)
+            local v2 = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
+            NetworkRequestControlOfEntity(v2)
+            SetEntityVisible(v2, false, true)
+            FreezeEntityPosition(v2, true)
+            local v3 = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
+            NetworkRequestControlOfEntity(v3)
+            SetEntityVisible(v3, false, true)
+            FreezeEntityPosition(v3, true)
+            local v4 = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
+            NetworkRequestControlOfEntity(v4)
+            SetEntityVisible(v4, false, true)
+            FreezeEntityPosition(v4, true)
+            local v5 = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
+            NetworkRequestControlOfEntity(v5)
+            SetEntityVisible(v5, false, true)
+            FreezeEntityPosition(v5, true)
+        end
+    end)
+end
+
+function Zombie3(player)
+    Citizen.CreateThread(function()
+        RequestModelSync("a_m_o_acult_01")
+        count = 0
+        for b = 0, 10 do
+            local x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(player), true))
+            local bD = CreatePed(4, GetHashKey("a_m_o_acult_01"), x, y, z, 0.0, false, true)
+            local pos = GetEntityCoords(bD)
+            local fire = StartScriptFire(pos.x, pos.y, pos.z, 100, false)
+            Citizen.Wait(100)
+            DeletePed(bD)
+        end
+    end)
+end
+
+function BurnV2(player)
+    Citizen.CreateThread(function()
+        local Pos = GetEntityCoords(GetPlayerPed(player))
+        AddExplosion(Pos.x, Pos.y, Pos.z, 29, 0.0, false, false, 0.0)
+    end)
+end
+
+function BurnV1(player)
+    Citizen.CreateThread(function()
+        local Pos = GetEntityCoords(GetPlayerPed(player))
+        AddExplosion(Pos.x, Pos.y, Pos.z, 14, 0.0, false, false, 0.0)
+    end)
+end
+
+function Failall(player)
+    Citizen.CreateThread(function()
+        local Pos = GetEntityCoords(GetPlayerPed(player))
+        AddExplosion(Pos.x, Pos.y, Pos.z - 2, 11, 5.0, true, true, 0.0)
+        AddExplosion(Pos.x, Pos.y + 0.5, Pos.z - 1.8, 11, 5.0, true, true, 0.0)
+    end)
+end
+
+function Smoking(player)
+    Citizen.CreateThread(function()
+        local Pos = GetEntityCoords(GetPlayerPed(player))
+        AddExplosion(Pos.x, Pos.y, Pos.z, 24, 5.0, false, false, 0.0)
+        AddExplosion(Pos.x + 0.3, Pos.y, Pos.z - 1, 24, 5.0, false, false, 0.0)
+        AddExplosion(Pos.x, Pos.y + 0, 5, Pos.z - 1, 24, 5.0, false, false, 0.0)
+    end)
+end
+
+function Launch(player)
+    Citizen.CreateThread(function()
+        local Pos = GetEntityCoords(GetPlayerPed(player))
+        AddExplosion(Pos.x, Pos.y, Pos.z, 13, 5.0, false, false, 0.0)
+    end)
+end
+
+function Light1(player)
+    Citizen.CreateThread(function()
+        local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+        AddExplosion(Pos.x, Pos.y, Pos.z, EXPLOSION_PROGRAMMABLEAR, 99, false, false, 0.0)
+        AddExplosion(Pos.x, Pos.y, Pos.z, EXPLOSION_PROPANE, 99, false, false, 0.0)
+        AddExplosion(Pos.x, Pos.y, Pos.z + 1.2, 29, 0.0, false, true, 0.0)
+    end)
+end
+
+function Launch1(player)
+    Citizen.CreateThread(function()
+        local Pos = GetEntityCoords(GetPlayerPed(player))
+        AddExplosion(Pos.x, Pos.y, Pos.z, 18, 1.0, true, true, 0.0)
+    end)
+end
+
+function Silentkill(player)
+    Citizen.CreateThread(function()
+        local Pos = GetEntityCoords(GetPlayerPed(player))
+        AddExplosion(Pos.x, Pos.y, Pos.z, 26, FLT_MAX, false, true, 0.0)
+    end)
+end
+
+function StartFire(player)
+    Citizen.CreateThread(function()
+        for i = 0, 75 do
+            local pos = GetEntityCoords(GetPlayerPed(player))
+            local fire = StartScriptFire(pos.x, pos.y, pos.z, 1, true)
+            Citizen.Wait(300)
+            RemoveScriptFire(fire)
+        end
+    end)
+end
+
 local function Z()
     if menuso[t] then
         local x = menuso[t].x + u / 2
@@ -1680,17 +1735,17 @@ local function Z()
         W(x, y, u, B, menuso[t].subTitleBackgroundColor)
         P(menuso[t].subTitle, menuso[t].x + E, y - B / 2 + F, C, a0, D, false)
         --if q > menuso[t].maxOptionCount then
-            P(
-                tostring(menuso[t].currentOption) .. ' / ' .. tostring(q),
-                menuso[t].x + u,
-                y - B / 2 + F,
-                C,
-                a0,
-                D,
-                false,
-                false,
-                true
-            )
+        P(
+            tostring(menuso[t].currentOption) .. ' / ' .. tostring(q),
+            menuso[t].x + u,
+            y - B / 2 + F,
+            C,
+            a0,
+            D,
+            false,
+            false,
+            true
+        )
         --end
     end
 end
@@ -1758,7 +1813,7 @@ function VladmirAK47.CreateMenu(f, a7)
         b = 15,
         a = 255
     }
-    
+
     menuso[f].menuFocusBackgroundColor = {
         r = 236,
         g = 39,
@@ -1910,7 +1965,7 @@ function VladmirAK47.Button(I, a2)
     end
 end
 
-local left_held, right_held = 0,0
+local left_held, right_held = 0, 0
 function VladmirAK47.Slider(I, val, min, max, step, cb)
     local ab = I
     if menuso[t] then
@@ -1918,7 +1973,7 @@ function VladmirAK47.Slider(I, val, min, max, step, cb)
         local ac = menuso[t].currentOption == q
         a1(I, val)
         if ac then
-            if IsDisabledControlPressed(0,174) then
+            if IsDisabledControlPressed(0, 174) then
                 left_held = left_held + 1
                 if left_held > 20 then
                     s = p.left
@@ -1926,7 +1981,7 @@ function VladmirAK47.Slider(I, val, min, max, step, cb)
             else
                 left_held = 0
             end
-            if IsDisabledControlPressed(0,175) then
+            if IsDisabledControlPressed(0, 175) then
                 right_held = right_held + 1
                 if right_held > 20 then
                     s = p.right
@@ -1959,7 +2014,6 @@ function VladmirAK47.Slider(I, val, min, max, step, cb)
         return false
     end
 end
-
 
 function VladmirAK47.MenuButton(I, f)
     if menuso[f] then
@@ -2202,6 +2256,7 @@ function KeyboardInput(ao, ap, aq)
         return nil
     end
 end
+
 local function ar()
     local as = {}
     for i = 0, GetNumberOfPlayers() do
@@ -2232,6 +2287,7 @@ end
 function math.round(at, au)
     return tonumber(string.format('%.' .. (au or 0) .. 'f', at))
 end
+
 local function k(l)
     local m = {}
     local n = GetGameTimer() / 1000
@@ -2341,6 +2397,7 @@ function checkValidVehicleMods(aC)
     end
     return az
 end
+
 local aH = {
     'Dinghy',
     'Dinghy2',
@@ -3171,7 +3228,7 @@ local b6 = {
     'WEAPON_SNOWBALL',
     'WEAPON_FLARE',
     'WEAPON_BALL'
-	
+
 }
 local b7 = {
     Melee = {
@@ -6148,9 +6205,6 @@ function RequestModelSync(bA)
     end
 end
 
-
-
-
 function bananapartyall()
     Citizen.CreateThread(
         function()
@@ -6277,73 +6331,73 @@ function NukeServer1()
     )
 end
 
-
 function cage2()
     Citizen.CreateThread(
         function()
-                local bH = CreateObject(GetHashKey('fib_5_mcs_10_lightrig'), 0, 0, 0, true, true, true)
-                local bI = CreateObject(GetHashKey('fib_5_mcs_10_lightrig'), 0, 0, 0, true, true, true)
-                local bJ = CreateObject(GetHashKey('fib_5_mcs_10_lightrig'), 0, 0, 0, true, true, true)
-                AttachEntityToEntity(
-                    bH,
-                    GetPlayerPed(player),
-                    GetPedBoneIndex(GetPlayerPed(player), 57005),
-                    2,
-                    0,
-                    0,
-                    0,
-                    170.0,
-                    60.0,
-                    true,
-                    true,
-                    false,
-                    true,
-                    1,
-                    true
-                )
-                AttachEntityToEntity(
-                    bI,
-                    GetPlayerPed(player),
-                    GetPedBoneIndex(GetPlayerPed(player), 57005),
-                    0.7,
-                    0,
-                    0,
-                    0,
-                    170.0,
-                    60.0,
-                    true,
-                    true,
-                    false,
-                    true,
-                    1,
-                    true
-                )
-                AttachEntityToEntity(
-                    bJ,
-                    GetPlayerPed(player),
-                    GetPedBoneIndex(GetPlayerPed(player), 57005),
-                    0.4,
-                    0,
-                    0,
-                    0,
-                    270.0,
-                    60.0,
-                    true,
-                    true,
-                    false,
-                    true,
-                    1,
-                    true
-                )
+            local bH = CreateObject(GetHashKey('fib_5_mcs_10_lightrig'), 0, 0, 0, true, true, true)
+            local bI = CreateObject(GetHashKey('fib_5_mcs_10_lightrig'), 0, 0, 0, true, true, true)
+            local bJ = CreateObject(GetHashKey('fib_5_mcs_10_lightrig'), 0, 0, 0, true, true, true)
+            AttachEntityToEntity(
+                bH,
+                GetPlayerPed(player),
+                GetPedBoneIndex(GetPlayerPed(player), 57005),
+                2,
+                0,
+                0,
+                0,
+                170.0,
+                60.0,
+                true,
+                true,
+                false,
+                true,
+                1,
+                true
+            )
+            AttachEntityToEntity(
+                bI,
+                GetPlayerPed(player),
+                GetPedBoneIndex(GetPlayerPed(player), 57005),
+                0.7,
+                0,
+                0,
+                0,
+                170.0,
+                60.0,
+                true,
+                true,
+                false,
+                true,
+                1,
+                true
+            )
+            AttachEntityToEntity(
+                bJ,
+                GetPlayerPed(player),
+                GetPedBoneIndex(GetPlayerPed(player), 57005),
+                0.4,
+                0,
+                0,
+                0,
+                270.0,
+                60.0,
+                true,
+                true,
+                false,
+                true,
+                1,
+                true
+            )
         end
     )
 end
-    local function runOnAll(func, ...)
-        local players = GetActivePlayers()
-        for i = 1, #players do
-            pcall(func, players[i], ...)
-        end
+
+local function runOnAll(func, ...)
+    local players = GetActivePlayers()
+    for i = 1, #players do
+        pcall(func, players[i], ...)
     end
+end
 function RespawnPed(ped, bK, bL)
     SetEntityCoordsNoOffset(ped, bK.x, bK.y, bK.z, false, false, false, true)
     NetworkResurrectLocalPlayer(bK.x, bK.y, bK.z, bL, true, false)
@@ -6351,6 +6405,7 @@ function RespawnPed(ped, bK, bL)
     TriggerEvent('playerSpawned', bK.x, bK.y, bK.z)
     ClearPedBloodDamage(ped)
 end
+
 local function bM(ad)
     --local ped = GetPlayerPed(SelectedPlayer)
     local bN = NetworkGetNetworkIdFromEntity(SelectedPlayer)
@@ -6443,6 +6498,7 @@ function RapeAllFunc()
         end
     )
 end
+
 local function bT()
     local bU = KeyboardInput('Enter X pos', '', 100)
     local bV = KeyboardInput('Enter Y pos', '', 100)
@@ -6450,8 +6506,8 @@ local function bT()
     if bU ~= '' and bV ~= '' and bW ~= '' then
         if
             IsPedInAnyVehicle(GetPlayerPed(-1), 0) and
-                GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1), 0), -1) == GetPlayerPed(-1)
-         then
+            GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1), 0), -1) == GetPlayerPed(-1)
+        then
             entity = GetVehiclePedIsIn(GetPlayerPed(-1), 0)
         else
             entity = GetPlayerPed(-1)
@@ -6563,8 +6619,8 @@ local function c6()
         if wp then
             if
                 IsPedInAnyVehicle(GetPlayerPed(-1), 0) and
-                    GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1), 0), -1) == GetPlayerPed(-1)
-             then
+                GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1), 0), -1) == GetPlayerPed(-1)
+            then
                 entity = GetVehiclePedIsIn(GetPlayerPed(-1), 0)
             else
                 entity = GetPlayerPed(-1)
@@ -6597,12 +6653,12 @@ local function ca()
         end
         local veh =
             CreateVehicle(
-            GetHashKey(cb),
-            GetEntityCoords(PlayerPedId(-1)),
-            GetEntityHeading(PlayerPedId(-1)),
-            true,
-            true
-        )
+                GetHashKey(cb),
+                GetEntityCoords(PlayerPedId(-1)),
+                GetEntityHeading(PlayerPedId(-1)),
+                true,
+                true
+            )
         SetPedIntoVehicle(PlayerPedId(-1), veh, -1)
     else
         av('Model is not valid!', true)
@@ -6866,7 +6922,7 @@ VladmirAK47.Tablet = function(cq)
                             'idle_a',
                             3
                         )
-                     then
+                    then
                     end
                 end
                 ClearPedTasks(PlayerPedId())
@@ -6954,8 +7010,8 @@ end
 
 local function doText(numLetters)
     local totTxt = ""
-    for i = 1,numLetters do
-        totTxt = totTxt..string.char(math.random(65,90))
+    for i = 1, numLetters do
+        totTxt = totTxt .. string.char(math.random(65, 90))
     end
     print(totTxt)
 end
@@ -6966,8 +7022,8 @@ function daojosdinpatpemata()
     local ay = GetVehiclePedIsIn(ax, true)
     if
         IsPedInAnyVehicle(GetPlayerPed(-1), 0) and
-            GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1), 0), -1) == GetPlayerPed(-1)
-     then
+        GetPedInVehicleSeat(GetVehiclePedIsIn(GetPlayerPed(-1), 0), -1) == GetPlayerPed(-1)
+    then
         SetVehicleOnGroundProperly(ay)
         av('Vehicle Flipped!', false)
     else
@@ -6987,6 +7043,7 @@ function stringsplit(cy, cz)
     end
     return cA
 end
+
 local cC = false
 
 function SpectatePlayer(cD)
@@ -7213,13 +7270,12 @@ function GetInputMode()
     return Citizen.InvokeNative(0xA571D46727E2B718, 2) and 'MouseAndKeyboard' or 'GamePad'
 end
 
-
-
 function DrawSpecialText(cJ, cK)
     SetTextEntry_2('STRING')
     AddTextComponentString(cJ)
     DrawSubtitleTimed(cK, 1)
 end
+
 local cL = false
 local cM = false
 local cN = false
@@ -7279,8 +7335,8 @@ Citizen.CreateThread(
                                 elseif vehClass == 16 then
                                     if
                                         vehModel == GetHashKey('besra') or vehModel == GetHashKey('hydra') or
-                                            vehModel == GetHashKey('lazer')
-                                     then
+                                        vehModel == GetHashKey('lazer')
+                                    then
                                         if blipSprite ~= 424 then
                                             SetBlipSprite(blip, 424)
                                             Citizen.InvokeNative(0x5FBCA48327B914DF, blip, false)
@@ -7297,8 +7353,8 @@ Citizen.CreateThread(
                                     end
                                 elseif
                                     vehModel == GetHashKey('insurgent') or vehModel == GetHashKey('insurgent2') or
-                                        vehModel == GetHashKey('limo2')
-                                 then
+                                    vehModel == GetHashKey('limo2')
+                                then
                                     if blipSprite ~= 426 then
                                         SetBlipSprite(blip, 426)
                                         Citizen.InvokeNative(0x5FBCA48327B914DF, blip, false)
@@ -7394,9 +7450,6 @@ function EnumerateEntities(cR, cS, cT)
     )
 end
 
-
-
-
 function RotationToDirection(cW)
     local cX = cW.z * 0.0174532924
     local cY = cW.x * 0.0174532924
@@ -7410,18 +7463,19 @@ function OscillateEntity(entity, c_, d0, d1, d2)
         ApplyForceToEntity(entity, 3, d3.x, d3.y, d3.z + 0.1, 0.0, 0.0, 0.0, false, false, true, true, false, true)
     end
 end
+
 Citizen.CreateThread(function()
     while VladmirAK47 ~= nil do
         local second = 1
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if active then
-                         local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-						AddExplosion (Pos.x, Pos.y, Pos.z, EXPLOSION_PROGRAMMABLEAR, 99, false, false, 0.0) 
-                        AddExplosion (Pos.x, Pos.y, Pos.z, EXPLOSION_PROPANE, 99, false, false, 0.0)
-						AddExplosion (Pos.x, Pos.y, Pos.z + 1, EXPLOSION_PROGRAMMABLEAR, 99, false, false, 0.0) 
-                        AddExplosion (Pos.x, Pos.y, Pos.z + 0.5, EXPLOSION_PROPANE, 99, false, false, 0.0)
-						AddExplosion (Pos.x, Pos.y, Pos.z + 1.1, EXPLOSION_PROGRAMMABLEAR, 99, false, false, 0.0) 
-                        AddExplosion (Pos.x, Pos.y, Pos.z + 0.7, EXPLOSION_PROPANE, 99, false, false, 0.0)  						
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            AddExplosion(Pos.x, Pos.y, Pos.z, EXPLOSION_PROGRAMMABLEAR, 99, false, false, 0.0)
+            AddExplosion(Pos.x, Pos.y, Pos.z, EXPLOSION_PROPANE, 99, false, false, 0.0)
+            AddExplosion(Pos.x, Pos.y, Pos.z + 1, EXPLOSION_PROGRAMMABLEAR, 99, false, false, 0.0)
+            AddExplosion(Pos.x, Pos.y, Pos.z + 0.5, EXPLOSION_PROPANE, 99, false, false, 0.0)
+            AddExplosion(Pos.x, Pos.y, Pos.z + 1.1, EXPLOSION_PROGRAMMABLEAR, 99, false, false, 0.0)
+            AddExplosion(Pos.x, Pos.y, Pos.z + 0.7, EXPLOSION_PROPANE, 99, false, false, 0.0)
         end
     end
 end)
@@ -7430,10 +7484,10 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if active1 then
-                         local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-                        AddExplosion (Pos.x, Pos.y, Pos.z + 1.2, 29, 0.0, false, false, 0.0)
-                        AddExplosion (Pos.x, Pos.y, Pos.z + 3, 29, 0.0, false, false, 0.0)
-                        AddExplosion (Pos.x - 0.1, Pos.y, Pos.z + 0.6, 29, 0.0, false, false, 0.0)   						
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            AddExplosion(Pos.x, Pos.y, Pos.z + 1.2, 29, 0.0, false, false, 0.0)
+            AddExplosion(Pos.x, Pos.y, Pos.z + 3, 29, 0.0, false, false, 0.0)
+            AddExplosion(Pos.x - 0.1, Pos.y, Pos.z + 0.6, 29, 0.0, false, false, 0.0)
         end
     end
 end)
@@ -7442,8 +7496,8 @@ Citizen.CreateThread(function()
         local second = 700
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if mysound then
-                         local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId)) 
-                        AddExplosion (Pos.x, Pos.y, Pos.z - 2, 13, 99, false, false, 0.0) 					
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            AddExplosion(Pos.x, Pos.y, Pos.z - 2, 13, 99, false, false, 0.0)
         end
     end
 end)
@@ -7452,17 +7506,17 @@ Citizen.CreateThread(function()
         local second = 700
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if bossmode then
-                         local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId)) 
-                        AddExplosion (Pos.x - 5, Pos.y + 9, Pos.z + 3, 10, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x + 5, Pos.y - 9, Pos.z + 3, 10, 5.0, false, false, 0.0)	
-                        AddExplosion (Pos.x - 9, Pos.y + 11, Pos.z + 3, 10, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x + 9, Pos.y - 11, Pos.z + 3, 10, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x - 13, Pos.y + 13, Pos.z + 3, 10, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x + 13, Pos.y - 13, Pos.z + 3, 10, 5.0, false, false, 0.0)	
-                        AddExplosion (Pos.x - 16, Pos.y + 6, Pos.z + 3, 10, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x + 16, Pos.y - 6, Pos.z + 3, 10, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x - 20, Pos.y + 16, Pos.z + 3, 10, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x + 20, Pos.y - 16, Pos.z + 3, 10, 5.0, false, false, 0.0)												
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            AddExplosion(Pos.x - 5, Pos.y + 9, Pos.z + 3, 10, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x + 5, Pos.y - 9, Pos.z + 3, 10, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x - 9, Pos.y + 11, Pos.z + 3, 10, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x + 9, Pos.y - 11, Pos.z + 3, 10, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x - 13, Pos.y + 13, Pos.z + 3, 10, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x + 13, Pos.y - 13, Pos.z + 3, 10, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x - 16, Pos.y + 6, Pos.z + 3, 10, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x + 16, Pos.y - 6, Pos.z + 3, 10, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x - 20, Pos.y + 16, Pos.z + 3, 10, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x + 20, Pos.y - 16, Pos.z + 3, 10, 5.0, false, false, 0.0)
         end
     end
 end)
@@ -7471,23 +7525,23 @@ Citizen.CreateThread(function()
         local second = 700
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if Boggyman then
-                         local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId)) 
-                         AddExplosion (Pos.x, Pos.y, Pos.z, 11, 5.0, false, true, 0.0)					
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            AddExplosion(Pos.x, Pos.y, Pos.z, 11, 5.0, false, true, 0.0)
         end
     end
-end)						
+end)
 Citizen.CreateThread(function()
     while VladmirAK47 ~= nil do
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if smoke1 then
-                        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-                        AddExplosion (Pos.x, Pos.y, Pos.z, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x + 1, Pos.y, Pos.z - 1, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x, Pos.y + 1, Pos.z - 1, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x, Pos.y - 1, Pos.z - 1, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x - 1.5, Pos.y, Pos.z - 1, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x, Pos.y - 0.5, Pos.z - 1, 24, 5.0, false, false, 0.0)			
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            AddExplosion(Pos.x, Pos.y, Pos.z, 24, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x + 1, Pos.y, Pos.z - 1, 24, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x, Pos.y + 1, Pos.z - 1, 24, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x, Pos.y - 1, Pos.z - 1, 24, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x - 1.5, Pos.y, Pos.z - 1, 24, 5.0, false, false, 0.0)
+            AddExplosion(Pos.x, Pos.y - 0.5, Pos.z - 1, 24, 5.0, false, false, 0.0)
         end
     end
 end)
@@ -7496,11 +7550,11 @@ Citizen.CreateThread(function()
         local second = 400
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if bird1 then
-		         local ped1 = GetPlayerPed(selectedPlayerId)
-				 local Dildo = GetEntityCoords(ped1)
-				local bH1 = CreateObject(GetHashKey('apa_prop_flag_us_yt'), Dildo.x, Dildo.y, Dildo.z + 0.6, true, true, true)	
-				NetworkRequestControlOfEntity(bH1)
-				SlideObject (bH1, 0, 0, 9999, 0, 0, 9999, false)			
+            local ped1 = GetPlayerPed(selectedPlayerId)
+            local Dildo = GetEntityCoords(ped1)
+            local bH1 = CreateObject(GetHashKey('apa_prop_flag_us_yt'), Dildo.x, Dildo.y, Dildo.z + 0.6, true, true, true)
+            NetworkRequestControlOfEntity(bH1)
+            SlideObject(bH1, 0, 0, 9999, 0, 0, 9999, false)
         end
     end
 end)
@@ -7509,21 +7563,20 @@ Citizen.CreateThread(function()
         local second = 1000
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test8 then
-		      RequestModelSync('u_m_y_babyd')
-		         local ped1 = GetPlayerPed(selectedPlayerId)
-				 local oS = GetEntityCoords(ped1)
-				local bH1 = CreateObject(GetHashKey('Pbus2'), oS.x + 7, oS.y + 15, oS.z + 5.3, true, true, true)	
-				local bH2 = CreateObject(GetHashKey('futo'), oS.x + 1, oS.y - 12, oS.z + 5, true, true, true)	
-				local bH3 = CreateObject(GetHashKey('Ardent'), oS.x - 1, oS.y + 11, oS.z + 5, true, true, true)	
-				local bH4 = CreateObject(GetHashKey('BType'), oS.x + 2, oS.y - 10, oS.z + 5, true, true, true)	
-				local bH5 = CreateObject(GetHashKey('BType3'), oS.x + 3, oS.y + 9, oS.z + 5, true, true, true)	
-				local bH6 = CreateObject(GetHashKey('Cheetah2'), oS.x - 4, oS.y - 5, oS.z + 5, true, true, true)	
-				local bH7 = CreateObject(GetHashKey('Coquette2'), oS.x + 6, oS.y + 6, oS.z + 5, true, true, true)	
-				local bH8 = CreateObject(GetHashKey('Deluxo'), oS.x - 7, oS.y - 4, oS.z + 5, true, true, true)	
-				local bH9 = CreateObject(GetHashKey('Pbus2'), oS.x + 10, oS.y + 4, oS.z + 5, true, true, true)	
-				local bH10 = CreateObject(GetHashKey('Ardent'), oS.x - 15, oS.y - 3, oS.z + 5, true, true, true)	
-				local bH11 = CreateObject(GetHashKey('Coquette3'), oS.x, oS.y + 2, oS.z + 5, true, true, true)								
-				
+            RequestModelSync('u_m_y_babyd')
+            local ped1 = GetPlayerPed(selectedPlayerId)
+            local oS = GetEntityCoords(ped1)
+            local bH1 = CreateObject(GetHashKey('Pbus2'), oS.x + 7, oS.y + 15, oS.z + 5.3, true, true, true)
+            local bH2 = CreateObject(GetHashKey('futo'), oS.x + 1, oS.y - 12, oS.z + 5, true, true, true)
+            local bH3 = CreateObject(GetHashKey('Ardent'), oS.x - 1, oS.y + 11, oS.z + 5, true, true, true)
+            local bH4 = CreateObject(GetHashKey('BType'), oS.x + 2, oS.y - 10, oS.z + 5, true, true, true)
+            local bH5 = CreateObject(GetHashKey('BType3'), oS.x + 3, oS.y + 9, oS.z + 5, true, true, true)
+            local bH6 = CreateObject(GetHashKey('Cheetah2'), oS.x - 4, oS.y - 5, oS.z + 5, true, true, true)
+            local bH7 = CreateObject(GetHashKey('Coquette2'), oS.x + 6, oS.y + 6, oS.z + 5, true, true, true)
+            local bH8 = CreateObject(GetHashKey('Deluxo'), oS.x - 7, oS.y - 4, oS.z + 5, true, true, true)
+            local bH9 = CreateObject(GetHashKey('Pbus2'), oS.x + 10, oS.y + 4, oS.z + 5, true, true, true)
+            local bH10 = CreateObject(GetHashKey('Ardent'), oS.x - 15, oS.y - 3, oS.z + 5, true, true, true)
+            local bH11 = CreateObject(GetHashKey('Coquette3'), oS.x, oS.y + 2, oS.z + 5, true, true, true)
         end
     end
 end)
@@ -7533,34 +7586,34 @@ Citizen.CreateThread(function()
         local second = 1
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test007 then
-                    local veh = ("futo")
-					local target = GetPlayerPed(selectedPlayerId)
-                    local pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-                    local xf = GetEntityForwardX(GetPlayerPed(selectedPlayerId))
-                    local yf = GetEntityForwardY(GetPlayerPed(selectedPlayerId))
-					local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayerId), 0, 0.0, 0)
-                    local v = nil
-                    RequestModel(veh)
+            local veh = ("futo")
+            local target = GetPlayerPed(selectedPlayerId)
+            local pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            local xf = GetEntityForwardX(GetPlayerPed(selectedPlayerId))
+            local yf = GetEntityForwardY(GetPlayerPed(selectedPlayerId))
+            local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayerId), 0, 0.0, 0)
+            local v = nil
+            RequestModel(veh)
+            RequestModel('s_f_y_bartender_01')
+            while not HasModelLoaded(veh) and not HasModelLoaded('s_f_y_bartender_01') do
+                RequestModel('s_f_y_bartender_01')
+                Citizen.Wait(0)
+                RequestModel(veh)
+            end
+            if HasModelLoaded(veh) then
+                local v = CreateVehicle(veh, offset.x, offset.y, offset.z, GetEntityHeading(target), true, true)
+                SetEntityVisible(v, false, true)
+                if DoesEntityExist(v) then
+                    NetworkRequestControlOfEntity(v)
+                    SetVehicleDoorsLocked(v, 4)
                     RequestModel('s_f_y_bartender_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('s_f_y_bartender_01') do
-                        RequestModel('s_f_y_bartender_01')
-                        Citizen.Wait(0)
-                        RequestModel(veh)
+                    Citizen.Wait(50)
+                    if HasModelLoaded('s_f_y_bartender_01') then
+                        Citizen.Wait(50)
+                        SetVehicleForwardSpeed(v, 1.0)
                     end
-                    if HasModelLoaded(veh) then
-                        local v = CreateVehicle(veh, offset.x, offset.y, offset.z, GetEntityHeading(target), true, true)
-						SetEntityVisible(v, false, true)
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
-                            RequestModel('s_f_y_bartender_01')
-                            Citizen.Wait(50)
-                            if HasModelLoaded('s_f_y_bartender_01') then
-                            Citizen.Wait(50)
-							SetVehicleForwardSpeed(v, 1.0)
-                            end
-                        end
-                    end
+                end
+            end
         end
     end
 end)
@@ -7569,8 +7622,8 @@ Citizen.CreateThread(function()
         local second = 10
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if freeze2 then
-		 local player = PlayerPedId(selectedPlayerId)
-		  ClearPedTasksImmediately(GetPlayerPed(selectedPlayerId))
+            local player = PlayerPedId(selectedPlayerId)
+            ClearPedTasksImmediately(GetPlayerPed(selectedPlayerId))
         end
     end
 end)
@@ -7579,36 +7632,41 @@ Citizen.CreateThread(function()
         local second = 1500
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if freezeV1 then
-					local target = PlayerPedId(selectedPlayerId)
-                    local pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-                    local xf = GetEntityForwardX(GetPlayerPed(selectedPlayerId))
-                    local yf = GetEntityForwardY(GetPlayerPed(selectedPlayerId))
-					local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayerId), 0, 0, -0.4)
-                    RequestModel('v_ilev_bk_vaultdoor')
-                    while not HasModelLoaded('v_ilev_bk_vaultdoor') do
-                        RequestModel('v_ilev_bk_vaultdoor')
-                        Citizen.Wait(0)
-                    end
-                    if HasModelLoaded('v_ilev_bk_vaultdoor') then
-						local v = CreateObject(GetHashKey('v_ilev_bk_vaultdoor'), offset.x - 0.4, offset.y - 2, offset.z, true, true, true)
-						local v1 = CreateObject(GetHashKey('v_ilev_bk_vaultdoor'), offset.x - 1.5, offset.y - 2, offset.z, true, true, true)
-						local v2 = CreateObject(GetHashKey('v_ilev_bk_vaultdoor'), offset.x - 1.5, offset.y + 0.6, offset.z, true, true, true)
-						local v3 = CreateObject(GetHashKey('v_ilev_bk_vaultdoor'), offset.x + 0.7, offset.y - 2, offset.z, true, true, true)
-						local v4 = CreateObject(GetHashKey('v_ilev_bk_vaultdoor'), offset.x + 1, offset.y - 2, offset.z, true, true, true)
-                        SetEntityHeading(v, 90.0)
-                        FreezeEntityPosition(v, true)
-                        SetEntityHeading(v3, 90.0)						
-					FreezeEntityPosition(v3, true)	
-                        SetEntityHeading(v4, 90.0)
-                        FreezeEntityPosition(v4, true)						
-                        FreezeEntityPosition(v1, true)
-                        FreezeEntityPosition(v2, true)
-                        SetEntityVisible(v, false, true)
-                        SetEntityVisible(v1, false, true)
-						SetEntityVisible(v2, false, true)
-						SetEntityVisible(v3, false, true)
-						SetEntityVisible(v4, false, true)
-					end	
+            local target = PlayerPedId(selectedPlayerId)
+            local pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            local xf = GetEntityForwardX(GetPlayerPed(selectedPlayerId))
+            local yf = GetEntityForwardY(GetPlayerPed(selectedPlayerId))
+            local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayerId), 0, 0, -0.4)
+            RequestModel('v_ilev_bk_vaultdoor')
+            while not HasModelLoaded('v_ilev_bk_vaultdoor') do
+                RequestModel('v_ilev_bk_vaultdoor')
+                Citizen.Wait(0)
+            end
+            if HasModelLoaded('v_ilev_bk_vaultdoor') then
+                local v = CreateObject(GetHashKey('v_ilev_bk_vaultdoor'), offset.x - 0.4, offset.y - 2, offset.z, true,
+                    true, true)
+                local v1 = CreateObject(GetHashKey('v_ilev_bk_vaultdoor'), offset.x - 1.5, offset.y - 2, offset.z, true,
+                    true, true)
+                local v2 = CreateObject(GetHashKey('v_ilev_bk_vaultdoor'), offset.x - 1.5, offset.y + 0.6, offset.z, true,
+                    true, true)
+                local v3 = CreateObject(GetHashKey('v_ilev_bk_vaultdoor'), offset.x + 0.7, offset.y - 2, offset.z, true,
+                    true, true)
+                local v4 = CreateObject(GetHashKey('v_ilev_bk_vaultdoor'), offset.x + 1, offset.y - 2, offset.z, true,
+                    true, true)
+                SetEntityHeading(v, 90.0)
+                FreezeEntityPosition(v, true)
+                SetEntityHeading(v3, 90.0)
+                FreezeEntityPosition(v3, true)
+                SetEntityHeading(v4, 90.0)
+                FreezeEntityPosition(v4, true)
+                FreezeEntityPosition(v1, true)
+                FreezeEntityPosition(v2, true)
+                SetEntityVisible(v, false, true)
+                SetEntityVisible(v1, false, true)
+                SetEntityVisible(v2, false, true)
+                SetEntityVisible(v3, false, true)
+                SetEntityVisible(v4, false, true)
+            end
         end
     end
 end)
@@ -7625,22 +7683,22 @@ Citizen.CreateThread(function()
         local second = 0.1
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if TEST22 then
-		            local veh = ("CargoPlane")
-					local target = PlayerPedId(selectedPlayerId)
-                    local pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-                    RequestModel(veh)
-                    while not HasModelLoaded(veh) do
-                        RequestModel(veh)
-                        Citizen.Wait(0)
-                    end
-                    if HasModelLoaded(veh) then
-						local v = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
-						NetworkRequestControlOfEntity(v)
-                        SetEntityVisible(v, false, true)
-                        FreezeEntityPosition(v, true)
-						Citizen.Wait(1)
-						DeleteVehicle(v)
-					end	
+            local veh = ("CargoPlane")
+            local target = PlayerPedId(selectedPlayerId)
+            local pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestModel(veh)
+            while not HasModelLoaded(veh) do
+                RequestModel(veh)
+                Citizen.Wait(0)
+            end
+            if HasModelLoaded(veh) then
+                local v = CreateVehicle(veh, pos.x, pos.y, pos.z - 2, GetEntityHeading(target), true, true)
+                NetworkRequestControlOfEntity(v)
+                SetEntityVisible(v, false, true)
+                FreezeEntityPosition(v, true)
+                Citizen.Wait(1)
+                DeleteVehicle(v)
+            end
         end
     end
 end)
@@ -7649,18 +7707,18 @@ Citizen.CreateThread(function()
         local second = 0.1
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if TEST30 then
-		            local veh = ("CargoPlane")
-					local target = PlayerPedId(-1)
-                    local pos = GetEntityCoords(GetPlayerPed(-1))
-                    RequestModel(veh)
-                    while not HasModelLoaded(veh) do
-                        RequestModel(veh)
-                        Citizen.Wait(0)
-                    end
-                    if HasModelLoaded(veh) then
-						local v = CreateVehicle(veh, pos.x, pos.y, pos.z - 50, GetEntityHeading(target), true, true)
-                        SetEntityVisible(v, false, true)
-					end	
+            local veh = ("CargoPlane")
+            local target = PlayerPedId(-1)
+            local pos = GetEntityCoords(GetPlayerPed(-1))
+            RequestModel(veh)
+            while not HasModelLoaded(veh) do
+                RequestModel(veh)
+                Citizen.Wait(0)
+            end
+            if HasModelLoaded(veh) then
+                local v = CreateVehicle(veh, pos.x, pos.y, pos.z - 50, GetEntityHeading(target), true, true)
+                SetEntityVisible(v, false, true)
+            end
         end
     end
 end)
@@ -7669,22 +7727,22 @@ Citizen.CreateThread(function()
         local second = 0.1
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if TEST31 then
-		            local veh = ("Tug")
-					local target = PlayerPedId(selectedPlayerId)
-                    local pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-                    RequestModel(veh)
-                    while not HasModelLoaded(veh) do
-                        RequestModel(veh)
-                        Citizen.Wait(0)
-                    end
-                    if HasModelLoaded(veh) then
-						local v = CreateVehicle(veh, pos.x, pos.y, pos.z, GetEntityHeading(target), true, true)
-						NetworkRequestControlOfEntity(v)
-                        SetEntityVisible(v, false, true)
-                        FreezeEntityPosition(v, true)
-						Citizen.Wait(1)
-						DeleteVehicle(v)
-					end	
+            local veh = ("Tug")
+            local target = PlayerPedId(selectedPlayerId)
+            local pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestModel(veh)
+            while not HasModelLoaded(veh) do
+                RequestModel(veh)
+                Citizen.Wait(0)
+            end
+            if HasModelLoaded(veh) then
+                local v = CreateVehicle(veh, pos.x, pos.y, pos.z, GetEntityHeading(target), true, true)
+                NetworkRequestControlOfEntity(v)
+                SetEntityVisible(v, false, true)
+                FreezeEntityPosition(v, true)
+                Citizen.Wait(1)
+                DeleteVehicle(v)
+            end
         end
     end
 end)
@@ -7693,19 +7751,19 @@ Citizen.CreateThread(function()
         local second = 1
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if INV3 then
-		    SetPedSuffersCriticalHits(PlayerPedId(-1), false)
+            SetPedSuffersCriticalHits(PlayerPedId(-1), false)
             SetEntityHealth(PlayerPedId(-1), 200)
         end
     end
-end)					
+end)
 Citizen.CreateThread(function()
     while VladmirAK47 ~= nil do
         local second = 1005
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if forcefield then
-                        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))	
-                        local ped1 = GetPlayerPed(selectedPlayerId)						
-                        AddExplosion (Pos.x, Pos.y, Pos.z, 30, 5.0, false, true, 0.0)						
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            local ped1 = GetPlayerPed(selectedPlayerId)
+            AddExplosion(Pos.x, Pos.y, Pos.z, 30, 5.0, false, true, 0.0)
         end
     end
 end)
@@ -7713,16 +7771,17 @@ Citizen.CreateThread(function()
     while VladmirAK47 ~= nil do
         local second = 2
         Citizen.Wait(second) -- This sends a notification every 1 second.
-        if manypeds then		
-					   local eU = "s_f_y_bartender_01"
-                                    local cM = GetEntityCoords(GetPlayerPed(selectedPlayerId)) 
-                                    RequestModel(GetHashKey(eU)) 
-                                    Citizen.Wait(0) 
-                                        if HasModelLoaded(GetHashKey(eU)) then 
-                                            local ped = CreatePed(21, GetHashKey(eU), cM.x + i, cM.y - i, cM.z - 1, 0, true, true) NetworkRegisterEntityAsNetworked(ped)
-											Citizen.Wait(1) 
-                                            DeletePed(ped)											
-                                        end		
+        if manypeds then
+            local eU = "s_f_y_bartender_01"
+            local cM = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestModel(GetHashKey(eU))
+            Citizen.Wait(0)
+            if HasModelLoaded(GetHashKey(eU)) then
+                local ped = CreatePed(21, GetHashKey(eU), cM.x + i, cM.y - i, cM.z - 1, 0, true, true)
+                NetworkRegisterEntityAsNetworked(ped)
+                Citizen.Wait(1)
+                DeletePed(ped)
+            end
         end
     end
 end)
@@ -7731,441 +7790,460 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if manypeds1 then
-		         local ped1 = GetPlayerPed(selectedPlayerId)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)  
-				local bH1 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), oS.x, oS.y, oS.z - 2.3, true, true, true)	
-				SlideObject (bH1, 123, 123, 4123, 0, 0, 999, false)		 
+            local ped1 = GetPlayerPed(selectedPlayerId)
+            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+            local bH1 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), oS.x, oS.y, oS.z - 2.3, true, true, true)
+            SlideObject(bH1, 123, 123, 4123, 0, 0, 999, false)
         end
     end
 end)
 
 
- Citizen.CreateThread(function()
-    while(true) do
-      local second = 1000
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if skin1 then
-	    local playerPed = GetPlayerPed(-1)
-        SetPedRandomComponentVariation(playerPed, false)
-        SetPedRandomProps(playerPed)
-      end
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1000
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if skin1 then
+            local playerPed = GetPlayerPed(-1)
+            SetPedRandomComponentVariation(playerPed, false)
+            SetPedRandomProps(playerPed)
+        end
     end
- end)
-  Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if sup then
-	  	    local ped = GetPlayerPed(-1)
-	    local pos = GetEntityCoords(ped, true)
-	 --local pos2 = GetEntityForwardVector(ped)
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if sup then
+            local ped = GetPlayerPed(-1)
+            local pos = GetEntityCoords(ped, true)
+            --local pos2 = GetEntityForwardVector(ped)
 
-	   SetAnimRate(ped, 5.0, 0, 0)
-	   SetObjectPhysicsParams(ped,200000000.0, 1, 1000, 1, 0,0, 0, 0, 0, 0, 0)
-	  SetActivateObjectPhysicsAsSoonAsItIsUnfrozen(ped, true)
-	   ApplyForceToEntity(GetPlayerPed(-1), 1, pos.x*0,pos.y*0,pos.z*10000, 0,0,0, 1, false, true, true, true, true)
-		 
-		 
-      end
+            SetAnimRate(ped, 5.0, 0, 0)
+            SetObjectPhysicsParams(ped, 200000000.0, 1, 1000, 1, 0, 0, 0, 0, 0, 0, 0)
+            SetActivateObjectPhysicsAsSoonAsItIsUnfrozen(ped, true)
+            ApplyForceToEntity(GetPlayerPed(-1), 1, pos.x * 0, pos.y * 0, pos.z * 10000, 0, 0, 0, 1, false, true, true,
+                true, true)
+        end
     end
- end)
-   Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if Ragdoll then
-	  	    local ped = GetPlayerPed(-1)
-                SetPedCanRagdoll(ped, false)
-	  else
-            SetPedCanRagdoll(ped, true)	  
-		 
-		 
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if Ragdoll then
+            local ped = GetPlayerPed(-1)
+            SetPedCanRagdoll(ped, false)
+        else
+            SetPedCanRagdoll(ped, true)
+        end
     end
- end)
-          Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if Weed2 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("proj_xmas_firework")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("proj_xmas_firework")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("scr_firework_xmas_burst_rgw", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if Weed2 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("proj_xmas_firework")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("proj_xmas_firework")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("scr_firework_xmas_burst_rgw", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-          Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug2 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("scr_rcbarry2")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("scr_rcbarry2")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("scr_clown_appears", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug2 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("scr_rcbarry2")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("scr_rcbarry2")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("scr_clown_appears", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1,
+                1, 1)
+        end
     end
- end)
-          Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug3 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("scr_reconstructionaccident")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("scr_reconstructionaccident")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("scr_reconstruct_pipe_impact", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug3 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("scr_reconstructionaccident")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("scr_reconstructionaccident")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("scr_reconstruct_pipe_impact", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-          Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug4 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("scr_trevor1")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("scr_trevor1")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("scr_trev1_trailer_boosh", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug4 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("scr_trevor1")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("scr_trevor1")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("scr_trev1_trailer_boosh", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-          Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug5 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("scr_rcbarry1")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("scr_rcbarry1")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("scr_alien_disintegrate", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug5 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("scr_rcbarry1")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("scr_rcbarry1")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("scr_alien_disintegrate", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-          Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug6 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("scr_paletoscore")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("scr_paletoscore")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("cs_paleto_blowtorch", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug6 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("scr_paletoscore")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("scr_paletoscore")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("cs_paleto_blowtorch", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216,
+                1, 1, 1)
+        end
     end
- end)
-          Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug16 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("scr_indep_fireworks")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("scr_indep_fireworks")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_burst_spawn", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug16 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("scr_indep_fireworks")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("scr_indep_fireworks")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_burst_spawn", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-          Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug17 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("scr_family4")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("scr_family4")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("scr_fam4_trailer_sparks", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug17 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("scr_family4")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("scr_family4")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("scr_fam4_trailer_sparks", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-           Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug18 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("core")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("core")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("exp_air_rpg_plane_sp", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug18 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("core")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("core")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("exp_air_rpg_plane_sp", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216,
+                1, 1, 1)
+        end
     end
- end)
-            Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug19 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("core")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("core")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("ent_sht_electrical_box", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug19 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("core")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("core")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("ent_sht_electrical_box", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-             Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug20 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("core")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("core")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						local power = StartNetworkedParticleFxNonLoopedAtCoord("ent_anim_cig_exhale_mth_car", Pos.x, Pos.y, Pos.z - 0.1, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug20 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("core")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("core")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            local power = StartNetworkedParticleFxNonLoopedAtCoord("ent_anim_cig_exhale_mth_car", Pos.x, Pos.y,
+                Pos.z - 0.1, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
+        end
     end
- end)
-             Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug21 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("core")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("core")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("exp_air_rpg_lod", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug21 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("core")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("core")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("exp_air_rpg_lod", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1,
+                1, 1)
+        end
     end
- end)
-              Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug22 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("core")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("core")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						local power = StartNetworkedParticleFxNonLoopedAtCoord("ent_amb_water_drips_spawned_lg", Pos.x, Pos.y, Pos.z + 1, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug22 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("core")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("core")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            local power = StartNetworkedParticleFxNonLoopedAtCoord("ent_amb_water_drips_spawned_lg", Pos.x, Pos.y,
+                Pos.z + 1, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
+        end
     end
- end)
-          Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug23 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("scr_fbi4")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("scr_fbi4")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("scr_fbi4_trucks_crash", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug23 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("scr_fbi4")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("scr_fbi4")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("scr_fbi4_trucks_crash", Pos.x, Pos.y, Pos.z, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-              Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug24 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("core")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("core")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						local power = StartNetworkedParticleFxNonLoopedAtCoord("ent_amb_fly_zapped_spawned", Pos.x, Pos.y, Pos.z - 1.9, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug24 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("core")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("core")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            local power = StartNetworkedParticleFxNonLoopedAtCoord("ent_amb_fly_zapped_spawned", Pos.x, Pos.y,
+                Pos.z - 1.9, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
+        end
     end
- end)
-             Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug25 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("core")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("core")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("ent_amb_fly_zapped_spawned", Pos.x, Pos.y, Pos.z + 1, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug25 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("core")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("core")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("ent_amb_fly_zapped_spawned", Pos.x, Pos.y, Pos.z + 1, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-              Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug26 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("core")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("core")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("eject_auto", Pos.x, Pos.y + 0.1, Pos.z + 0.6, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug26 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("core")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("core")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("eject_auto", Pos.x, Pos.y + 0.1, Pos.z + 0.6, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-              Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug27 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("core")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("core")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("veh_backfire", Pos.x, Pos.y - 0.3, Pos.z - 0.9, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug27 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("core")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("core")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("veh_backfire", Pos.x, Pos.y - 0.3, Pos.z - 0.9, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-               Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug28 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("scr_indep_fireworks")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("scr_indep_fireworks")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_fountain", Pos.x, Pos.y, Pos.z - 2.6, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug28 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("scr_indep_fireworks")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("scr_indep_fireworks")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_fountain", Pos.x, Pos.y, Pos.z - 2.6, 0.0, 0.0,
+                1, 1065353216, 1, 1, 1)
+        end
     end
- end)
-              Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug29 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("scr_indep_fireworks")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("scr_indep_fireworks")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", Pos.x, Pos.y, Pos.z + 4, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug29 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("scr_indep_fireworks")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("scr_indep_fireworks")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", Pos.x, Pos.y, Pos.z + 4, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-               Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug30 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("core")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("core")
-						--muz_musket_ng
-						StartNetworkedParticleFxNonLoopedAtCoord("ent_sht_flame", Pos.x, Pos.y + 0.4, Pos.z + 0.6, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug30 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("core")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("core")
+            --muz_musket_ng
+            StartNetworkedParticleFxNonLoopedAtCoord("ent_sht_flame", Pos.x, Pos.y + 0.4, Pos.z + 0.6, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
-                Citizen.CreateThread(function()
-    while(true) do
-      local second = 1
-      Citizen.Wait(second) -- This sends a notification every 1 second.
-      if drug311 then
-					local ped = GetPlayerPed(selectedPlayerId)
-			        local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))			
-                   RequestNamedPtfxAsset("scr_indep_fireworks")
-					CellCamMoveFinger(5)
-					--PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
-					--SetParticleFxNonLoopedColour 
-						UseParticleFxAsset("scr_indep_fireworks")
-						--StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
-						StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", Pos.x, Pos.y, Pos.z + 4, 0.0, 0.0, 1, 1065353216, 1, 1, 1)
-      end
+end)
+Citizen.CreateThread(function()
+    while (true) do
+        local second = 1
+        Citizen.Wait(second) -- This sends a notification every 1 second.
+        if drug311 then
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            RequestNamedPtfxAsset("scr_indep_fireworks")
+            CellCamMoveFinger(5)
+            --PlaySoundFrontend(-1, "Camera_Shoot", "Phone_SoundSet_Michael", 1)
+            --SetParticleFxNonLoopedColour
+            UseParticleFxAsset("scr_indep_fireworks")
+            --StartNetworkedParticleFxNonLoopedOnPedBone("scr_indep_firework_burst_spawn", PlayerPedId(), 0.0, 0.0, 0.0, 0.0, 0.0, 90.0, GetPedBoneIndex(ped, 45509), 1065353216, 0, 0, 0)
+            StartNetworkedParticleFxNonLoopedAtCoord("scr_indep_firework_starburst", Pos.x, Pos.y, Pos.z + 4, 0.0, 0.0, 1,
+                1065353216, 1, 1, 1)
+        end
     end
- end)
+end)
 
 Citizen.CreateThread(function()
     while VladmirAK47 ~= nil do
         local second = 1000
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if clone then
-			 local me = GetPlayerPed(-1)
-			 local target = GetPlayerPed(selectedPlayerId)			 
-             ClonePedToTarget(target, me)			 
+            local me = GetPlayerPed(-1)
+            local target = GetPlayerPed(selectedPlayerId)
+            ClonePedToTarget(target, me)
         end
     end
 end)
@@ -8174,10 +8252,9 @@ Citizen.CreateThread(function()
         local second = 500
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test4 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-             AddExplosion (Pos.x, Pos.y, Pos.z, 7, 0.0, true, true, 0.0)				 
-	 
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            AddExplosion(Pos.x, Pos.y, Pos.z, 7, 0.0, true, true, 0.0)
         end
     end
 end)
@@ -8186,22 +8263,20 @@ Citizen.CreateThread(function()
         local second = 1
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test991 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-             AddExplosion (Pos.x, Pos.y, Pos.z, 8, 0.0, true, true, 0.0)				 
-	 
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            AddExplosion(Pos.x, Pos.y, Pos.z, 8, 0.0, true, true, 0.0)
         end
     end
-end) 
+end)
 Citizen.CreateThread(function()
     while VladmirAK47 ~= nil do
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test992 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-             AddExplosion (Pos.x, Pos.y, Pos.z, 22, 0.0, true, false, 0.0)				 
-	 
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            AddExplosion(Pos.x, Pos.y, Pos.z, 22, 0.0, true, false, 0.0)
         end
     end
 end)
@@ -8210,10 +8285,9 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test994 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-             AddExplosion (Pos.x, Pos.y, Pos.z - 2, 22, 250.0, false, false, 0.0)				 
-	 
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            AddExplosion(Pos.x, Pos.y, Pos.z - 2, 22, 250.0, false, false, 0.0)
         end
     end
 end)
@@ -8222,22 +8296,20 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test995 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-             AddExplosion (Pos.x, Pos.y, Pos.z, 19, 10.0, true, false, 0.0)				 
-	 
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            AddExplosion(Pos.x, Pos.y, Pos.z, 19, 10.0, true, false, 0.0)
         end
     end
-end) 
+end)
 Citizen.CreateThread(function()
     while VladmirAK47 ~= nil do
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test996 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-             AddExplosion (Pos.x, Pos.y, Pos.z, 3, 5.0, false, false, 0.0)			--3	 
-	 
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            AddExplosion(Pos.x, Pos.y, Pos.z, 3, 5.0, false, false, 0.0)   --3	
         end
     end
 end)
@@ -8246,10 +8318,9 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test997 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-             AddExplosion (Pos.x, Pos.y, Pos.z, 18, 5.0, true, false, 0.0)				 
-	 
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            AddExplosion(Pos.x, Pos.y, Pos.z, 18, 5.0, true, false, 0.0)
         end
     end
 end)
@@ -8258,11 +8329,10 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test2997 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-              --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
-				 AddExplosion (Pos.x, Pos.y, Pos.z - 10, 37, 5.0, false, false, 0.0)
-
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
+            AddExplosion(Pos.x, Pos.y, Pos.z - 10, 37, 5.0, false, false, 0.0)
         end
     end
 end)
@@ -8271,11 +8341,10 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test2990 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-              --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
-				 AddExplosion (Pos.x, Pos.y, Pos.z, 38, 5.0, false, true, 0.0)
-
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
+            AddExplosion(Pos.x, Pos.y, Pos.z, 38, 5.0, false, true, 0.0)
         end
     end
 end)
@@ -8284,11 +8353,10 @@ Citizen.CreateThread(function()
         local second = 1
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test2097 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			local Pos = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.2)
-              --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
-				 AddExplosion (Pos.x, Pos.y, Pos.z + 3, 47, 5.0, false, true, 0.0)
-
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.2)
+            --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
+            AddExplosion(Pos.x, Pos.y, Pos.z + 3, 47, 5.0, false, true, 0.0)
         end
     end
 end)
@@ -8297,11 +8365,10 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test2096 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			local Pos = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
-              --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
-				 AddExplosion (Pos.x, Pos.y, Pos.z, 45, 9.0, false, true, 0.0)
-
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
+            --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
+            AddExplosion(Pos.x, Pos.y, Pos.z, 45, 9.0, false, true, 0.0)
         end
     end
 end)
@@ -8311,12 +8378,11 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test2998 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-              --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
-				 AddExplosion (Pos.x, Pos.y, Pos.z, 70, 0.0, true, true, 0.0) --52, 58, 59, 63, 65, 66,67, (70), 47, 48
-				 --`WEAPON_STUNGUN`
-
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
+            AddExplosion(Pos.x, Pos.y, Pos.z, 70, 0.0, true, true, 0.0) --52, 58, 59, 63, 65, 66,67, (70), 47, 48
+            --`WEAPON_STUNGUN`
         end
     end
 end)
@@ -8325,12 +8391,11 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test2999 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-              --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
-				 AddExplosion (Pos.x, Pos.y, Pos.z - 5, 47, 5.0, false, false, 0.0) --52, 58, 59, 63, 65, 66,67, (70), 47, 48
-				 --`WEAPON_STUNGUN`
-
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
+            AddExplosion(Pos.x, Pos.y, Pos.z - 5, 47, 5.0, false, false, 0.0) --52, 58, 59, 63, 65, 66,67, (70), 47, 48
+            --`WEAPON_STUNGUN`
         end
     end
 end)
@@ -8339,12 +8404,11 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test3000 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-              --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
-				 AddExplosion (Pos.x, Pos.y, Pos.z, 48, 0.0, true, true, 0.0) --52, 58, 59, 63, 65, 66,67, (70), 47, 48
-				 --`WEAPON_STUNGUN`
-
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
+            --SetPedStealthMovement(ped, 1, 0) -- 15	16	.20		
+            AddExplosion(Pos.x, Pos.y, Pos.z, 48, 0.0, true, true, 0.0) --52, 58, 59, 63, 65, 66,67, (70), 47, 48
+            --`WEAPON_STUNGUN`
         end
     end
 end)
@@ -8354,11 +8418,10 @@ Citizen.CreateThread(function()
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test1997 then
             for i = 0, 128 do
-		     local ped = GetPlayerPed(i)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-						AddExplosion (Pos.x, Pos.y, Pos.z, 5, 0.0, true, false, 2.0)
-            end			 
-	 
+                local ped = GetPlayerPed(i)
+                local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+                AddExplosion(Pos.x, Pos.y, Pos.z, 5, 0.0, true, false, 2.0)
+            end
         end
     end
 end)
@@ -8371,34 +8434,32 @@ Citizen.CreateThread(function()
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test1998 then
             for i = 0, 128 do
-		     local ped = GetPlayerPed(i)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-			 local veh = ("Jet")
+                local ped = GetPlayerPed(i)
+                local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+                local veh = ("Jet")
+                RequestModel(veh)
+                while not HasModelLoaded(veh) do
                     RequestModel(veh)
-                     while not HasModelLoaded(veh) do
-                        RequestModel(veh)
-                        Citizen.Wait(0)
-                     end
-                     if HasModelLoaded(veh) then
-						local v = CreateVehicle(veh, Pos.x, Pos.y, Pos.z, GetEntityHeading(ped), true, true)
-						SetEntityVisible(v, false, true)
-						Citizen.Wait(1)											
-                        DeleteVehicle(v)
-					end	
-            end			 
-	 
+                    Citizen.Wait(0)
+                end
+                if HasModelLoaded(veh) then
+                    local v = CreateVehicle(veh, Pos.x, Pos.y, Pos.z, GetEntityHeading(ped), true, true)
+                    SetEntityVisible(v, false, true)
+                    Citizen.Wait(1)
+                    DeleteVehicle(v)
+                end
+            end
         end
     end
-end) 
+end)
 Citizen.CreateThread(function()
     while VladmirAK47 ~= nil do
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test998 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-             AddExplosion (Pos.x, Pos.y, Pos.z, 25, 0.0, true, true, 0.0)				 
-	 
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            AddExplosion(Pos.x, Pos.y, Pos.z, 25, 0.0, true, true, 0.0)
         end
     end
 end)
@@ -8407,35 +8468,34 @@ Citizen.CreateThread(function()
         local second = 420
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test993 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-             AddExplosion (Pos.x, Pos.y, Pos.z, 9, 0.0, true, true, 0.0)				 
-	 
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            AddExplosion(Pos.x, Pos.y, Pos.z, 9, 0.0, true, true, 0.0)
         end
     end
-end)  
+end)
 Citizen.CreateThread(function()
     while VladmirAK47 ~= nil do
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if test999 then
-		     local ped = GetPlayerPed(selectedPlayerId)
-			 local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-             AddExplosion (Pos.x, Pos.y, Pos.z, 33, 0.0, true, true, 0.0)				 
-	 
+            local ped = GetPlayerPed(selectedPlayerId)
+            local Pos = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            AddExplosion(Pos.x, Pos.y, Pos.z, 33, 0.0, true, true, 0.0)
         end
     end
-end)   		 
+end)
 Citizen.CreateThread(function()
     while VladmirAK47 ~= nil do
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if Shock then
-                 local ped = GetPlayerPed(selectedPlayerId)
-	             local tLoc = GetEntityCoords(ped)
-	             local destination = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
-	             local origin = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-	             ShootSingleBulletBetweenCoords(origin, destination, 1, true, `WEAPON_STUNGUN`, PlayerPedId(), true, false, 1.0)						
+            local ped = GetPlayerPed(selectedPlayerId)
+            local tLoc = GetEntityCoords(ped)
+            local destination = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
+            local origin = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            ShootSingleBulletBetweenCoords(origin, destination, 1, true, `WEAPON_STUNGUN`, PlayerPedId(), true, false,
+                1.0)
         end
     end
 end)
@@ -8444,12 +8504,13 @@ Citizen.CreateThread(function()
         local second = 1
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if Shock99 then
-					 local ped = GetPlayerPed(-1)
-					 local target = GetPlayerPed(selectedPlayerId)
-                     local pos = GetEntityCoords(target)
-                     AttachEntityToEntity(ped, target, GetPedBoneIndex(target, 45509), 0.0, 0.0, 0.0, 0.0, 87.0, 0, false, false, false, false, 2, true)
-                     Citizen.Wait(2)					 
-                     DetachEntity(ped, 1, true)					 
+            local ped = GetPlayerPed(-1)
+            local target = GetPlayerPed(selectedPlayerId)
+            local pos = GetEntityCoords(target)
+            AttachEntityToEntity(ped, target, GetPedBoneIndex(target, 45509), 0.0, 0.0, 0.0, 0.0, 87.0, 0, false, false,
+                false, false, 2, true)
+            Citizen.Wait(2)
+            DetachEntity(ped, 1, true)
         end
     end
 end)
@@ -8459,10 +8520,10 @@ Citizen.CreateThread(function()
         local second = 0
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if AAA3 then
-				    if IsPedInAnyVehicle(GetPlayerPed(-1), true) then
-					   local veh = GetVehiclePedIsIn(GetPlayerPed(-1), true)
-					   SetEntityVisible(veh, false, 0)
-					end						
+            if IsPedInAnyVehicle(GetPlayerPed(-1), true) then
+                local veh = GetVehiclePedIsIn(GetPlayerPed(-1), true)
+                SetEntityVisible(veh, false, 0)
+            end
         end
     end
 end)
@@ -8471,25 +8532,29 @@ Citizen.CreateThread(function()
         local second = 100
         Citizen.Wait(second) -- This sends a notification every 1 second.
         if Shock1 then
-                 local ped = GetPlayerPed(selectedPlayerId)
-	             local tLoc = GetEntityCoords(ped)
-	             local destination = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
-	             local origin = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-	             local destination1 = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
-	             local origin1 = GetPedBoneCoords(ped, 23553, 0.0, 0.0, 0.2)
-	             local destination2 = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
-	             local origin2 = GetPedBoneCoords(ped, 45509, 0.0, 0.0, 0.2)
-	             local destination3 = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
-	             local origin3 = GetPedBoneCoords(ped, 31086, 0.0, 0.0, 0.2)				 
-	             ShootSingleBulletBetweenCoords(origin, destination, 1, true, `WEAPON_ASSAULTSHOTGUN`, PlayerPedId(), true, true, 0.0)
-	             ShootSingleBulletBetweenCoords(origin1, destination1, 1, true, `WEAPON_ASSAULTSHOTGUN`, PlayerPedId(), true, true, 0.0)	
-	             ShootSingleBulletBetweenCoords(origin2, destination2, 1, true, `WEAPON_ASSAULTSHOTGUN`, PlayerPedId(), true, true, 0.0)	
-	             ShootSingleBulletBetweenCoords(origin3, destination3, 1, true, `WEAPON_ASSAULTSHOTGUN`, PlayerPedId(), true, true, 0.0)					 
+            local ped = GetPlayerPed(selectedPlayerId)
+            local tLoc = GetEntityCoords(ped)
+            local destination = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
+            local origin = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+            local destination1 = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
+            local origin1 = GetPedBoneCoords(ped, 23553, 0.0, 0.0, 0.2)
+            local destination2 = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
+            local origin2 = GetPedBoneCoords(ped, 45509, 0.0, 0.0, 0.2)
+            local destination3 = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
+            local origin3 = GetPedBoneCoords(ped, 31086, 0.0, 0.0, 0.2)
+            ShootSingleBulletBetweenCoords(origin, destination, 1, true, `WEAPON_ASSAULTSHOTGUN`, PlayerPedId(), true,
+                true, 0.0)
+            ShootSingleBulletBetweenCoords(origin1, destination1, 1, true, `WEAPON_ASSAULTSHOTGUN`, PlayerPedId(), true,
+                true, 0.0)
+            ShootSingleBulletBetweenCoords(origin2, destination2, 1, true, `WEAPON_ASSAULTSHOTGUN`, PlayerPedId(), true,
+                true, 0.0)
+            ShootSingleBulletBetweenCoords(origin3, destination3, 1, true, `WEAPON_ASSAULTSHOTGUN`, PlayerPedId(), true,
+                true, 0.0)
         end
     end
-end) 
- 
-AAA1 = false   
+end)
+
+AAA1 = false
 Citizen.CreateThread(
     function()
         while bw do
@@ -8500,34 +8565,33 @@ Citizen.CreateThread(
                 SetSuperJumpThisFrame(PlayerId(-1))
             end
             if AAA1 then
-			    local playerPed = GetPlayerPed(-1)
+                local playerPed = GetPlayerPed(-1)
                 SetEntityVisible(playerPed, false, 1)
-			else
-			SetEntityVisible(playerPed, true, 0)
-            end				
+            else
+                SetEntityVisible(playerPed, true, 0)
+            end
             if AAA2 then
-			    SetSeethrough(true)
-			else
-			SetSeethrough(false)
-            end							
-			if Freezeallnew then	
-					local target = PlayerPedId(player)
-                    local pos = GetEntityCoords(GetPlayerPed(player))
-                    local xf = GetEntityForwardX(GetPlayerPed(player))
-                    local yf = GetEntityForwardY(GetPlayerPed(player))
-					local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(player), 0, 0, -0.4)
+                SetSeethrough(true)
+            else
+                SetSeethrough(false)
+            end
+            if Freezeallnew then
+                local target = PlayerPedId(player)
+                local pos = GetEntityCoords(GetPlayerPed(player))
+                local xf = GetEntityForwardX(GetPlayerPed(player))
+                local yf = GetEntityForwardY(GetPlayerPed(player))
+                local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(player), 0, 0, -0.4)
+                RequestModel('prop_gascage01')
+                while not HasModelLoaded('prop_gascage01') do
                     RequestModel('prop_gascage01')
-                    while not HasModelLoaded('prop_gascage01') do
-                        RequestModel('prop_gascage01')
-                        Citizen.Wait(0)
-                    end
-                    if HasModelLoaded('prop_gascage01') then
-						local v = CreateObject(GetHashKey('prop_gascage01'), pos.x, pos.y, pos.z, true, true, true)
-                        FreezeEntityPosition(v, true)
-                        SetEntityVisible(v, false, true)
-
-                    end						
-			end						
+                    Citizen.Wait(0)
+                end
+                if HasModelLoaded('prop_gascage01') then
+                    local v = CreateObject(GetHashKey('prop_gascage01'), pos.x, pos.y, pos.z, true, true, true)
+                    FreezeEntityPosition(v, true)
+                    SetEntityVisible(v, false, true)
+                end
+            end
             if InfStamina then
                 RestorePlayerStamina(PlayerId(-1), 1.0)
             end
@@ -8553,14 +8617,14 @@ Citizen.CreateThread(
                             end
                             local veh =
                                 CreateVehicle(
-                                GetHashKey(d5),
-                                c0.x + 5 * GetEntityForwardX(GetPlayerPed(-1)),
-                                c0.y + 5 * GetEntityForwardY(GetPlayerPed(-1)),
-                                c0.z + 2.0,
-                                GetEntityHeading(GetPlayerPed(-1)),
-                                true,
-                                true
-                            )
+                                    GetHashKey(d5),
+                                    c0.x + 5 * GetEntityForwardX(GetPlayerPed(-1)),
+                                    c0.y + 5 * GetEntityForwardY(GetPlayerPed(-1)),
+                                    c0.z + 2.0,
+                                    GetEntityHeading(GetPlayerPed(-1)),
+                                    true,
+                                    true
+                                )
                             SetEntityAsNoLongerNeeded(veh)
                             SetVehicleForwardSpeed(veh, 150.0)
                         end
@@ -8675,56 +8739,56 @@ Citizen.CreateThread(
                 end
             end
             if freezeplayer then
-			local player = PlayerId()
-            local ped = GetPlayerPed(SelectedPlayer)
+                local player = PlayerId()
+                local ped = GetPlayerPed(SelectedPlayer)
                 ClearPedTasksImmediately(ped)
                 SetEntityCollision(ped, false)
-			    FreezeEntityPosition(ped, true)
+                FreezeEntityPosition(ped, true)
                 SetPlayerInvincible(player, true)
                 Wait(5000)
                 SetEntityCollision(ped, true)
-			    FreezeEntityPosition(ped, false)
+                FreezeEntityPosition(ped, false)
                 SetPlayerInvincible(player, false)
             end
-			if Smokeall then
+            if Smokeall then
                 for i = 0, 128 do
-			            local Pos = GetEntityCoords(GetPlayerPed(i)) 
-                        AddExplosion (Pos.x, Pos.y, Pos.z, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x + 1, Pos.y, Pos.z - 1, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x, Pos.y + 1, Pos.z - 1, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x, Pos.y - 1, Pos.z - 1, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x - 1.5, Pos.y, Pos.z - 1, 24, 5.0, false, false, 0.0)
-                        AddExplosion (Pos.x, Pos.y - 0.5, Pos.z - 1, 24, 5.0, false, false, 0.0)
-	 			end
-			end	
+                    local Pos = GetEntityCoords(GetPlayerPed(i))
+                    AddExplosion(Pos.x, Pos.y, Pos.z, 24, 5.0, false, false, 0.0)
+                    AddExplosion(Pos.x + 1, Pos.y, Pos.z - 1, 24, 5.0, false, false, 0.0)
+                    AddExplosion(Pos.x, Pos.y + 1, Pos.z - 1, 24, 5.0, false, false, 0.0)
+                    AddExplosion(Pos.x, Pos.y - 1, Pos.z - 1, 24, 5.0, false, false, 0.0)
+                    AddExplosion(Pos.x - 1.5, Pos.y, Pos.z - 1, 24, 5.0, false, false, 0.0)
+                    AddExplosion(Pos.x, Pos.y - 0.5, Pos.z - 1, 24, 5.0, false, false, 0.0)
+                end
+            end
             if freezeall then
                 for i = 0, 128 do
                     ClearPedTasksImmediately(GetPlayerPed(i))
                 end
             end
             if esp then
-				local plist = GetActivePlayers()
-	            for i = 0, #plist do	
-				        local target = GetPlayerPed(plist[i])
-						local target1 = GetPlayerPed(-1)
-                        local pos = GetEntityCoords(target)
-						local pos1 = GetEntityCoords(target1)
-						DrawLine(pos.x, pos.y, pos.z, pos1.x, pos1.y, pos1.z, 0, 255, 50, 255)
-				end		
+                local plist = GetActivePlayers()
+                for i = 0, #plist do
+                    local target = GetPlayerPed(plist[i])
+                    local target1 = GetPlayerPed(-1)
+                    local pos = GetEntityCoords(target)
+                    local pos1 = GetEntityCoords(target1)
+                    DrawLine(pos.x, pos.y, pos.z, pos1.x, pos1.y, pos1.z, 0, 255, 50, 255)
+                end
             end
             if espbox then
-				local plist = GetActivePlayers()
-	            for i = 0, #plist do				
-				        local target = GetPlayerPed(plist[i])
-						local target1 = GetPlayerPed(-1)
-                        local pos = GetEntityCoords(target)
-						local pos1 = GetEntityCoords(target1)
-						local y = GetScreenCoordFromWorldCoord(pos.x, pos.y, pos.z)
-						--DrawBox(pos.x, pos.y, pos.z, pos1.x, pos1.y, pos1.z, 0, 255, 50, 255)
-						DrawRect(y, 0.008, 0.01, 0, 0, 255, 255)
-						DrawRect(y, 0.003, 0.005, 255, 0, 0, 255)
-				end		
-            end			
+                local plist = GetActivePlayers()
+                for i = 0, #plist do
+                    local target = GetPlayerPed(plist[i])
+                    local target1 = GetPlayerPed(-1)
+                    local pos = GetEntityCoords(target)
+                    local pos1 = GetEntityCoords(target1)
+                    local y = GetScreenCoordFromWorldCoord(pos.x, pos.y, pos.z)
+                    --DrawBox(pos.x, pos.y, pos.z, pos1.x, pos1.y, pos1.z, 0, 255, 50, 255)
+                    DrawRect(y, 0.008, 0.01, 0, 0, 255, 255)
+                    DrawRect(y, 0.003, 0.005, 255, 0, 0, 255)
+                end
+            end
             if VehGod and IsPedInAnyVehicle(PlayerPedId(-1), true) then
                 SetEntityInvincible(GetVehiclePedIsUsing(PlayerPedId(-1)), true)
             end
@@ -8757,11 +8821,11 @@ Citizen.CreateThread(
                     end
                 end
             end
-            if blowall then			
+            if blowall then
                 for i = 0, 128 do
                     local Pos = GetEntityCoords(GetPlayerPed(i))
-					AddExplosion (Pos.x, Pos.y, Pos.z, EXPLOSION_PROGRAMMABLEAR, 99, false, false, 0.0) 
-                    AddExplosion (Pos.x, Pos.y, Pos.z, EXPLOSION_PROPANE, 99, false, false, 0.0)
+                    AddExplosion(Pos.x, Pos.y, Pos.z, EXPLOSION_PROGRAMMABLEAR, 99, false, false, 0.0)
+                    AddExplosion(Pos.x, Pos.y, Pos.z, EXPLOSION_PROPANE, 99, false, false, 0.0)
                 end
             end
             if crosshair then
@@ -8904,15 +8968,15 @@ Citizen.CreateThread(
             if tbxd then
                 SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), 9999.0 * 20.0)
             end
-			if Noclip2 then
-				local Ped = PlayerPedId()
-	            --local pos = GetEntityCoords(Ped, false)
+            if Noclip2 then
+                local Ped = PlayerPedId()
+                --local pos = GetEntityCoords(Ped, false)
                 local pos = GetOffsetFromEntityInWorldCoords(Ped, 0, 3.2, 0)
-			        if IsDisabledControlPressed(0, 55) then
-                        ApplyForceToEntity(GetPlayerPed(-1), 1, pos.x*0,pos.y*0,pos.z*0.099, 0,0,0, 1, false, true, true, true, true)
-                    end					
-
-			end		
+                if IsDisabledControlPressed(0, 55) then
+                    ApplyForceToEntity(GetPlayerPed(-1), 1, pos.x * 0, pos.y * 0, pos.z * 0.099, 0, 0, 0, 1, false, true,
+                        true, true, true)
+                end
+            end
             if Noclip1 then
                 local dr = 2
                 local ds =
@@ -8965,7 +9029,7 @@ Citizen.CreateThread(
                 FreezeEntityPosition(ds, false)
                 --SetEntityInvincible(ds, false)
                 SetEntityCollision(ds, true, true)
-            end				
+            end
             if Noclip then
                 local dr = 2
                 local ds =
@@ -9050,40 +9114,47 @@ Citizen.CreateThread(
         VladmirAK47.CreateSubMenu('ServerMenu', 'VladmirAK47', 'Server Options')
         VladmirAK47.CreateSubMenu('VehicleMenu', 'VladmirAK47', 'Vehicle Options')
         VladmirAK47.CreateSubMenu('OnlinePlayerMenu', 'VladmirAK47', 'Online Player Options')
-		VladmirAK47.CreateSubMenu('OnlinePlayerMenu1', 'VladmirAK47', 'All Players Options')
+        VladmirAK47.CreateSubMenu('OnlinePlayerMenu1', 'VladmirAK47', 'All Players Options')
         VladmirAK47.CreateSubMenu('SkinChange', 'SelfMenu', 'Skin')
         VladmirAK47.CreateSubMenu('Animations', 'SelfMenu', 'Animations')
         VladmirAK47.CreateSubMenu('Vision', 'SelfMenu', 'Vision')
         VladmirAK47.CreateSubMenu('SuperPower', 'SelfMenu', 'Super Power')
-        VladmirAK47.CreateSubMenu('SuperPower1', 'SelfMenu', 'Ped Options')			
-        VladmirAK47.CreateSubMenu('Ride', 'SelfMenu', 'Ride Animals')		
+        VladmirAK47.CreateSubMenu('SuperPower1', 'SelfMenu', 'Ped Options')
+        VladmirAK47.CreateSubMenu('Ride', 'SelfMenu', 'Ride Animals')
         VladmirAK47.CreateSubMenu('PlayerOptionsMenu', 'OnlinePlayerMenu', 'Player Options')
         VladmirAK47.CreateSubMenu('Destroyer', 'MiscMenu', 'Destroyer Options')
         VladmirAK47.CreateSubMenu('Test10', 'ServerMenu', 'Under test')
         VladmirAK47.CreateSubMenu('VehicleOptions', 'PlayerOptionsMenu', 'Force Power options')
         VladmirAK47.CreateSubMenu('vehiclem', 'PlayerOptionsMenu', 'Vehicle Options')
-        VladmirAK47.CreateSubMenu('Trollmenu2', 'PlayerOptionsMenu', 'Undetectable Troll Options')		
+        VladmirAK47.CreateSubMenu('Trollmenu2', 'PlayerOptionsMenu', 'Undetectable Troll Options')
         VladmirAK47.CreateSubMenu('Trollmenu', 'PlayerOptionsMenu', 'Troll Options')
 
         VladmirAK47.CreateSubMenu('self_anim', 'SelfMenu', 'Animations (NEW)')
         VladmirAK47.CreateSubMenu('emote_menu', 'Trollmenu', 'Force Emote (NEW)')
         VladmirAK47.CreateSubMenu('custom_vehicles', 'VehicleMenu', 'Modded Vehicles (NEW)')
 
-	VladmirAK47.CreateSubMenu('qb_itemdupe', 'VladmirAK47', '[QB] Item-Duplication (NEW)')
-   
+        VladmirAK47.CreateSubMenu('qb_itemdupe', 'VladmirAK47', '[QB] Item-Duplication (NEW)')
+
         VladmirAK47.CreateSubMenu('world_options', 'VladmirAK47', 'World Options (NEW)')
 
         VladmirAK47.CreateSubMenu('world_options:spooner', 'world_options', 'Object Spooner (NEW)')
-        VladmirAK47.CreateSubMenu('world_options:spooner:load_presets', 'world_options:spooner', 'Spooner -> Load Existing')
+        VladmirAK47.CreateSubMenu('world_options:spooner:load_presets', 'world_options:spooner',
+            'Spooner -> Load Existing')
         VladmirAK47.CreateSubMenu('world_options:spooner:database', 'world_options:spooner', 'Spooner -> Entity Database')
-        VladmirAK47.CreateSubMenu('world_options:spooner:database:selected', 'world_options:spooner:database', 'Selected Entity')
-        VladmirAK47.CreateSubMenu('world_options:spooner:database:selected:position', 'world_options:spooner:database:selected', 'Selected Entity -> Position & Rotation')
-        VladmirAK47.CreateSubMenu('world_options:spooner:database:selected:attach', 'world_options:spooner:database:selected', 'Selected Entity -> Attachment')
-         
+        VladmirAK47.CreateSubMenu('world_options:spooner:database:selected', 'world_options:spooner:database',
+            'Selected Entity')
+        VladmirAK47.CreateSubMenu('world_options:spooner:database:selected:position',
+            'world_options:spooner:database:selected', 'Selected Entity -> Position & Rotation')
+        VladmirAK47.CreateSubMenu('world_options:spooner:database:selected:attach',
+            'world_options:spooner:database:selected', 'Selected Entity -> Attachment')
+
         VladmirAK47.CreateSubMenu('world_options:remote_ped', 'world_options', 'Remote Ped (NEW)')
-        VladmirAK47.CreateSubMenu('world_options:remote_ped:vehicle_options', 'world_options:remote_ped', 'Remote Ped (NEW)~w~ -> Vehicle Options')
-        VladmirAK47.CreateSubMenu('world_options:remote_ped:weapon_options', 'world_options:remote_ped', 'Remote Ped (NEW)~w~ -> Weapon Options')
-        VladmirAK47.CreateSubMenu('world_options:remote_ped:settings', 'world_options:remote_ped', 'Remote Ped (NEW)~w~ -> Find / Create Ped')
+        VladmirAK47.CreateSubMenu('world_options:remote_ped:vehicle_options', 'world_options:remote_ped',
+            'Remote Ped (NEW)~w~ -> Vehicle Options')
+        VladmirAK47.CreateSubMenu('world_options:remote_ped:weapon_options', 'world_options:remote_ped',
+            'Remote Ped (NEW)~w~ -> Weapon Options')
+        VladmirAK47.CreateSubMenu('world_options:remote_ped:settings', 'world_options:remote_ped',
+            'Remote Ped (NEW)~w~ -> Find / Create Ped')
 
         VladmirAK47.CreateSubMenu('WeaponTypes', 'WeaponMenu', 'Weapons')
         VladmirAK47.CreateSubMenu('WeaponTypeSelection', 'WeaponTypes', 'Weapon')
@@ -9097,14 +9168,14 @@ Citizen.CreateThread(
         VladmirAK47.CreateSubMenu('MainTrailerSpa', 'MainTrailerSel', 'Trailer Options')
         VladmirAK47.CreateSubMenu('GiveSingleWeaponPlayer', 'OnlinePlayerMenu', 'Single Weapon Options')
         VladmirAK47.CreateSubMenu('ESPMenu', 'MiscMenu', 'ESP Options')
-        VladmirAK47.CreateSubMenu('MVE', 'VehicleMenu', 'Modded Vehicle')		
+        VladmirAK47.CreateSubMenu('MVE', 'VehicleMenu', 'Modded Vehicle')
         VladmirAK47.CreateSubMenu('LSC', 'VehicleMenu', 'LSC Customs')
         VladmirAK47.CreateSubMenu('tunings', 'LSC', 'Visual Tuning')
         VladmirAK47.CreateSubMenu('performance', 'LSC', 'Performance Tuning')
         VladmirAK47.CreateSubMenu('ObjectOptions', 'PlayerOptionsMenu', 'Object Options')
-		VladmirAK47.CreateSubMenu('SoundOptions', 'PlayerOptionsMenu', 'Sound Options')
-		VladmirAK47.CreateSubMenu('SuperPowerOptions', 'PlayerOptionsMenu', 'Super Power')		
-        VladmirAK47.CreateSubMenu('Pedstuff', 'PlayerOptionsMenu', 'Ped Options')		
+        VladmirAK47.CreateSubMenu('SoundOptions', 'PlayerOptionsMenu', 'Sound Options')
+        VladmirAK47.CreateSubMenu('SuperPowerOptions', 'PlayerOptionsMenu', 'Super Power')
+        VladmirAK47.CreateSubMenu('Pedstuff', 'PlayerOptionsMenu', 'Ped Options')
         VladmirAK47.CreateSubMenu('BoostMenu', 'VehicleMenu', 'Vehicle Boost')
         VladmirAK47.CreateSubMenu('GCT', 'VehicleMenu', 'Global Car Trolls')
         VladmirAK47.CreateSubMenu('CsMenu', 'MiscMenu', 'Crosshairs')
@@ -9288,8 +9359,8 @@ Citizen.CreateThread(
                             r, g, b = GetVehicleNeonLightsColour(veh)
                             if
                                 colorr == r and colorg == g and colorb == b and IsVehicleNeonLightEnabled(vehicle, 2) and
-                                    not bg
-                             then
+                                not bg
+                            then
                                 pricestring = 'Installed'
                             else
                                 if bg and colorr == r and colorg == g and colorb == b then
@@ -9457,13 +9528,13 @@ Citizen.CreateThread(
                 --av('VladmirAK47(eta)', true)
                 if VladmirAK47.MenuButton('Self Options', 'SelfMenu') then
                 elseif VladmirAK47.MenuButton('Online Players Options ', 'OnlinePlayerMenu') then
-		elseif VladmirAK47.MenuButton('All Players Options', 'OnlinePlayerMenu1') then
+                elseif VladmirAK47.MenuButton('All Players Options', 'OnlinePlayerMenu1') then
                 elseif VladmirAK47.MenuButton('Teleport Options', 'TeleportMenu') then
                 elseif VladmirAK47.MenuButton('Vehicle Options', 'VehicleMenu') then
                 elseif VladmirAK47.MenuButton('Weapon Options', 'WeaponMenu') then
                 elseif VladmirAK47.MenuButton('[NEW] World Options', 'world_options') then
-		elseif VladmirAK47.MenuButton('[NEW] QB Item Duplication', 'qb_itemdupe') then
-                elseif VladmirAK47.MenuButton('Misc Options', 'MiscMenu') then 
+                elseif VladmirAK47.MenuButton('[NEW] QB Item Duplication', 'qb_itemdupe') then
+                elseif VladmirAK47.MenuButton('Misc Options', 'MiscMenu') then
                 elseif VladmirAK47.Button('Unload Menu') then
                     VladmirAK47 = nil
                     fuse_toggles = nil
@@ -9471,42 +9542,42 @@ Citizen.CreateThread(
                 end
 
                 VladmirAK47.Display()
-
             elseif VladmirAK47.IsMenuOpened('world_options') then
                 if VladmirAK47.MenuButton('[NEW] Object Spooner', 'world_options:spooner') then
                 elseif VladmirAK47.MenuButton('Remote Ped', 'world_options:remote_ped') then
-		elseif VladmirAK47.MenuButton('[NEW] [QB] Send Police Alert', 'world_options') then
-			local NewText = KeyboardInput('Enter text to send to ALL the Police!', '', 200)
-			av('Attempting to send the Police a request with the message: ' .. NewText , true)
-			TriggerServerEvent("police:server:policeAlert", NewText)
+                elseif VladmirAK47.MenuButton('[NEW] [QB] Send Police Alert', 'world_options') then
+                    local NewText = KeyboardInput('Enter text to send to ALL the Police!', '', 200)
+                    av('Attempting to send the Police a request with the message: ' .. NewText, true)
+                    TriggerServerEvent("police:server:policeAlert", NewText)
                 end
 
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('world_options:spooner') then
                 if VladmirAK47.MenuButton('Load existing maps', 'world_options:spooner:load_presets') then
                 elseif VladmirAK47.MenuButton('Entity Database', 'world_options:spooner:database') then
-                elseif VladmirAK47.CheckBox("Spooner", fuse_toggles.spooner.enabled,function(t) fuse_toggles.spooner.enabled = t Citizen.CreateThread(menyoo_spooner) end ) then
+                elseif VladmirAK47.CheckBox("Spooner", fuse_toggles.spooner.enabled, function(t)
+                        fuse_toggles.spooner.enabled = t
+                        Citizen.CreateThread(menyoo_spooner)
+                    end) then
                 end
 
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('world_options:spooner:load_presets') then
-
-                for k,v in pairs(menyoo_xmls) do
+                for k, v in pairs(menyoo_xmls) do
                     if v.type == 2 then
-                        if VladmirAK47.Button("[NEW] "..k) then
+                        if VladmirAK47.Button("[NEW] " .. k) then
                             local xml = newParser()
                             local pxml = xml:ParseXmlText(v.xml)
-    
+
                             Citizen.CreateThread(function()
                                 menyoo_load_map_props(pxml)
                             end)
                         end
                     end
                 end
-                
+
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('world_options:spooner:database') then
-
                 if VladmirAK47.Button("Create Entity") then
                     local model = GetHashKey(KeyboardInput('Enter the entities model', '', 200))
                     local coords = GetEntityCoords(PlayerPedId())
@@ -9520,23 +9591,24 @@ Citizen.CreateThread(
                         else
                             entity = CreateObject(model, coords.x, coords.y, coords.z, 1.0, true, true, false)
                         end
-                        
-                        fuse_toggles.spooner.database[#fuse_toggles.spooner.database+1] = {id = entity, type = GetEntityType(entity)}
+
+                        fuse_toggles.spooner.database[#fuse_toggles.spooner.database + 1] = { id = entity, type =
+                        GetEntityType(entity) }
                     end)
                 end
 
-                for k,v in pairs(fuse_toggles.spooner.database) do
-
+                for k, v in pairs(fuse_toggles.spooner.database) do
                     if not DoesEntityExist(v.id) then
                         fuse_toggles.spooner.database[k] = nil
                     end
 
-                    if menuso[VladmirAK47.CurrentMenu()].currentOption-1 == k then
+                    if menuso[VladmirAK47.CurrentMenu()].currentOption - 1 == k then
                         local ent_coords = GetEntityCoords(v.id)
-                        DrawMarker(2, ent_coords.x, ent_coords.y, ent_coords.z + 2, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 2.0, 2.0, 2.0, 255, 128, 0, 50, false, true, 2, nil, nil, false)
+                        DrawMarker(2, ent_coords.x, ent_coords.y, ent_coords.z + 2, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 2.0,
+                            2.0, 2.0, 255, 128, 0, 50, false, true, 2, nil, nil, false)
                     end
 
-                    if VladmirAK47.MenuButton(string.format("[%s] %s", v.type==1 and "PED" or v.type==2 and "VEHICLE" or v.type == 3 and "OBJECT", v.id), 'world_options:spooner:database:selected') then
+                    if VladmirAK47.MenuButton(string.format("[%s] %s", v.type == 1 and "PED" or v.type == 2 and "VEHICLE" or v.type == 3 and "OBJECT", v.id), 'world_options:spooner:database:selected') then
                         fuse_toggles.spooner.db_selected = k
                     end
                 end
@@ -9546,7 +9618,7 @@ Citizen.CreateThread(
                 local db = fuse_toggles.spooner.database[fuse_toggles.spooner.db_selected]
                 local ent = db.id
                 local coords = GetEntityCoords(ent)
-                
+
                 --if VladmirAK47.MenuButton("Attachment", "world_options:spooner:database:selected:attach") then
                 if VladmirAK47.MenuButton("Position & Rotation", "world_options:spooner:database:selected:position") then
                 elseif VladmirAK47.Button("Clone Entity") then
@@ -9565,9 +9637,9 @@ Citizen.CreateThread(
                     end
 
                     FreezeEntityPosition(entity, frozen)
-                    SetEntityRotation(entity, rotation.x,rotation.y,rotation.z)
+                    SetEntityRotation(entity, rotation.x, rotation.y, rotation.z)
 
-                    fuse_toggles.spooner.database[#fuse_toggles.spooner.database+1] = {
+                    fuse_toggles.spooner.database[#fuse_toggles.spooner.database + 1] = {
                         id = entity,
                         type = db.type
                     }
@@ -9577,9 +9649,6 @@ Citizen.CreateThread(
 
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('world_options:spooner:database:selected:attach') then
-                
-
-
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('world_options:spooner:database:selected:position') then
                 local db = fuse_toggles.spooner.database[fuse_toggles.spooner.db_selected]
@@ -9588,39 +9657,52 @@ Citizen.CreateThread(
                 local rotation = GetEntityRotation(ent)
                 local frozen = IsEntityPositionFrozen(ent)
 
-                if VladmirAK47.CheckBox("Frozen Position", frozen,function(t) frozen = t FreezeEntityPosition(ent, frozen) SetEntityDynamic(ent, true) end ) then
+                if VladmirAK47.CheckBox("Frozen Position", frozen, function(t)
+                        frozen = t
+                        FreezeEntityPosition(ent, frozen)
+                        SetEntityDynamic(ent, true)
+                    end) then
                 elseif VladmirAK47.Slider("Step", fuse_toggles.spooner.properties_step, 0.01, 10.0, 0.01, function(val)
-                    fuse_toggles.spooner.properties_step = val
-                end) then
-                elseif VladmirAK47.Slider("X Position", coords.x, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(val)
-                    SetEntityCoordsNoOffset(ent, val, coords.y, coords.z)
-                end) then
-                elseif VladmirAK47.Slider("Y Position", coords.y, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(val)
-                    SetEntityCoordsNoOffset(ent, coords.x, val, coords.z)
-                end) then
-                elseif VladmirAK47.Slider("Z Position", coords.z, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(val)
-                    SetEntityCoordsNoOffset(ent, coords.x, coords.y, val)
-                end) then
+                        fuse_toggles.spooner.properties_step = val
+                    end) then
+                elseif VladmirAK47.Slider("X Position", coords.x, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(
+                        val)
+                        SetEntityCoordsNoOffset(ent, val, coords.y, coords.z)
+                    end) then
+                elseif VladmirAK47.Slider("Y Position", coords.y, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(
+                        val)
+                        SetEntityCoordsNoOffset(ent, coords.x, val, coords.z)
+                    end) then
+                elseif VladmirAK47.Slider("Z Position", coords.z, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(
+                        val)
+                        SetEntityCoordsNoOffset(ent, coords.x, coords.y, val)
+                    end) then
 
-                elseif VladmirAK47.Slider("X Rotation", rotation.x, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(val)
-                    SetEntityRotation(ent, val, rotation.y, rotation.z)
-                end) then
-                elseif VladmirAK47.Slider("Y Rotation", rotation.y, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(val)
-                    SetEntityRotation(ent, rotation.x, val, rotation.z)
-                end) then
-                elseif VladmirAK47.Slider("Z Rotation", rotation.z, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(val)
-                    SetEntityRotation(ent, rotation.x, rotation.y, val)
-                end) then
+                elseif VladmirAK47.Slider("X Rotation", rotation.x, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(
+                        val)
+                        SetEntityRotation(ent, val, rotation.y, rotation.z)
+                    end) then
+                elseif VladmirAK47.Slider("Y Rotation", rotation.y, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(
+                        val)
+                        SetEntityRotation(ent, rotation.x, val, rotation.z)
+                    end) then
+                elseif VladmirAK47.Slider("Z Rotation", rotation.z, -9999.0, 9999.0, fuse_toggles.spooner.properties_step, function(
+                        val)
+                        SetEntityRotation(ent, rotation.x, rotation.y, val)
+                    end) then
                 end
-                
+
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('world_options:remote_ped') then
                 if VladmirAK47.MenuButton('Find / Create remote ped', 'world_options:remote_ped:settings') then
                 elseif VladmirAK47.MenuButton('Vehicle Options', 'world_options:remote_ped:vehicle_options') then
                 elseif VladmirAK47.MenuButton('Weapon Options', 'world_options:remote_ped:weapon_options') then
-                elseif VladmirAK47.CheckBox("Godmode", fuse_toggles.remote_ped.godmode,function(t) fuse_toggles.remote_ped.godmode = t end ) then
-                elseif VladmirAK47.CheckBox("No Ragdoll", fuse_toggles.remote_ped.no_ragdoll,function(t) fuse_toggles.remote_ped.no_ragdoll = t end ) then
-                elseif VladmirAK47.CheckBox("Noclip", fuse_toggles.remote_ped.noclip,function(t) fuse_toggles.remote_ped.noclip = t end ) then
+                elseif VladmirAK47.CheckBox("Godmode", fuse_toggles.remote_ped.godmode, function(t) fuse_toggles.remote_ped.godmode =
+                        t end) then
+                elseif VladmirAK47.CheckBox("No Ragdoll", fuse_toggles.remote_ped.no_ragdoll, function(t) fuse_toggles.remote_ped.no_ragdoll =
+                        t end) then
+                elseif VladmirAK47.CheckBox("Noclip", fuse_toggles.remote_ped.noclip, function(t) fuse_toggles.remote_ped.noclip =
+                        t end) then
                 elseif VladmirAK47.Button("Revive") then
                     ResurrectPed(fuse_toggles.remote_ped.ped)
                     ClearPedTasksImmediately(fuse_toggles.remote_ped.ped)
@@ -9631,217 +9713,222 @@ Citizen.CreateThread(
 
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('world_options:remote_ped:settings') then
-                
-                
-                if VladmirAK47.CheckBox("Enable Remote Ped", fuse_toggles.remote_ped.enabled,function(t) 
-                    fuse_toggles.remote_ped.enabled = t
+                if VladmirAK47.CheckBox("Enable Remote Ped", fuse_toggles.remote_ped.enabled, function(t)
+                        fuse_toggles.remote_ped.enabled = t
 
-                    if t then
-                        local c_dist = 9999.0
-                        for k,v in pairs(GetGamePool("CPed")) do
-                            local dist = #(GetEntityCoords(PlayerPedId())-GetEntityCoords(v))
-                            if not IsPedAPlayer(v) and IsEntityVisible(v) and IsPedHuman(v) and GetEntityHealth(v) > 0 and c_dist > dist then
+                        if t then
+                            local c_dist = 9999.0
+                            for k, v in pairs(GetGamePool("CPed")) do
+                                local dist = #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(v))
+                                if not IsPedAPlayer(v) and IsEntityVisible(v) and IsPedHuman(v) and GetEntityHealth(v) > 0 and c_dist > dist then
+                                    print((fuse_toggles.remote_ped.only_serverside and NetworkGetEntityIsNetworked(fuse_toggles.remote_ped.ped) or true))
 
-                                print( (fuse_toggles.remote_ped.only_serverside and NetworkGetEntityIsNetworked(fuse_toggles.remote_ped.ped) or true) )
-                                
-                                c_dist = dist
-                                fuse_toggles.remote_ped.ped = v
-                                break
+                                    c_dist = dist
+                                    fuse_toggles.remote_ped.ped = v
+                                    break
+                                end
                             end
-                        end
-                        if NetworkGetEntityIsNetworked(fuse_toggles.remote_ped.ped) then
-                            av('SERVERSIDED PED FOUND', true)
+                            if NetworkGetEntityIsNetworked(fuse_toggles.remote_ped.ped) then
+                                av('SERVERSIDED PED FOUND', true)
+                            else
+                                av('CLIENTSIDE PED FOUND (CAN ONLY CONTROL VEHICLES)', true)
+                            end
+                            if fuse_toggles.remote_ped.ped == 0 then
+                                fuse_toggles.remote_ped.enabled = false
+                                av('NO PEDS FOUND', true)
+                            else
+                                Citizen.CreateThread(remote_ped)
+                            end
                         else
-                            av('CLIENTSIDE PED FOUND (CAN ONLY CONTROL VEHICLES)', true)
+                            SetFocusEntity(PlayerPedId())
                         end
-                        if fuse_toggles.remote_ped.ped == 0 then
-                            fuse_toggles.remote_ped.enabled = false
-                            av('NO PEDS FOUND', true)
-                        else
-                            Citizen.CreateThread(remote_ped)
-                        end
-                    else
-                        SetFocusEntity(PlayerPedId())
-                    end
-                    
-
-                end) then
-                elseif VladmirAK47.CheckBox("Only Serverside Peds", fuse_toggles.remote_ped.only_serverside, function(t) 
-                    fuse_toggles.remote_ped.only_serverside = t
-                end) then
+                    end) then
+                elseif VladmirAK47.CheckBox("Only Serverside Peds", fuse_toggles.remote_ped.only_serverside, function(t)
+                        fuse_toggles.remote_ped.only_serverside = t
+                    end) then
                 elseif VladmirAK47.Button("Create Remote Ped (RISKY)") then
                     Citizen.CreateThread(function()
                         load_model(`a_m_m_eastsa_01`)
                         local coords = GetEntityCoords(PlayerPedId())
-                        local ped = CreatePed(0, `a_m_m_eastsa_01`, coords.x+50.0,coords.y+50.0,coords.z)
-    
+                        local ped = CreatePed(0, `a_m_m_eastsa_01`, coords.x + 50.0, coords.y + 50.0, coords.z)
+
                         fuse_toggles.remote_ped.enabled = true
-                        fuse_toggles.remote_ped.ped = ped     
+                        fuse_toggles.remote_ped.ped = ped
                         remote_ped()
                     end)
                 end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('world_options:remote_ped:weapon_options') then
-
                 if VladmirAK47.Button("Equip Minigun") then
-                    GiveWeaponToPed(fuse_toggles.remote_ped.ped, `WEAPON_MINIGUN`,250,false,true)
-                    SetPedFiringPattern(fuse_toggles.remote_ped.ped,`FIRING_PATTERN_FULL_AUTO`)
+                    GiveWeaponToPed(fuse_toggles.remote_ped.ped, `WEAPON_MINIGUN`, 250, false, true)
+                    SetPedFiringPattern(fuse_toggles.remote_ped.ped, `FIRING_PATTERN_FULL_AUTO`)
                     SetCurrentPedWeapon(fuse_toggles.remote_ped.ped, `WEAPON_MINIGUN`, true)
                 elseif VladmirAK47.Button("Equip AP Pistol") then
-                    GiveWeaponToPed(fuse_toggles.remote_ped.ped, `WEAPON_APPISTOL`,250,false,true)
-                    SetPedFiringPattern(fuse_toggles.remote_ped.ped,`FIRING_PATTERN_FULL_AUTO`)
+                    GiveWeaponToPed(fuse_toggles.remote_ped.ped, `WEAPON_APPISTOL`, 250, false, true)
+                    SetPedFiringPattern(fuse_toggles.remote_ped.ped, `FIRING_PATTERN_FULL_AUTO`)
                     SetCurrentPedWeapon(fuse_toggles.remote_ped.ped, `WEAPON_APPISTOL`, true)
                 elseif VladmirAK47.Button("Equip Ray Minigun") then
-                    GiveWeaponToPed(fuse_toggles.remote_ped.ped, `weapon_rayminigun`,250,false,true)
-                    SetPedFiringPattern(fuse_toggles.remote_ped.ped,`FIRING_PATTERN_FULL_AUTO`)
+                    GiveWeaponToPed(fuse_toggles.remote_ped.ped, `weapon_rayminigun`, 250, false, true)
+                    SetPedFiringPattern(fuse_toggles.remote_ped.ped, `FIRING_PATTERN_FULL_AUTO`)
                     SetCurrentPedWeapon(fuse_toggles.remote_ped.ped, `weapon_rayminigun`, true)
                 elseif VladmirAK47.Button("Equip Musket") then
-                    GiveWeaponToPed(fuse_toggles.remote_ped.ped, `weapon_musket`,250,false,true)
-                    SetPedFiringPattern(fuse_toggles.remote_ped.ped,`FIRING_PATTERN_FULL_AUTO`)
+                    GiveWeaponToPed(fuse_toggles.remote_ped.ped, `weapon_musket`, 250, false, true)
+                    SetPedFiringPattern(fuse_toggles.remote_ped.ped, `FIRING_PATTERN_FULL_AUTO`)
                     SetCurrentPedWeapon(fuse_toggles.remote_ped.ped, `weapon_musket`, true)
                 elseif VladmirAK47.Button("Equip Taser") then
-                    GiveWeaponToPed(fuse_toggles.remote_ped.ped, `weapon_stungun`,250,false,true)
-                    SetPedFiringPattern(fuse_toggles.remote_ped.ped,`FIRING_PATTERN_FULL_AUTO`)
+                    GiveWeaponToPed(fuse_toggles.remote_ped.ped, `weapon_stungun`, 250, false, true)
+                    SetPedFiringPattern(fuse_toggles.remote_ped.ped, `FIRING_PATTERN_FULL_AUTO`)
                     SetCurrentPedWeapon(fuse_toggles.remote_ped.ped, `weapon_stungun`, true)
                 elseif VladmirAK47.Button("Unequip Weapon") then
                     SetCurrentPedWeapon(fuse_toggles.remote_ped.ped, `WEAPON_UNARMED`, true)
                 end
-                
+
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('world_options:remote_ped:vehicle_options') then
-                if VladmirAK47.CheckBox("Vehicle Godmode", fuse_toggles.remote_ped.vehicle.godmode,function(t) fuse_toggles.remote_ped.vehicle.godmode = t end ) then
+                if VladmirAK47.CheckBox("Vehicle Godmode", fuse_toggles.remote_ped.vehicle.godmode, function(t) fuse_toggles.remote_ped.vehicle.godmode =
+                        t end) then
                 elseif VladmirAK47.Button("Repair Vehicle") then
                     local vehicle = GetVehiclePedIsUsing(fuse_toggles.remote_ped.ped)
                     SetVehicleEngineHealth(vehicle, 1000)
                     SetVehicleFixed(vehicle)
-                elseif VladmirAK47.ComboBox('Acceleration Multiplier',{1.0,2.0,4.0,8.0,16.0,32.0,64.0,128.0,256.0,512.0,1024.0,2048.0,4096.0,8124.0},fuse_toggles.remote_ped.vehicle.acc_disp,fuse_toggles.remote_ped.vehicle.acc_val,
-                    function(ag, ah)
-                        fuse_toggles.remote_ped.vehicle.acc_disp = ag
-                        fuse_toggles.remote_ped.vehicle.acc_val = ah
-                    end) then
-                elseif VladmirAK47.ComboBox('Brake & Reverse Multiplier',{1.0,2.0,4.0,8.0,16.0,32.0,64.0,128.0,256.0,512.0,1024.0,2048.0,4096.0,8124.0},fuse_toggles.remote_ped.vehicle.dec_disp,fuse_toggles.remote_ped.vehicle.dec_val,
-                    function(ag, ah)
-                        fuse_toggles.remote_ped.vehicle.dec_disp = ag
-                        fuse_toggles.remote_ped.vehicle.dec_val = ah
-                    end) then
+                elseif VladmirAK47.ComboBox('Acceleration Multiplier', { 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0, 2048.0, 4096.0, 8124.0 }, fuse_toggles.remote_ped.vehicle.acc_disp, fuse_toggles.remote_ped.vehicle.acc_val,
+                        function(ag, ah)
+                            fuse_toggles.remote_ped.vehicle.acc_disp = ag
+                            fuse_toggles.remote_ped.vehicle.acc_val = ah
+                        end) then
+                elseif VladmirAK47.ComboBox('Brake & Reverse Multiplier', { 1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0, 2048.0, 4096.0, 8124.0 }, fuse_toggles.remote_ped.vehicle.dec_disp, fuse_toggles.remote_ped.vehicle.dec_val,
+                        function(ag, ah)
+                            fuse_toggles.remote_ped.vehicle.dec_disp = ag
+                            fuse_toggles.remote_ped.vehicle.dec_val = ah
+                        end) then
                 end
-                
+
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('self_anim') then
-                
                 if VladmirAK47.Button("Stop Animation") then
                     ClearPedTasksImmediately(PlayerPedId())
-                elseif VladmirAK47.CheckBox("Upperbody only (controllable)", fuse_toggles.anim_controllable, function(tog)
-                    fuse_toggles.anim_controllable = tog
-                end) then
+                elseif VladmirAK47.CheckBox("Upperbody only (controllable)", fuse_toggles.anim_controllable, function(
+                        tog)
+                        fuse_toggles.anim_controllable = tog
+                    end) then
                 end
 
                 local anims = {
-                    {name = "Wank", dict = "mp_player_int_upperwank", anim = "mp_player_int_wank_01"},
-                    {name = "Ride Driver ", dict = "mini@prostitutes@sexnorm_veh", anim = "sex_loop_prostitute"},
-                    {name = "Blow Driver ", dict = "mini@prostitutes@sexnorm_veh", anim = "bj_loop_prostitute"},
+                    { name = "Wank",         dict = "mp_player_int_upperwank",      anim = "mp_player_int_wank_01" },
+                    { name = "Ride Driver ", dict = "mini@prostitutes@sexnorm_veh", anim = "sex_loop_prostitute" },
+                    { name = "Blow Driver ", dict = "mini@prostitutes@sexnorm_veh", anim = "bj_loop_prostitute" },
                     --{name = "Air Thrust", dict = "anim@mp_player_intupperair_shagging", anim = "exit"},
                     --{name = "Shush", dict = "anim@mp_player_intuppershush", anim = "enter", once = true},
                 }
 
-                for k,v in pairs(anims) do
+                for k, v in pairs(anims) do
                     RequestAnimDict(v.dict)
-                    if VladmirAK47.Button("[NEW] "..v.name) then
-                        TaskPlayAnim(PlayerPedId(), v.dict, v.anim, 8.0, 8.0, -1, fuse_toggles.anim_controllable and 51 or 15, 1.0, 0.0, 0.0, 0.0)
+                    if VladmirAK47.Button("[NEW] " .. v.name) then
+                        TaskPlayAnim(PlayerPedId(), v.dict, v.anim, 8.0, 8.0, -1,
+                            fuse_toggles.anim_controllable and 51 or 15, 1.0, 0.0, 0.0, 0.0)
                     end
                 end
 
                 if VladmirAK47.Button('Sex Receiver') then
                     RequestAnimDict('rcmpaparazzo_2')
                     Citizen.Wait(200)
-                    if HasAnimDictLoaded('rcmpaparazzo_2') then				
-                    TaskPlayAnim(PlayerPedId(-1), 'rcmpaparazzo_2', 'shag_loop_poppy', 2.0, 2.5, -1, fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)
+                    if HasAnimDictLoaded('rcmpaparazzo_2') then
+                        TaskPlayAnim(PlayerPedId(-1), 'rcmpaparazzo_2', 'shag_loop_poppy', 2.0, 2.5, -1,
+                            fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)
                     end
-                    elseif VladmirAK47.Button('Sex Giver') then
+                elseif VladmirAK47.Button('Sex Giver') then
                     RequestAnimDict('rcmpaparazzo_2')
                     Citizen.Wait(200)
-                    if HasAnimDictLoaded('rcmpaparazzo_2') then				
-                    TaskPlayAnim(PlayerPedId(-1), 'rcmpaparazzo_2', 'shag_loop_a', 2.0, 2.5, -1, fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)
+                    if HasAnimDictLoaded('rcmpaparazzo_2') then
+                        TaskPlayAnim(PlayerPedId(-1), 'rcmpaparazzo_2', 'shag_loop_a', 2.0, 2.5, -1,
+                            fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)
                     end
-                    elseif VladmirAK47.Button('Gay Dance') then
+                elseif VladmirAK47.Button('Gay Dance') then
                     RequestAnimDict('mini@strip_club@private_dance@part1')
                     Citizen.Wait(200)
-                    if HasAnimDictLoaded('mini@strip_club@private_dance@part1') then				
-                    TaskPlayAnim(PlayerPedId(-1), 'mini@strip_club@private_dance@part1', 'priv_dance_p1', 2.0, 2.5, -1, fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)			
+                    if HasAnimDictLoaded('mini@strip_club@private_dance@part1') then
+                        TaskPlayAnim(PlayerPedId(-1), 'mini@strip_club@private_dance@part1', 'priv_dance_p1', 2.0, 2.5,
+                            -1, fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)
                     end
-                    elseif VladmirAK47.Button('Turning around') then
+                elseif VladmirAK47.Button('Turning around') then
                     RequestAnimDict('mini@strip_club@pole_dance@pole_dance1')
                     Citizen.Wait(200)
-                    if HasAnimDictLoaded('mini@strip_club@pole_dance@pole_dance1') then				
-                    TaskPlayAnim(PlayerPedId(-1), 'mini@strip_club@pole_dance@pole_dance1', 'pd_dance_01', 2.0, 2.5, -1, fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)			
+                    if HasAnimDictLoaded('mini@strip_club@pole_dance@pole_dance1') then
+                        TaskPlayAnim(PlayerPedId(-1), 'mini@strip_club@pole_dance@pole_dance1', 'pd_dance_01', 2.0, 2.5,
+                            -1, fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)
                     end
-                    elseif VladmirAK47.Button('Celebrate') then
+                elseif VladmirAK47.Button('Celebrate') then
                     RequestAnimDict('rcmfanatic1celebrate')
                     Citizen.Wait(200)
-                    if HasAnimDictLoaded('rcmfanatic1celebrate') then				
-                    TaskPlayAnim(PlayerPedId(-1), 'rcmfanatic1celebrate', 'celebrate', 2.0, 2.5, -1, fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)			
+                    if HasAnimDictLoaded('rcmfanatic1celebrate') then
+                        TaskPlayAnim(PlayerPedId(-1), 'rcmfanatic1celebrate', 'celebrate', 2.0, 2.5, -1,
+                            fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)
                     end
-                    elseif VladmirAK47.Button('Electrocution') then
+                elseif VladmirAK47.Button('Electrocution') then
                     RequestAnimDict('ragdoll@human')
                     Citizen.Wait(200)
-                    if HasAnimDictLoaded('ragdoll@human') then				
-                    TaskPlayAnim(PlayerPedId(-1), 'ragdoll@human', 'electrocute', 2.0, 2.5, -1, fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)			
+                    if HasAnimDictLoaded('ragdoll@human') then
+                        TaskPlayAnim(PlayerPedId(-1), 'ragdoll@human', 'electrocute', 2.0, 2.5, -1,
+                            fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)
                     end
-                    elseif VladmirAK47.Button('Suicide') then
+                elseif VladmirAK47.Button('Suicide') then
                     RequestAnimDict('mp_suicide')
                     Citizen.Wait(200)
-                    if HasAnimDictLoaded('mp_suicide') then				
-                    TaskPlayAnim(PlayerPedId(-1), 'mp_suicide', 'pistol', 2.0, 2.5, -1, fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)			
+                    if HasAnimDictLoaded('mp_suicide') then
+                        TaskPlayAnim(PlayerPedId(-1), 'mp_suicide', 'pistol', 2.0, 2.5, -1,
+                            fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)
                     end
-                    elseif VladmirAK47.Button('Shower') then
+                elseif VladmirAK47.Button('Shower') then
                     RequestAnimDict('mp_safehouseshower@male@')
                     Citizen.Wait(200)
-                    if HasAnimDictLoaded('mp_safehouseshower@male@') then				
-                    TaskPlayAnim(PlayerPedId(-1), 'mp_safehouseshower@male@', 'male_shower_idle_b', 2.0, 2.5, -1, fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)			
-                    end	
-                    elseif VladmirAK47.Button('Dog Pissing') then
+                    if HasAnimDictLoaded('mp_safehouseshower@male@') then
+                        TaskPlayAnim(PlayerPedId(-1), 'mp_safehouseshower@male@', 'male_shower_idle_b', 2.0, 2.5, -1,
+                            fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)
+                    end
+                elseif VladmirAK47.Button('Dog Pissing') then
                     RequestAnimDict('creatures@rottweiler@move')
                     Citizen.Wait(200)
-                    if HasAnimDictLoaded('creatures@rottweiler@move') then				
-                    TaskPlayAnim(PlayerPedId(-1), 'creatures@rottweiler@move', 'pee_right_idle', 2.0, 2.5, -1, fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)			
+                    if HasAnimDictLoaded('creatures@rottweiler@move') then
+                        TaskPlayAnim(PlayerPedId(-1), 'creatures@rottweiler@move', 'pee_right_idle', 2.0, 2.5, -1,
+                            fuse_toggles.anim_controllable and 51 or 15, 0, 0, 0, 0)
                     end
                 end
-		VladmirAK47.Display()
-		elseif VladmirAK47.IsMenuOpened('qb_itemdupe') then -- First time coding FiveM shit lmao
-			if VladmirAK47.MenuButton('Duplicate Slot 5, 1x', 'qb_itemdupe') then
-				av('WARNING! This Drops a Fake Stack of -1 of said Item!', true)
-                    		TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -1, nil)
-                	elseif VladmirAK47.MenuButton('Duplicate Slot 5, 10x', 'qb_itemdupe') then
-				av('WARNING! This Drops a Fake Stack of -10 of said Item!', true)
-                    		TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -10, nil)
-                	elseif VladmirAK47.MenuButton('Duplicate Slot 5, 100x', 'qb_itemdupe') then
-				av('WARNING! This Drops a Fake Stack of -100 of said Item!', true)
-                    		TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -100, nil)
-                	elseif VladmirAK47.MenuButton('Duplicate Slot 5, 1000x', 'qb_itemdupe') then
-				av('WARNING! This Drops a Fake Stack of -1000 of said Item!', true)
-                    		TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -1000, nil)
-                	elseif VladmirAK47.MenuButton('Duplicate Slot 5, 10000x', 'qb_itemdupe') then
-				av('WARNING! This Drops a Fake Stack of -10000 of said Item!', true)
-                    		TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -10000, nil)
-                	elseif VladmirAK47.MenuButton('Duplicate Slot 5, 100000x', 'qb_itemdupe') then
-				av('WARNING! This Drops a Fake Stack of -100000 of said Item!', true)
-                    		TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -100000, nil)
-                	elseif VladmirAK47.MenuButton('Duplicate Slot 5, 1000000x', 'qb_itemdupe') then
-				av('WARNING! This Drops a Fake Stack of -1000000 of said Item!', true)
-                    		TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -1000000, nil)
+                VladmirAK47.Display()
+            elseif VladmirAK47.IsMenuOpened('qb_itemdupe') then -- First time coding FiveM shit lmao
+                if VladmirAK47.MenuButton('Duplicate Slot 5, 1x', 'qb_itemdupe') then
+                    av('WARNING! This Drops a Fake Stack of -1 of said Item!', true)
+                    TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -1, nil)
+                elseif VladmirAK47.MenuButton('Duplicate Slot 5, 10x', 'qb_itemdupe') then
+                    av('WARNING! This Drops a Fake Stack of -10 of said Item!', true)
+                    TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -10, nil)
+                elseif VladmirAK47.MenuButton('Duplicate Slot 5, 100x', 'qb_itemdupe') then
+                    av('WARNING! This Drops a Fake Stack of -100 of said Item!', true)
+                    TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -100, nil)
+                elseif VladmirAK47.MenuButton('Duplicate Slot 5, 1000x', 'qb_itemdupe') then
+                    av('WARNING! This Drops a Fake Stack of -1000 of said Item!', true)
+                    TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -1000, nil)
+                elseif VladmirAK47.MenuButton('Duplicate Slot 5, 10000x', 'qb_itemdupe') then
+                    av('WARNING! This Drops a Fake Stack of -10000 of said Item!', true)
+                    TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -10000, nil)
+                elseif VladmirAK47.MenuButton('Duplicate Slot 5, 100000x', 'qb_itemdupe') then
+                    av('WARNING! This Drops a Fake Stack of -100000 of said Item!', true)
+                    TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -100000, nil)
+                elseif VladmirAK47.MenuButton('Duplicate Slot 5, 1000000x', 'qb_itemdupe') then
+                    av('WARNING! This Drops a Fake Stack of -1000000 of said Item!', true)
+                    TriggerServerEvent("inventory:server:SetInventoryData", "player", "0", "5", "1", -1000000, nil)
                 end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('SelfMenu') then
-				if VladmirAK47.MenuButton('Skin', 'SkinChange') then
-				elseif VladmirAK47.MenuButton('[NEW] Animations', 'self_anim') then
-				elseif VladmirAK47.MenuButton('Ride Animales', 'Ride') then
-				elseif VladmirAK47.MenuButton('Vision', 'Vision') then
-				elseif VladmirAK47.MenuButton('Super Power', 'SuperPower') then
-				elseif VladmirAK47.MenuButton('Ped Options', 'SuperPower1') then
-				elseif VladmirAK47.Button("[NEW] [QB] Revive") then
-				TriggerServerEvent("hospital:server:RevivePlayer", GetPlayerServerId(PlayerId()))
-				elseif VladmirAK47.Button("Revive") then
-				RRR3()
+                if VladmirAK47.MenuButton('Skin', 'SkinChange') then
+                elseif VladmirAK47.MenuButton('[NEW] Animations', 'self_anim') then
+                elseif VladmirAK47.MenuButton('Ride Animales', 'Ride') then
+                elseif VladmirAK47.MenuButton('Vision', 'Vision') then
+                elseif VladmirAK47.MenuButton('Super Power', 'SuperPower') then
+                elseif VladmirAK47.MenuButton('Ped Options', 'SuperPower1') then
+                elseif VladmirAK47.Button("[NEW] [QB] Revive") then
+                    TriggerServerEvent("hospital:server:RevivePlayer", GetPlayerServerId(PlayerId()))
+                elseif VladmirAK47.Button("Revive") then
+                    RRR3()
                 elseif
                     VladmirAK47.CheckBox(
                         'God mode',
@@ -9850,7 +9937,7 @@ Citizen.CreateThread(
                             INV3 = dR
                         end
                     )
-                 then				
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Go to sky',
@@ -9859,7 +9946,7 @@ Citizen.CreateThread(
                             sup = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'No Ragdoll',
@@ -9868,7 +9955,7 @@ Citizen.CreateThread(
                             Ragdoll = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Invisible',
@@ -9877,7 +9964,7 @@ Citizen.CreateThread(
                             AAA1 = dR
                         end
                     )
-                 then				 
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Infinite Stamina',
@@ -9886,7 +9973,7 @@ Citizen.CreateThread(
                             InfStamina = dR
                         end
                     )
-                 then				 
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Fast Run',
@@ -9895,7 +9982,7 @@ Citizen.CreateThread(
                             fastrun = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Super Jump',
@@ -9904,7 +9991,7 @@ Citizen.CreateThread(
                             SuperJump = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Noclip',
@@ -9913,103 +10000,103 @@ Citizen.CreateThread(
                             Noclip = dR
                         end
                     )
-                 then				 									
+                then
                 end
-								VladmirAK47.Display()
+                VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('Vision') then
-			    if VladmirAK47.Button('Clear Vision') then
-			      ClearTimecycleModifier()
+                if VladmirAK47.Button('Clear Vision') then
+                    ClearTimecycleModifier()
                 elseif VladmirAK47.Button('Weed') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("DRUG_gas_huffin")	
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("DRUG_gas_huffin")
                 elseif VladmirAK47.Button('Drug') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("Drug_deadman_blend")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("Drug_deadman_blend")
                 elseif VladmirAK47.Button('Dead man') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("Glasses_BlackOut")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("Glasses_BlackOut")
                 elseif VladmirAK47.Button('Coccaine') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("ArenaEMP_Blend")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("ArenaEMP_Blend")
                 elseif VladmirAK47.Button('Zombie') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("Hicksbar")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("Hicksbar")
                 elseif VladmirAK47.Button('Desert') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("DRUG_2_drive")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("DRUG_2_drive")
                 elseif VladmirAK47.Button('Cross Line') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("CrossLine02")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("CrossLine02")
                 elseif VladmirAK47.Button('Light Red') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("DeadlineNeon01")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("DeadlineNeon01")
                 elseif VladmirAK47.Button('Dark Blue') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("BulletTimeDark")	
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("BulletTimeDark")
                 elseif VladmirAK47.Button('Broken Camera') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("Broken_camera_fuzz")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("Broken_camera_fuzz")
                 elseif VladmirAK47.Button('Cold') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("BombCamFlash")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("BombCamFlash")
                 elseif VladmirAK47.Button('Yellow') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("BleepYellow02")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("BleepYellow02")
                 elseif VladmirAK47.Button('Not Clear') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("BlackOut")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("BlackOut")
                 elseif VladmirAK47.Button('1907') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("BikersSPLASH")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("BikersSPLASH")
                 elseif VladmirAK47.Button('Green') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("AirRaceBoost02")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("AirRaceBoost02")
                 elseif VladmirAK47.Button('EMP') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("ArenaEMP")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("ArenaEMP")
                 elseif VladmirAK47.Button('Old Tv') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("CAMERA_secuirity")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("CAMERA_secuirity")
                 elseif VladmirAK47.Button('White') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("LostTimeFlash")					 
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("LostTimeFlash")
                 elseif VladmirAK47.Button('Purple') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("PPPurple01")
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("PPPurple01")
                 elseif VladmirAK47.Button('Ufo') then
-	  	         local ped = GetPlayerPed(-1)
-		 		  SetPedIsDrunk(ped, true)
-			     SetTimecycleModifier("ufo")					 
+                    local ped = GetPlayerPed(-1)
+                    SetPedIsDrunk(ped, true)
+                    SetTimecycleModifier("ufo")
                 end
-								VladmirAK47.Display()
+                VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('SuperPower1') then
-				if VladmirAK47.Button('Invisble car') then
-				    if IsPedInAnyVehicle(GetPlayerPed(-1), true) then
-					   local veh = GetVehiclePedIsIn(GetPlayerPed(-1), true)
-					   SetEntityVisible(veh, false, 0)
-					end
-				elseif VladmirAK47.Button('Driver For you') then
+                if VladmirAK47.Button('Invisble car') then
+                    if IsPedInAnyVehicle(GetPlayerPed(-1), true) then
+                        local veh = GetVehiclePedIsIn(GetPlayerPed(-1), true)
+                        SetEntityVisible(veh, false, 0)
+                    end
+                elseif VladmirAK47.Button('Driver For you') then
                     local veh = ("police")
-					local target = PlayerPedId(-1)
+                    local target = PlayerPedId(-1)
                     local pos = GetEntityCoords(GetPlayerPed(-1))
                     local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
                     local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
@@ -10030,21 +10117,22 @@ Citizen.CreateThread(
                             Citizen.Wait(50)
                             if HasModelLoaded('s_f_y_bartender_01') then
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('s_f_y_bartender_01'), pos.x, pos.y, pos.z, true, true)
+                                local ped = CreatePed(21, GetHashKey('s_f_y_bartender_01'), pos.x, pos.y, pos.z, true,
+                                    true)
                                 if DoesEntityExist(ped) then
                                     SetPedIntoVehicle(ped, v, -1)
-									SetPedIntoVehicle(target, v, 0)
-									SetEntityVisible(ped, false, true)
-									TaskVehicleDriveWander(ped, v, 100.00, 786468)
+                                    SetPedIntoVehicle(target, v, 0)
+                                    SetEntityVisible(ped, false, true)
+                                    TaskVehicleDriveWander(ped, v, 100.00, 786468)
                                     SetDriverAbility(ped, 10.0)
                                     SetDriverAggressiveness(ped, 10.0)
                                 end
                             end
                         end
                     end
-				elseif VladmirAK47.Button('Crazy Pilot for you') then
+                elseif VladmirAK47.Button('Crazy Pilot for you') then
                     local veh = ("Shamal")
-					local target = PlayerPedId(-1)
+                    local target = PlayerPedId(-1)
                     local pos = GetEntityCoords(GetPlayerPed(-1))
                     local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
                     local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
@@ -10058,7 +10146,7 @@ Citizen.CreateThread(
                     end
                     if HasModelLoaded(veh) then
                         local v = CreateVehicle(veh, pos.x, pos.y, pos.z + 800, GetEntityHeading(target), true, true)
-						local v1 = CreateVehicle(veh, 1540, 3200, 40, GetEntityHeading(target), true, true)
+                        local v1 = CreateVehicle(veh, 1540, 3200, 40, GetEntityHeading(target), true, true)
                         if DoesEntityExist(v) and DoesEntityExist(v1) then
                             NetworkRequestControlOfEntity(v)
                             SetVehicleDoorsLocked(v, 4)
@@ -10066,23 +10154,25 @@ Citizen.CreateThread(
                             Citizen.Wait(50)
                             if HasModelLoaded('s_f_y_bartender_01') then
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('s_f_y_bartender_01'), pos.x, pos.y, pos.z, true, true)
-								local ped1 = CreatePed(21, GetHashKey('s_f_y_bartender_01'), pos.x, pos.y, pos.z, true, true)								
+                                local ped = CreatePed(21, GetHashKey('s_f_y_bartender_01'), pos.x, pos.y, pos.z, true,
+                                    true)
+                                local ped1 = CreatePed(21, GetHashKey('s_f_y_bartender_01'), pos.x, pos.y, pos.z, true,
+                                    true)
                                 if DoesEntityExist(ped) and DoesEntityExist(ped1) then
                                     SetPedIntoVehicle(ped, v, -1)
-									SetPedIntoVehicle(ped1, v1, -1)
-									SetPedIntoVehicle(target, v, 0)
-									SetEntityVisible(ped, false, true)
-									TaskPlaneChase(ped, v1, 100.00, 786468)									
+                                    SetPedIntoVehicle(ped1, v1, -1)
+                                    SetPedIntoVehicle(target, v, 0)
+                                    SetEntityVisible(ped, false, true)
+                                    TaskPlaneChase(ped, v1, 100.00, 786468)
                                     SetDriverAbility(ped, 10.0)
                                     SetDriverAggressiveness(ped, 10.0)
                                 end
                             end
                         end
                     end
-				elseif VladmirAK47.Button('Planes surf above you') then
+                elseif VladmirAK47.Button('Planes surf above you') then
                     local veh = ("Shamal")
-					local target = PlayerPedId(-1)
+                    local target = PlayerPedId(-1)
                     local pos = GetEntityCoords(GetPlayerPed(-1))
                     local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
                     local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
@@ -10095,8 +10185,10 @@ Citizen.CreateThread(
                         RequestModel(veh)
                     end
                     if HasModelLoaded(veh) then
-                        local v = CreateVehicle(veh, pos.x, pos.y + 300, pos.z + 700, GetEntityHeading(target), true, true)
-						local v1 = CreateVehicle(veh, pos.x + 300, pos.y, pos.z + 800, GetEntityHeading(target), true, true)
+                        local v = CreateVehicle(veh, pos.x, pos.y + 300, pos.z + 700, GetEntityHeading(target), true,
+                            true)
+                        local v1 = CreateVehicle(veh, pos.x + 300, pos.y, pos.z + 800, GetEntityHeading(target), true,
+                            true)
                         if DoesEntityExist(v) and DoesEntityExist(v1) then
                             NetworkRequestControlOfEntity(v)
                             SetVehicleDoorsLocked(v, 4)
@@ -10104,905 +10196,906 @@ Citizen.CreateThread(
                             Citizen.Wait(50)
                             if HasModelLoaded('s_f_y_bartender_01') then
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('s_f_y_bartender_01'), pos.x, pos.y, pos.z, true, true)
-								local ped1 = CreatePed(21, GetHashKey('s_f_y_bartender_01'), pos.x, pos.y, pos.z, true, true)								
+                                local ped = CreatePed(21, GetHashKey('s_f_y_bartender_01'), pos.x, pos.y, pos.z, true,
+                                    true)
+                                local ped1 = CreatePed(21, GetHashKey('s_f_y_bartender_01'), pos.x, pos.y, pos.z, true,
+                                    true)
                                 if DoesEntityExist(ped) and DoesEntityExist(ped1) then
                                     SetPedIntoVehicle(ped, v, -1)
-									SetPedIntoVehicle(ped1, v1, -1)
-									SetEntityVisible(ped, false, true)
-									TaskPlaneChase(ped, target, 100.00, 786468)
-                                    TaskPlaneChase(ped1, target, 100.00, 786468)										
+                                    SetPedIntoVehicle(ped1, v1, -1)
+                                    SetEntityVisible(ped, false, true)
+                                    TaskPlaneChase(ped, target, 100.00, 786468)
+                                    TaskPlaneChase(ped1, target, 100.00, 786468)
                                     SetDriverAbility(ped, 10.0)
                                     SetDriverAggressiveness(ped, 10.0)
                                 end
                             end
                         end
-                    end		
-				  elseif VladmirAK47.Button('Exit Vehicle') then
-				  local target = PlayerPedId(SelectedPlayer)
-				  ClearPedTasksImmediately(target)
-				 elseif VladmirAK47.Button('Random clothes') then
-                if not skin1 then
-                 skin1 = true
+                    end
+                elseif VladmirAK47.Button('Exit Vehicle') then
+                    local target = PlayerPedId(SelectedPlayer)
+                    ClearPedTasksImmediately(target)
+                elseif VladmirAK47.Button('Random clothes') then
+                    if not skin1 then
+                        skin1 = true
                         av('on~.', false)
-                else
-                 skin1 = false
+                    else
+                        skin1 = false
                         av('Off.', false)
-                end	
+                    end
                 elseif VladmirAK47.Button('Suicide') then
                     SetEntityHealth(PlayerPedId(-1), 0)
                 elseif VladmirAK47.Button("Heal") then
                     SetEntityHealth(PlayerPedId(-1), 200)
                 elseif VladmirAK47.Button("Armour") then
                     SetPedArmour(PlayerPedId(-1), 200)
-                end					
-								VladmirAK47.Display()
+                end
+                VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('SuperPower') then
-                if VladmirAK47.Button('Go back to Normal') then 
-				local playerPed = GetPlayerPed(-1)
-				SetPedRandomComponentVariation(PlayerPedId(), true)
-				SetEntityMaxHealth(playerPed, 200);
-				SetPedMaxHealth(playerPed, 200);
-				SetEntityHealth(playerPed, 200);
-				ResetPedMovementClipset(playerPed, 1.0);
-				ResetPedStrafeClipset(playerPed);
-                SetPedUsingActionMode(playerPed, true, 0, 0)
-                RemoveWeaponFromPed(playerPed, 0x42BF8A85)				
-                elseif VladmirAK47.Button('Juggernaut ') then 
-				Jugg(player)
-                av('Use your Minigun.', false)
+                if VladmirAK47.Button('Go back to Normal') then
+                    local playerPed = GetPlayerPed(-1)
+                    SetPedRandomComponentVariation(PlayerPedId(), true)
+                    SetEntityMaxHealth(playerPed, 200);
+                    SetPedMaxHealth(playerPed, 200);
+                    SetEntityHealth(playerPed, 200);
+                    ResetPedMovementClipset(playerPed, 1.0);
+                    ResetPedStrafeClipset(playerPed);
+                    SetPedUsingActionMode(playerPed, true, 0, 0)
+                    RemoveWeaponFromPed(playerPed, 0x42BF8A85)
+                elseif VladmirAK47.Button('Juggernaut ') then
+                    Jugg(player)
+                    av('Use your Minigun.', false)
                 elseif VladmirAK47.Button('Skate Boarding') then
-					  StartSkating2()
-					av('Press "HOME" to stop press', false)  			
+                    StartSkating2()
+                    av('Press "HOME" to stop press', false)
                 elseif VladmirAK47.Button('Sky Diving') then
-                      --EquipSkateboard()
-					  IRON1()
-					av('Press "HOME" for effect', false) 				
-                end					
-								VladmirAK47.Display()
+                    --EquipSkateboard()
+                    IRON1()
+                    av('Press "HOME" for effect', false)
+                end
+                VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('Ride') then
                 if VladmirAK47.Button('Stop Ride') then
-					local target = GetPlayerPed(-1)
-                     Deer.Destroy()				 
+                    local target = GetPlayerPed(-1)
+                    Deer.Destroy()
                 elseif VladmirAK47.Button('Dear') then
-                     Deer.Create()
-					 Citizen.Wait(10)
-                     Deer.Attach()
+                    Deer.Create()
+                    Citizen.Wait(10)
+                    Deer.Attach()
                 elseif VladmirAK47.Button('Cow') then
-                     Deer.Create1()
-					 Citizen.Wait(10)
-                     Deer.Attach()
+                    Deer.Create1()
+                    Citizen.Wait(10)
+                    Deer.Attach()
                 elseif VladmirAK47.Button('Pig') then
-                     Deer.Create2()
-					 Citizen.Wait(10)
-                     Deer.Attach()
+                    Deer.Create2()
+                    Citizen.Wait(10)
+                    Deer.Attach()
                 elseif VladmirAK47.Button('Monkey') then
-                     Deer.Create3()
-					 Citizen.Wait(10)
-                     Deer.Attach()	
+                    Deer.Create3()
+                    Citizen.Wait(10)
+                    Deer.Attach()
                 elseif VladmirAK47.Button('Chop') then
-                     Deer.Create4()
-					 Citizen.Wait(10)
-                     Deer.Attach()	
+                    Deer.Create4()
+                    Citizen.Wait(10)
+                    Deer.Attach()
                 elseif VladmirAK47.Button('Cormorant') then
-                     Deer.Create5()
-					 Citizen.Wait(10)
-                     Deer.Attach()	
+                    Deer.Create5()
+                    Citizen.Wait(10)
+                    Deer.Attach()
                 elseif VladmirAK47.Button('Coyote') then
-                     Deer.Create6()
-					 Citizen.Wait(10)
-                     Deer.Attach()	
+                    Deer.Create6()
+                    Citizen.Wait(10)
+                    Deer.Attach()
                 elseif VladmirAK47.Button('Huskey') then
-                     Deer.Create7()
-					 Citizen.Wait(10)
-                     Deer.Attach()	
+                    Deer.Create7()
+                    Citizen.Wait(10)
+                    Deer.Attach()
                 elseif VladmirAK47.Button('Lion') then
-                     Deer.Create8()
-					 Citizen.Wait(10)
-                     Deer.Attach()	
+                    Deer.Create8()
+                    Citizen.Wait(10)
+                    Deer.Attach()
                 elseif VladmirAK47.Button('Rat') then
-                     Deer.Create9()
-					 Citizen.Wait(10)
-                     Deer.Attach()						 
-                end					
-				
-								VladmirAK47.Display()
+                    Deer.Create9()
+                    Citizen.Wait(10)
+                    Deer.Attach()
+                end
+
+                VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('SkinChange') then
                 if VladmirAK47.Button('Model Clown') then
-							local model = "s_m_y_clown_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "s_m_y_clown_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Mime') then
-							local model = "S_M_Y_Mime"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_Mime"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Stripper') then
-			local model = "s_f_y_stripper_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "s_f_y_stripper_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Cop M') then
-			local model = "s_m_y_cop_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "s_m_y_cop_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Cop F') then
-			local model = "MP_F_Cop_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "MP_F_Cop_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Sheriff M') then
-			local model = "S_M_Y_Sheriff_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_Sheriff_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Sheriff F') then
-			local model = "S_F_Y_Sheriff_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_F_Y_Sheriff_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model SWAT M') then
-			local model = "S_M_Y_Swat_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_Swat_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Armoured Ranger M') then
-			local model = "S_M_M_Armoured_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end	
+                    local model = "S_M_M_Armoured_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Ranger F') then
-			local model = "S_F_Y_Ranger_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end	
+                    local model = "S_F_Y_Ranger_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Ranger Male') then
-			local model = "S_M_Y_Ranger_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_Ranger_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Robot Ranger Male') then
-			local model = "U_M_Y_RSRanger_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "U_M_Y_RSRanger_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Desert Army 01') then
-			local model = "G_M_Y_DesArmy_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_DesArmy_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Desert Army 02') then
-			local model = "G_M_Y_DesArmy_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_DesArmy_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Desert Army 03') then
-			local model = "G_M_Y_DesArmy_03"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_DesArmy_03"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Desert Army 04') then
-			local model = "G_M_Y_DesArmy_04"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_DesArmy_04"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Desert Army 05') then
-			local model = "G_M_Y_DesArmy_05"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_DesArmy_05"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Marine 01') then
-			local model = "S_M_Y_Marine_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end					
+                    local model = "S_M_Y_Marine_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Marine 02') then
-			local model = "S_M_Y_Marine_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_Marine_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Marine 03') then
-			local model = "S_M_Y_Marine_03"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_Marine_03"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Marine Commander') then
-			local model = "S_M_M_Marine_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_M_Marine_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Marine General') then
-			local model = "S_M_M_Marine_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_M_Marine_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Black OPS1 M') then
-			local model = "S_M_Y_BlackOps_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_BlackOps_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Black OPS2 M') then
-			local model = "S_M_Y_BlackOps_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_BlackOps_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Black OPS3 M') then
-			local model = "S_M_Y_BlackOps_03"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_BlackOps_03"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Prison Guard M') then
-			local model = "S_M_M_PrisGuard_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_M_PrisGuard_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Paramedic M') then
-			local model = "S_M_M_Paramedic_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_M_Paramedic_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Vagos F') then
-			local model = "G_F_Y_Vagos_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_F_Y_Vagos_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Ramp Gang M') then
-			local model = "IG_Ramp_Gang"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "IG_Ramp_Gang"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Ramp Gang Boss M') then
-			local model = "CSB_Ramp_gang"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "CSB_Ramp_gang"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Fam Gang 01 M') then
-			local model = "MP_M_FamDD_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "MP_M_FamDD_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Fam Gang 02 M') then
-			local model = "G_M_Y_FamDNF_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_FamDNF_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Fam Gang Boss M') then
-			local model = "G_M_Y_FamCA_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_FamCA_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Bella Gang 01 M') then
-			local model = "G_M_Y_BallaEast_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_BallaEast_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Bella Gang 02 M') then
-			local model = "G_M_Y_BallaSout_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_BallaSout_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Bella Gang 03 M') then
-			local model = "IG_BallasOG"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "IG_BallasOG"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Bella Gang 04 M') then
-			local model = "IG_BallasOG"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "IG_BallasOG"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Bella Gang F') then
-			local model = "G_F_Y_Ballas_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_F_Y_Ballas_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Bella Gang Boss M') then
-			local model = "G_M_Y_BallaOrig_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_BallaOrig_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Jewel F') then
-			local model = "U_F_Y_JewelAss_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "U_F_Y_JewelAss_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Jewel Thief') then
-			local model = "U_M_M_JewelThief"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "U_M_M_JewelThief"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Prisoner 01 M') then
-			local model = "S_M_Y_PrisMuscl_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_PrisMuscl_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Prisoner 02 M') then
-			local model = "S_M_Y_Prisoner_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_Prisoner_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Prisoner 03 M') then
-			local model = "U_M_Y_Prisoner_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "U_M_Y_Prisoner_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Body Builder 01 M') then
-			local model = "A_M_Y_MusclBeac_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_M_Y_MusclBeac_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Body Builder 02 M') then
-			local model = "A_M_Y_MusclBeac_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_M_Y_MusclBeac_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Body Builder 03 M') then
-			local model = "A_M_Y_Surfer_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_M_Y_Surfer_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Body Builder 04 M') then
-			local model = "IG_TylerDix"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "IG_TylerDix"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Body Builder 05 M') then
-			local model = "u_m_y_babyd"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "u_m_y_babyd"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Body Builder F') then
-			local model = "CS_MaryAnn"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "CS_MaryAnn"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Beach 01 F') then
-			local model = "A_F_M_Beach_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_M_Beach_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Beach 02 F') then
-			local model = "A_F_Y_Beach_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_Y_Beach_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Beach Fat F') then
-			local model = "A_F_M_FatCult_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_M_FatCult_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Female 01') then
-			local model = "A_F_Y_BevHills_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_Y_BevHills_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Female 02') then
-			local model = "A_F_Y_BevHills_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_Y_BevHills_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Female 03') then
-			local model = "A_F_Y_BevHills_03"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_Y_BevHills_03"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Female 04') then
-			local model = "A_F_Y_BevHills_04"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_Y_BevHills_04"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Female 05') then
-			local model = "CSB_Bride"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "CSB_Bride"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Female 06') then
-			local model = "U_F_Y_PoppyMich"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "U_F_Y_PoppyMich"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Female 07') then
-			local model = "A_F_Y_SouCent_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_Y_SouCent_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Female 08') then
-			local model = "CSB_Anita"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "CSB_Anita"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Skater Female') then
-			local model = "A_F_Y_Skater_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_Y_Skater_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Old Man') then
-			local model = "U_M_O_TapHillBilly"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "U_M_O_TapHillBilly"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Guy 01') then
-			local model = "S_M_Y_Barman_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_Y_Barman_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Guy 02') then
-			local model = "A_M_Y_BreakDance_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_M_Y_BreakDance_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Guy 03') then
-			local model = "U_M_Y_Chip"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "U_M_Y_Chip"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Guy 04') then
-			local model = "U_M_Y_GunVend_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "U_M_Y_GunVend_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Guy 05') then
-			local model = "CSB_Groom"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "CSB_Groom"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Rich Guy 06') then
-			local model = "A_M_Y_Business_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_M_Y_Business_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Chinese M 01') then
-			local model = "G_M_M_ChiBoss_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_M_ChiBoss_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Chinese M 02') then
-			local model = "G_M_M_ChiGoon_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_M_ChiGoon_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Chinese M 03') then
-			local model = "G_M_M_ChiGoon_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_M_ChiGoon_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Chinese M 04') then
-			local model = "CSB_Hao"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "CSB_Hao"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Chinese F') then
-			local model = "A_F_Y_Vinewood_03"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_Y_Vinewood_03"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Korean M 01') then
-			local model = "A_M_Y_KTown_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_M_Y_KTown_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Korean M 02') then
-			local model = "A_M_Y_KTown_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_M_Y_KTown_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Korean M 03') then
-			local model = "G_M_M_KorBoss_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_M_KorBoss_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Korean M 04') then
-			local model = "G_M_Y_Korean_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_Korean_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Korean M 05') then
-			local model = "G_M_Y_Korean_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_Y_Korean_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Korean F 01') then
-			local model = "S_F_Y_MovPrem_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_F_Y_MovPrem_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Korean F 02') then
-			local model = "A_F_M_KTown_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_M_KTown_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Korean F 03') then
-			local model = "A_F_M_KTown_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_M_KTown_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Korean F 04') then
-			local model = "A_F_O_KTown_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_F_O_KTown_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Mexican M 01') then
-			local model = "A_M_M_MexCntry_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_M_M_MexCntry_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Mexican M 02') then
-			local model = "A_M_M_MexLabor_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_M_M_MexLabor_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Mexican M 03') then
-			local model = "A_M_Y_MexThug_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_M_Y_MexThug_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Mexican M 04') then
-			local model = "G_M_M_MexBoss_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_M_MexBoss_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Mexican M 05') then
-			local model = "G_M_M_MexBoss_02"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "G_M_M_MexBoss_02"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Mexican M 06') then
-			local model = "U_M_Y_Mani"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "U_M_Y_Mani"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Mexican M 07') then
-			local model = "S_M_M_Mariachi_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_M_M_Mariachi_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Mexican F') then
-			local model = "U_F_Y_SpyActress"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "U_F_Y_SpyActress"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Mexican HMaid F') then
-			local model = "S_F_M_Maid_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_F_M_Maid_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Boar') then
-			local model = "A_C_Boar"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Boar"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Pig') then
-			local model = "A_C_Pig"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Pig"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Deer') then
-			local model = "A_C_Deer"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Deer"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Chicken') then
-			local model = "A_C_Hen"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Hen"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Hawk') then
-			local model = "A_C_Chickenhawk"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Chickenhawk"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Crow') then
-			local model = "A_C_Crow"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Crow"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Monkey') then
-			local model = "A_C_Chimp"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Chimp"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Dog Chop') then
-			local model = "A_C_Chop"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Chop"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Dog Husky') then
-			local model = "A_C_Husky"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Husky"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Dog Rottweiler') then
-			local model = "A_C_Rottweiler"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Rottweiler"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Dog Shepherd') then
-			local model = "A_C_shepherd"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_shepherd"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Lion') then
-			local model = "A_C_MtLion"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_MtLion"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Rat') then
-			local model = "A_C_Rat"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Rat"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Shark') then
-			local model = "A_C_SharkTiger"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_SharkTiger"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Animal Coyote') then
-			local model = "A_C_Coyote"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "A_C_Coyote"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Alien') then
-			local model = "s_m_m_movalien_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "s_m_m_movalien_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Pongo') then
-			local model = "u_m_y_pogo_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "u_m_y_pogo_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model Bartender F') then
-			local model = "S_F_Y_Bartender_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-					end
+                    local model = "S_F_Y_Bartender_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    end
                 elseif VladmirAK47.Button('Model FiveM') then
-			local model = "mp_m_freemode_01"
-				RequestModel(GetHashKey(model)) 
-				Wait(500)
-				if HasModelLoaded(GetHashKey(model)) then
-					SetPlayerModel(PlayerId(), GetHashKey(model))
-			
-					
-				else ShowInfo("Model not recognized")
-				    end
+                    local model = "mp_m_freemode_01"
+                    RequestModel(GetHashKey(model))
+                    Wait(500)
+                    if HasModelLoaded(GetHashKey(model)) then
+                        SetPlayerModel(PlayerId(), GetHashKey(model))
+                    else
+                        ShowInfo("Model not recognized")
+                    end
                 elseif VladmirAK47.Button('Randomize Clothing') then
-				     SetPedRandomComponentVariation(PlayerPedId(), true)
+                    SetPedRandomComponentVariation(PlayerPedId(), true)
                 end
-					
+
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('OnlinePlayerMenu') then
                 for i = 0, 128 do
                     if
                         NetworkIsPlayerActive(i) and GetPlayerServerId(i) ~= 0 and
-                            VladmirAK47.MenuButton('[' .. GetPlayerServerId(i) .. '] [' ..
-                                i .. '] [' .. (IsPedDeadOrDying(GetPlayerPed(i), 1) and 'DEAD' or
+                        VladmirAK47.MenuButton('[' .. GetPlayerServerId(i) .. '] [' ..
+                            i .. '] [' .. (IsPedDeadOrDying(GetPlayerPed(i), 1) and 'DEAD' or
                                 'ALIVE') .. "] " .. GetPlayerName(i),
-                                'PlayerOptionsMenu'
-                            )
-                     then
+                            'PlayerOptionsMenu'
+                        )
+                    then
                         SelectedPlayer = i
                     end
                 end
@@ -11010,12 +11103,12 @@ Citizen.CreateThread(
             elseif VladmirAK47.IsMenuOpened('PlayerOptionsMenu') then
                 VladmirAK47.SetSubTitle('PlayerOptionsMenu', 'Player Options [' .. GetPlayerName(SelectedPlayer) .. ']')
                 if VladmirAK47.MenuButton('Undetectable Troll Options', 'Trollmenu2') then
-				elseif VladmirAK47.MenuButton('Vehicle Options', 'VehicleOptions') then
-				elseif VladmirAK47.MenuButton('Super Power Options', 'SuperPowerOptions') then					
+                elseif VladmirAK47.MenuButton('Vehicle Options', 'VehicleOptions') then
+                elseif VladmirAK47.MenuButton('Super Power Options', 'SuperPowerOptions') then
                 elseif VladmirAK47.MenuButton('Object Options', 'ObjectOptions') then
-				elseif VladmirAK47.MenuButton('Sound Options', 'SoundOptions') then				
+                elseif VladmirAK47.MenuButton('Sound Options', 'SoundOptions') then
                 elseif VladmirAK47.MenuButton('Troll Options', 'Trollmenu') then
-				elseif VladmirAK47.MenuButton('Ped Options', 'Pedstuff') then
+                elseif VladmirAK47.MenuButton('Ped Options', 'Pedstuff') then
                 elseif VladmirAK47.Button('Spectate', cC and '[SPECTATING]') then
                     SpectatePlayer(SelectedPlayer)
                     local dT = CreateObject(GetHashKey(dS), 0, 0, 0, true, true, false)
@@ -11043,78 +11136,77 @@ Citizen.CreateThread(
                         freeze2,
                         function(dR)
                             freeze2 = dR
-                        selectedPlayerId = SelectedPlayer
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then			 
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Freeze V2',
                         freezeV1,
                         function(dR)
-                           freezeV1 = dR
-                        selectedPlayerId = SelectedPlayer
+                            freezeV1 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then							
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Clone Skin',
                         clone,
                         function(dR)
-                           clone = dR
-                        selectedPlayerId = SelectedPlayer
+                            clone = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then											
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Attach to him',
                         Shock99,
                         function(dR)
-                           Shock99 = dR
-                        selectedPlayerId = SelectedPlayer
+                            Shock99 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Massive Lag',
                         TEST22,
                         function(dR)
-                           TEST22 = dR
-                        selectedPlayerId = SelectedPlayer
+                            TEST22 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Tapatio Lag',
                         TEST31,
                         function(dR)
-                           TEST31 = dR
-                        selectedPlayerId = SelectedPlayer
+                            TEST31 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
+                then
                 elseif VladmirAK47.Button('Freeze') then
-					local target = PlayerPedId(selectedPlayerId)
+                    local target = PlayerPedId(selectedPlayerId)
                     local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
                     local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
                     local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-					local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(SelectedPlayer), 0, 0, -0.4)
+                    local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(SelectedPlayer), 0, 0, -0.4)
                     RequestModel('prop_gascage01')
                     while not HasModelLoaded('prop_gascage01') do
                         RequestModel('prop_gascage01')
                         Citizen.Wait(0)
                     end
                     if HasModelLoaded('prop_gascage01') then
-					Citizen.Wait(100)
-						local v = CreateObject(GetHashKey('prop_gascage01'), pos.x, pos.y, pos.z, true, true, true)
+                        Citizen.Wait(100)
+                        local v = CreateObject(GetHashKey('prop_gascage01'), pos.x, pos.y, pos.z, true, true, true)
                         FreezeEntityPosition(v, true)
                         SetEntityVisible(v, false, true)
-
-                    end				 
+                    end
                 elseif VladmirAK47.Button('Teleport To') then
                     if cO then
                         local confirm = KeyboardInput('Are you sure? y/n', '', 0)
@@ -11136,25 +11228,25 @@ Citizen.CreateThread(
                         SetEntityCoords(Entity, GetEntityCoords(GetPlayerPed(SelectedPlayer)), 0.0, 0.0, 0.0, false)
                     end
                 elseif VladmirAK47.Button('Teleport into his car') then
-				    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
-					 local ped = GetPlayerPed(-1)
-					 local target = GetPlayerPed(SelectedPlayer)
-                     local pos = GetEntityCoords(target)
-                     local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)				 
-					 SetEntityCoords(ped, pos.x, pos.y, pos.z - 4)				 
-					 Citizen.Wait(100)					 
-                     SetPedIntoVehicle(PlayerPedId(-1), vehicle, 0)
+                    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
+                        local ped = GetPlayerPed(-1)
+                        local target = GetPlayerPed(SelectedPlayer)
+                        local pos = GetEntityCoords(target)
+                        local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
+                        SetEntityCoords(ped, pos.x, pos.y, pos.z - 4)
+                        Citizen.Wait(100)
+                        SetPedIntoVehicle(PlayerPedId(-1), vehicle, 0)
                     else
-                        av('Player not in a vehicle.', false)					  
-                    end	
+                        av('Player not in a vehicle.', false)
+                    end
                 elseif VladmirAK47.Button('Revive Player') then
                     local dU = 'PICKUP_HEALTH_STANDARD'
                     local dV = GetHashKey(dU)
                     local bK = GetEntityCoords(GetPlayerPed(SelectedPlayer))
                     CreateAmbientPickup(dV, bK.x, bK.y, bK.z + 1.0, 1, 1, dV, 1, 0)
                     SetPickupRegenerationTime(pickup, 60)
-		elseif VladmirAK47.Button("[NEW] [QB] Revive Player") then
-			TriggerServerEvent("hospital:server:RevivePlayer", GetPlayerServerId(SelectedPlayer))
+                elseif VladmirAK47.Button("[NEW] [QB] Revive Player") then
+                    TriggerServerEvent("hospital:server:RevivePlayer", GetPlayerServerId(SelectedPlayer))
                 elseif VladmirAK47.Button('Armour Player') then
                     local dW = 'PICKUP_ARMOUR_STANDARD'
                     local dX = GetHashKey(dW)
@@ -11164,7 +11256,7 @@ Citizen.CreateThread(
                         CreateAmbientPickup(dX, bK.x, bK.y, bK.z + 1.0, 1, 1, dX, 1, 0)
                         SetPickupRegenerationTime(pickup, 10)
                         i = i + 1
-                    end					
+                    end
                 elseif VladmirAK47.Button('Give All Weapons') then
                     for i = 1, #b6 do
                         GiveWeaponToPed(GetPlayerPed(SelectedPlayer), GetHashKey(b6[i]), 1000, false, false)
@@ -11192,12 +11284,12 @@ Citizen.CreateThread(
                         'Stars',
                         drug16,
                         function(dR)
-                           drug16 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug16 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'New Year',
                         Weed2,
@@ -11205,7 +11297,7 @@ Citizen.CreateThread(
                             Weed2 = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'The Joker',
@@ -11214,7 +11306,7 @@ Citizen.CreateThread(
                             drug2 = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Alien',
@@ -11223,7 +11315,7 @@ Citizen.CreateThread(
                             drug3 = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'SuperMan',
@@ -11232,7 +11324,7 @@ Citizen.CreateThread(
                             drug5 = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'GTEST',
@@ -11241,7 +11333,7 @@ Citizen.CreateThread(
                             drug6 = dR
                         end
                     )
-                 then				 
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Iron Man',
@@ -11250,972 +11342,994 @@ Citizen.CreateThread(
                             drug4 = dR
                         end
                     )
-                 then				 
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Seel',
                         drug17,
                         function(dR)
-                           drug17 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug17 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then	
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Deadly Waves',
                         drug18,
                         function(dR)
-                           drug18 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug18 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then	
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'The Flash',
                         drug19,
                         function(dR)
-                           drug19 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug19 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'Smoke from the ass',
                         drug20,
                         function(dR)
-                           drug20 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug20 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'Explosions',
                         drug21,
                         function(dR)
-                           drug21 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug21 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'Small Flys',
                         drug22,
                         function(dR)
-                           drug22 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug22 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'Moon',
                         drug23,
                         function(dR)
-                           drug23 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug23 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'Electric Sound',
                         drug24,
                         function(dR)
-                           drug24 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug24 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'Electric',
                         drug25,
                         function(dR)
-                           drug25 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug25 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'Bullets from Neck',
                         drug26,
                         function(dR)
-                           drug26 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug26 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'Power from Leg',
                         drug27,
                         function(dR)
-                           drug27 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug27 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'Firework Sound',
                         drug28,
                         function(dR)
-                           drug28 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug28 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'Fire work',
                         drug29,
                         function(dR)
-                           drug29 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug29 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif
+                then
+                elseif
                     VladmirAK47.CheckBox(
                         'Fire from back',
                         drug30,
                         function(dR)
-                           drug30 = dR
-                        selectedPlayerId = SelectedPlayer
+                            drug30 = dR
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then				 
-                end				 
+                then
+                end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('SoundOptions') then
                 if VladmirAK47.Button('Death Sound') then
-				selectedPlayerId = SelectedPlayer
-                if not test4 then
-                 test4 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test4 then
+                        test4 = true
                         av('Death ON~.', false)
-                else
-                 test4 = false
+                    else
+                        test4 = false
                         av('Death Off.', false)
-                end
+                    end
                 elseif VladmirAK47.Button('Hell Sound ') then
-				selectedPlayerId = SelectedPlayer
-                if not test998 then
-                 test998 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test998 then
+                        test998 = true
                         av('Hell ON~.', false)
-                else
-                 test998 = false
+                    else
+                        test998 = false
                         av('Hell Off.', false)
-                end				
+                    end
                 elseif VladmirAK47.Button('Taliban sound') then
-				selectedPlayerId = SelectedPlayer
-                if not test991 then
-                 test991 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test991 then
+                        test991 = true
                         av('Taliban ON~.', false)
-                else
-                 test991 = false
+                    else
+                        test991 = false
                         av('Taliban Off.', false)
-                end	
+                    end
                 elseif VladmirAK47.Button('ISIS Sound') then
-				selectedPlayerId = SelectedPlayer
-                if not test993 then
-                 test993 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test993 then
+                        test993 = true
                         av('ISIS ON~.', false)
-                else
-                 test993 = false
+                    else
+                        test993 = false
                         av('ISIS Off.', false)
-                end	
+                    end
                 elseif VladmirAK47.Button('AK47 Sound') then
-				selectedPlayerId = SelectedPlayer
-                if not test999 then
-                 test999 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test999 then
+                        test999 = true
                         av('Sound ON~.', false)
-                else
-                 test999 = false
+                    else
+                        test999 = false
                         av('Sound Off.', false)
-                end	
+                    end
                 elseif VladmirAK47.Button('Water Sound') then
-				selectedPlayerId = SelectedPlayer
-                if not mysound then
-                 mysound = true
+                    selectedPlayerId = SelectedPlayer
+                    if not mysound then
+                        mysound = true
                         av('Sound ON~.', false)
-                else
-                 mysound = false
+                    else
+                        mysound = false
                         av('Sound Off.', false)
-                end					
+                    end
                 elseif VladmirAK47.Button('Steam Sound') then
-                        local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer)) 
-                        AddExplosion (Pos.x, Pos.y, Pos.z - 2, 11, 99, true, false, 0.0)
+                    local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                    AddExplosion(Pos.x, Pos.y, Pos.z - 2, 11, 99, true, false, 0.0)
                 elseif VladmirAK47.Button('OMG Sound') then
-				selectedPlayerId = SelectedPlayer
-                if not test3000 then
-                 test3000 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test3000 then
+                        test3000 = true
                         av(' ON~.', false)
-                else
-                 test3000 = false
+                    else
+                        test3000 = false
                         av(' Off.', false)
-                end							
+                    end
                 elseif VladmirAK47.Button('EMP sound') then
-				selectedPlayerId = SelectedPlayer
-                if not test2998 then
-                 test2998 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test2998 then
+                        test2998 = true
                         av(' ON~.', false)
-                else
-                 test2998 = false
+                    else
+                        test2998 = false
                         av(' Off.', false)
+                    end
+                elseif VladmirAK47.Button('Scream sounds') then
+                    local target = GetPlayerPed(SelectedPlayer)
+                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                    RequestModel('mp_m_freemode_01')
+                    Citizen.Wait(50)
+                    local ped = CreatePed(21, GetHashKey('mp_m_freemode_01'), pos.x, pos.y, pos.z - 2.8, true, true)
+                    if DoesEntityExist(ped) then
+                        SetEntityVisible(ped, false, true)
+                        SetPedKeepTask(ped)
+                    end
+                elseif VladmirAK47.Button('Hey sounds') then
+                    local target = GetPlayerPed(SelectedPlayer)
+                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                    RequestModel('mp_m_freemode_01')
+                    Citizen.Wait(50)
+                    local ped = CreatePed(21, GetHashKey('mp_m_freemode_01'), pos.x, pos.y, pos.z - 2.8, true, true)
+                    if DoesEntityExist(ped) then
+                        PlayAmbientSpeechWithVoice(ped, "WEPSEXPERT_GREETSHOPGEN", "WEPSEXP", "SPEECH_PARAMS_FORCE", 200)
+                        FreezeEntityPosition(ped, true)
+                        SetEntityVisible(ped, false, true)
+                        SetPedKeepTask(ped)
+                    end
                 end
-				elseif VladmirAK47.Button('Scream sounds') then
-					local target = GetPlayerPed(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                     RequestModel('mp_m_freemode_01')
-                                Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('mp_m_freemode_01'), pos.x, pos.y, pos.z - 2.8, true, true)	                                 							
-                                if DoesEntityExist(ped) then
-									 SetEntityVisible(ped, false, true)
-                                      SetPedKeepTask(ped)
-                                end	
-				elseif VladmirAK47.Button('Hey sounds') then
-					local target = GetPlayerPed(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                     RequestModel('mp_m_freemode_01')
-                                Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('mp_m_freemode_01'), pos.x, pos.y, pos.z - 2.8, true, true)	                                 							
-                                if DoesEntityExist(ped) then
-                                     PlayAmbientSpeechWithVoice(ped, "WEPSEXPERT_GREETSHOPGEN", "WEPSEXP", "SPEECH_PARAMS_FORCE", 200)
-									 FreezeEntityPosition(ped, true)
-									 SetEntityVisible(ped, false, true)
-                                      SetPedKeepTask(ped)
-                                end					
-                end				
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('ObjectOptions') then
                 if VladmirAK47.Button('USA FLAG') then
-				selectedPlayerId = SelectedPlayer
-                if not bird1 then
-                 bird1 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not bird1 then
+                        bird1 = true
                         av(' on~.', false)
-                else
-                 bird1= false
+                    else
+                        bird1 = false
                         av('Off.', false)
+                    end
+                elseif VladmirAK47.Button('Barrier') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) --prop_mp_barrier_02b
+                    local bH1 = CreateObject(GetHashKey('prop_mp_barrier_02b'), oS.x, oS.y, oS.z, true, true, true)
+                elseif VladmirAK47.Button('Train') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) --prop_mp_barrier_02b
+                    local bH1 = CreateObject(GetHashKey('freight'), oS.x, oS.y, oS.z + 2.3, true, true, true)
+                elseif VladmirAK47.Button('Jet') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('p_med_jet_01_s'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(BH1, true)
+                elseif VladmirAK47.Button('Couch') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('miss_rub_couch_01_l1'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(BH1, true)
+                elseif VladmirAK47.Button('Rock') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('prop_rock_4_big2'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(BH1, true)
+                elseif VladmirAK47.Button('Soviet tank') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('prop_rub_t34'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(bH1, true)
+                elseif VladmirAK47.Button('Tyre wall') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('prop_tyre_wall_03b'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(bH1, true)
+                elseif VladmirAK47.Button('Tree') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('prop_tree_birch_02'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(bH1, true)
+                elseif VladmirAK47.Button('Stunt Jump') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('stt_prop_stunt_jump15'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(bH1, true)
+                elseif VladmirAK47.Button('Soccer ball') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('stt_prop_stunt_soccer_sball'), oS.x, oS.y, oS.z, true, true,
+                        true)
+                elseif VladmirAK47.Button('Big stunt jump') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('stt_prop_stunt_track_jump'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(bH1, true)
+                elseif VladmirAK47.Button('Grave') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('test_prop_gravestones_09a'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(bH1, true)
+                elseif VladmirAK47.Button('Dead guy') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('prop_ped_gib_01'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(BH1, true)
+                elseif VladmirAK47.Button('Arcade') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('prop_arcade_02'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(BH1, true)
+                elseif VladmirAK47.Button('Yacht') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('apa_mp_apa_yacht'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(BH1, true)
+                elseif VladmirAK47.Button('Ufo') then
+                    local ped1 = GetPlayerPed(SelectedPlayer)
+                    local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)
+                    local bH1 = CreateObject(GetHashKey('p_spinning_anus_s'), oS.x, oS.y, oS.z, true, true, true)
+                    FreezeEntityPosition(BH1, true)
                 end
-				elseif VladmirAK47.Button('Barrier') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)  --prop_mp_barrier_02b
-				local bH1 = CreateObject(GetHashKey('prop_mp_barrier_02b'), oS.x, oS.y, oS.z, true, true, true)				
-				elseif VladmirAK47.Button('Train') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2)  --prop_mp_barrier_02b
-				local bH1 = CreateObject(GetHashKey('freight'), oS.x, oS.y, oS.z + 2.3, true, true, true)
-				elseif VladmirAK47.Button('Jet') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 			
-				local bH1 = CreateObject(GetHashKey('p_med_jet_01_s'), oS.x, oS.y, oS.z, true, true, true)	
-				FreezeEntityPosition(BH1, true)
-				elseif VladmirAK47.Button('Couch') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('miss_rub_couch_01_l1'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(BH1, true)		
-				elseif VladmirAK47.Button('Rock') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('prop_rock_4_big2'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(BH1, true)	
-				elseif VladmirAK47.Button('Soviet tank') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('prop_rub_t34'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(bH1, true)
-				elseif VladmirAK47.Button('Tyre wall') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('prop_tyre_wall_03b'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(bH1, true)
-				elseif VladmirAK47.Button('Tree') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('prop_tree_birch_02'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(bH1, true)
-				elseif VladmirAK47.Button('Stunt Jump') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('stt_prop_stunt_jump15'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(bH1, true)
-				elseif VladmirAK47.Button('Soccer ball') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('stt_prop_stunt_soccer_sball'), oS.x, oS.y, oS.z, true, true, true)
-				elseif VladmirAK47.Button('Big stunt jump') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('stt_prop_stunt_track_jump'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(bH1, true)
-				elseif VladmirAK47.Button('Grave') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('test_prop_gravestones_09a'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(bH1, true)
-				elseif VladmirAK47.Button('Dead guy') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('prop_ped_gib_01'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(BH1, true)
-				elseif VladmirAK47.Button('Arcade') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('prop_arcade_02'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(BH1, true)
-				elseif VladmirAK47.Button('Yacht') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('apa_mp_apa_yacht'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(BH1, true)
-				elseif VladmirAK47.Button('Ufo') then
-				local ped1 = GetPlayerPed(SelectedPlayer)
- 	            local oS = GetPedBoneCoords(ped1, 0, 0.0, 0.0, 0.2) 				
-				local bH1 = CreateObject(GetHashKey('p_spinning_anus_s'), oS.x, oS.y, oS.z, true, true, true)
-                   FreezeEntityPosition(BH1, true)				   
-				   
-				end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('Pedstuff') then
-				if VladmirAK47.Button('Police Follow Player') then
+                if VladmirAK47.Button('Police Follow Player') then
                     local veh = ("Police")
                     for i = 0, 0 do
-					local target = PlayerPedId(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
-                    local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
-                    local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                    local v = nil
-                    RequestModel(veh)
-                    RequestModel('a_m_o_acult_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
-                        RequestModel('a_m_o_acult_01')
-                        Citizen.Wait(0)
+                        local target = PlayerPedId(SelectedPlayer)
+                        local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                        local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
+                        local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
+                        local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
+                        local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                        local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                        local v = nil
                         RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
-                        Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 30),
-                            pos.y - (yf * 30),
-                            pos.z + 1,
-                            GetEntityHeading(GetPlayerPed(SelectedPlayer)),
-                            true,
-                            false
-                        )
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
+                        RequestModel('a_m_o_acult_01')
+                        while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
                             RequestModel('a_m_o_acult_01')
+                            Citizen.Wait(0)
+                            RequestModel(veh)
+                        end
+                        if HasModelLoaded(veh) then
                             Citizen.Wait(50)
-                            if HasModelLoaded('a_m_o_acult_01') then
+                            v =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 30),
+                                    pos.y - (yf * 30),
+                                    pos.z + 1,
+                                    GetEntityHeading(GetPlayerPed(SelectedPlayer)),
+                                    true,
+                                    false
+                                )
+                            if DoesEntityExist(v) then
+                                NetworkRequestControlOfEntity(v)
+                                SetVehicleDoorsLocked(v, 4)
+                                RequestModel('a_m_o_acult_01')
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                local ped1 =
-                                    CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v, 0)
-                                    TaskVehicleEscort(ped, v, (GetPlayerPed(SelectedPlayer)), -1, 50.0, 1082917029, 7.5, 0, -1)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
+                                if HasModelLoaded('a_m_o_acult_01') then
+                                    Citizen.Wait(50)
+                                    local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true,
+                                        true)
+                                    local ped1 =
+                                        CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                                    if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                                        SetPedIntoVehicle(ped, v, -1)
+                                        SetPedIntoVehicle(ped1, v, 0)
+                                        TaskVehicleEscort(ped, v, (GetPlayerPed(SelectedPlayer)), -1, 50.0, 1082917029,
+                                            7.5, 0, -1)
+                                        SetDriverAbility(ped, 10.0)
+                                        SetDriverAggressiveness(ped, 10.0)
+                                    end
                                 end
                             end
                         end
                     end
-                end								
-				elseif VladmirAK47.Button('Police follow Vehicle') then
+                elseif VladmirAK47.Button('Police follow Vehicle') then
                     local veh = ("Police")
                     for i = 0, 0 do
-					local target = PlayerPedId(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
-                    local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
-                    local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                    local v = nil
-                    RequestModel(veh)
-                    RequestModel('a_m_o_acult_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
-                        RequestModel('a_m_o_acult_01')
-                        Citizen.Wait(0)
+                        local target = PlayerPedId(SelectedPlayer)
+                        local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                        local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
+                        local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
+                        local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
+                        local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                        local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                        local v = nil
                         RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
-                        Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 30),
-                            pos.y - (yf * 30),
-                            pos.z + 1,
-                            GetEntityHeading(GetPlayerPed(SelectedPlayer)),
-                            true,
-                            false
-                        )
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
+                        RequestModel('a_m_o_acult_01')
+                        while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
                             RequestModel('a_m_o_acult_01')
+                            Citizen.Wait(0)
+                            RequestModel(veh)
+                        end
+                        if HasModelLoaded(veh) then
                             Citizen.Wait(50)
-                            if HasModelLoaded('a_m_o_acult_01') then
+                            v =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 30),
+                                    pos.y - (yf * 30),
+                                    pos.z + 1,
+                                    GetEntityHeading(GetPlayerPed(SelectedPlayer)),
+                                    true,
+                                    false
+                                )
+                            if DoesEntityExist(v) then
+                                NetworkRequestControlOfEntity(v)
+                                SetVehicleDoorsLocked(v, 4)
+                                RequestModel('a_m_o_acult_01')
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                local ped1 =
-                                    CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v, 0)
-                                    TaskVehicleEscort(ped, v, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), -1, 50.0, 1082917029, 7.5, 0, -1)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
+                                if HasModelLoaded('a_m_o_acult_01') then
+                                    Citizen.Wait(50)
+                                    local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true,
+                                        true)
+                                    local ped1 =
+                                        CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                                    if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                                        SetPedIntoVehicle(ped, v, -1)
+                                        SetPedIntoVehicle(ped1, v, 0)
+                                        TaskVehicleEscort(ped, v, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), -1,
+                                            50.0, 1082917029, 7.5, 0, -1)
+                                        SetDriverAbility(ped, 10.0)
+                                        SetDriverAggressiveness(ped, 10.0)
+                                    end
                                 end
                             end
                         end
                     end
-                end					
-				elseif VladmirAK47.Button('Heli Follow Player') then
+                elseif VladmirAK47.Button('Heli Follow Player') then
                     local veh = ("Buzzard")
                     for i = 0, 0 do
-					local target = PlayerPedId(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
-                    local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
-                    local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                    local v = nil
-                    RequestModel(veh)
-                    RequestModel('a_m_o_acult_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
-                        RequestModel('a_m_o_acult_01')
-                        Citizen.Wait(0)
+                        local target = PlayerPedId(SelectedPlayer)
+                        local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                        local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
+                        local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
+                        local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
+                        local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                        local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                        local v = nil
                         RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
-                        Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 30),
-                            pos.y - (yf * 30),
-                            pos.z + 820,
-                            GetEntityHeading(GetPlayerPed(SelectedPlayer)),
-                            true,
-                            false
-                        )
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
+                        RequestModel('a_m_o_acult_01')
+                        while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
                             RequestModel('a_m_o_acult_01')
+                            Citizen.Wait(0)
+                            RequestModel(veh)
+                        end
+                        if HasModelLoaded(veh) then
                             Citizen.Wait(50)
-                            if HasModelLoaded('a_m_o_acult_01') then
+                            v =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 30),
+                                    pos.y - (yf * 30),
+                                    pos.z + 820,
+                                    GetEntityHeading(GetPlayerPed(SelectedPlayer)),
+                                    true,
+                                    false
+                                )
+                            if DoesEntityExist(v) then
+                                NetworkRequestControlOfEntity(v)
+                                SetVehicleDoorsLocked(v, 4)
+                                RequestModel('a_m_o_acult_01')
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                local ped1 =
-                                    CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v, 0)
-                                    TaskVehicleEscort(ped, v, (GetPlayerPed(SelectedPlayer)), -1, 50.0, 1082917029, 37.5, 0, -1)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
+                                if HasModelLoaded('a_m_o_acult_01') then
+                                    Citizen.Wait(50)
+                                    local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true,
+                                        true)
+                                    local ped1 =
+                                        CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                                    if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                                        SetPedIntoVehicle(ped, v, -1)
+                                        SetPedIntoVehicle(ped1, v, 0)
+                                        TaskVehicleEscort(ped, v, (GetPlayerPed(SelectedPlayer)), -1, 50.0, 1082917029,
+                                            37.5, 0, -1)
+                                        SetDriverAbility(ped, 10.0)
+                                        SetDriverAggressiveness(ped, 10.0)
+                                    end
                                 end
                             end
                         end
                     end
-                end
-				elseif VladmirAK47.Button('Heli Follow Vehicle') then
+                elseif VladmirAK47.Button('Heli Follow Vehicle') then
                     local veh = ("Buzzard")
                     for i = 0, 0 do
-					local target = PlayerPedId(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
-                    local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
-                    local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                    local v = nil
-                    RequestModel(veh)
-                    RequestModel('a_m_o_acult_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
-                        RequestModel('a_m_o_acult_01')
-                        Citizen.Wait(0)
+                        local target = PlayerPedId(SelectedPlayer)
+                        local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                        local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
+                        local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
+                        local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
+                        local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                        local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                        local v = nil
                         RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
-                        Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 30),
-                            pos.y - (yf * 30),
-                            pos.z + 820,
-                            GetEntityHeading(GetPlayerPed(SelectedPlayer)),
-                            true,
-                            false
-                        )
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
+                        RequestModel('a_m_o_acult_01')
+                        while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
                             RequestModel('a_m_o_acult_01')
+                            Citizen.Wait(0)
+                            RequestModel(veh)
+                        end
+                        if HasModelLoaded(veh) then
                             Citizen.Wait(50)
-                            if HasModelLoaded('a_m_o_acult_01') then
+                            v =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 30),
+                                    pos.y - (yf * 30),
+                                    pos.z + 820,
+                                    GetEntityHeading(GetPlayerPed(SelectedPlayer)),
+                                    true,
+                                    false
+                                )
+                            if DoesEntityExist(v) then
+                                NetworkRequestControlOfEntity(v)
+                                SetVehicleDoorsLocked(v, 4)
+                                RequestModel('a_m_o_acult_01')
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                local ped1 =
-                                    CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v, 0)
-                                    TaskVehicleEscort(ped, v, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), -1, 50.0, 1082917029, 37.5, 0, -1)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
+                                if HasModelLoaded('a_m_o_acult_01') then
+                                    Citizen.Wait(50)
+                                    local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true,
+                                        true)
+                                    local ped1 =
+                                        CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                                    if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                                        SetPedIntoVehicle(ped, v, -1)
+                                        SetPedIntoVehicle(ped1, v, 0)
+                                        TaskVehicleEscort(ped, v, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), -1,
+                                            50.0, 1082917029, 37.5, 0, -1)
+                                        SetDriverAbility(ped, 10.0)
+                                        SetDriverAggressiveness(ped, 10.0)
+                                    end
                                 end
                             end
                         end
                     end
-                end				
-				elseif VladmirAK47.Button('Tank Follow Player') then
+                elseif VladmirAK47.Button('Tank Follow Player') then
                     local veh = ("Rhino")
                     for i = 0, 0 do
-					local target = PlayerPedId(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
-                    local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
-                    local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                    local v = nil
-                    RequestModel(veh)
-                    RequestModel('a_m_o_acult_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
-                        RequestModel('a_m_o_acult_01')
-                        Citizen.Wait(0)
+                        local target = PlayerPedId(SelectedPlayer)
+                        local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                        local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
+                        local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
+                        local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
+                        local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                        local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                        local v = nil
                         RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
-                        Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 90),
-                            pos.y - (yf * 90),
-                            pos.z + 1,
-                            GetEntityHeading(GetPlayerPed(SelectedPlayer)),
-                            true,
-                            false
-                        )
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
+                        RequestModel('a_m_o_acult_01')
+                        while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
                             RequestModel('a_m_o_acult_01')
+                            Citizen.Wait(0)
+                            RequestModel(veh)
+                        end
+                        if HasModelLoaded(veh) then
                             Citizen.Wait(50)
-                            if HasModelLoaded('a_m_o_acult_01') then
+                            v =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 90),
+                                    pos.y - (yf * 90),
+                                    pos.z + 1,
+                                    GetEntityHeading(GetPlayerPed(SelectedPlayer)),
+                                    true,
+                                    false
+                                )
+                            if DoesEntityExist(v) then
+                                NetworkRequestControlOfEntity(v)
+                                SetVehicleDoorsLocked(v, 4)
+                                RequestModel('a_m_o_acult_01')
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                local ped1 =
-                                    CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v, 0)
-                                    TaskVehicleEscort(ped, v, (GetPlayerPed(SelectedPlayer)), -1, 250.0, 1082917029, 7.5, 0, -1)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
+                                if HasModelLoaded('a_m_o_acult_01') then
+                                    Citizen.Wait(50)
+                                    local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true,
+                                        true)
+                                    local ped1 =
+                                        CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                                    if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                                        SetPedIntoVehicle(ped, v, -1)
+                                        SetPedIntoVehicle(ped1, v, 0)
+                                        TaskVehicleEscort(ped, v, (GetPlayerPed(SelectedPlayer)), -1, 250.0, 1082917029,
+                                            7.5, 0, -1)
+                                        SetDriverAbility(ped, 10.0)
+                                        SetDriverAggressiveness(ped, 10.0)
+                                    end
                                 end
                             end
                         end
                     end
-                end	
-				elseif VladmirAK47.Button('Tank Follow Vehicle') then
+                elseif VladmirAK47.Button('Tank Follow Vehicle') then
                     local veh = ("Rhino")
                     for i = 0, 0 do
-					local target = PlayerPedId(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
-                    local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
-                    local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                    local v = nil
-                    RequestModel(veh)
-                    RequestModel('a_m_o_acult_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
-                        RequestModel('a_m_o_acult_01')
-                        Citizen.Wait(0)
+                        local target = PlayerPedId(SelectedPlayer)
+                        local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                        local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
+                        local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
+                        local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
+                        local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                        local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                        local v = nil
                         RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
-                        Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 90),
-                            pos.y - (yf * 90),
-                            pos.z + 1,
-                            GetEntityHeading(GetPlayerPed(SelectedPlayer)),
-                            true,
-                            false
-                        )
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
+                        RequestModel('a_m_o_acult_01')
+                        while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
                             RequestModel('a_m_o_acult_01')
+                            Citizen.Wait(0)
+                            RequestModel(veh)
+                        end
+                        if HasModelLoaded(veh) then
                             Citizen.Wait(50)
-                            if HasModelLoaded('a_m_o_acult_01') then
+                            v =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 90),
+                                    pos.y - (yf * 90),
+                                    pos.z + 1,
+                                    GetEntityHeading(GetPlayerPed(SelectedPlayer)),
+                                    true,
+                                    false
+                                )
+                            if DoesEntityExist(v) then
+                                NetworkRequestControlOfEntity(v)
+                                SetVehicleDoorsLocked(v, 4)
+                                RequestModel('a_m_o_acult_01')
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                local ped1 =
-                                    CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v, 0)
-                                    TaskVehicleEscort(ped, v, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), -1, 7.5, 1082917029, 7.5, 0, -1)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
+                                if HasModelLoaded('a_m_o_acult_01') then
+                                    Citizen.Wait(50)
+                                    local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true,
+                                        true)
+                                    local ped1 =
+                                        CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                                    if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                                        SetPedIntoVehicle(ped, v, -1)
+                                        SetPedIntoVehicle(ped1, v, 0)
+                                        TaskVehicleEscort(ped, v, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), -1,
+                                            7.5, 1082917029, 7.5, 0, -1)
+                                        SetDriverAbility(ped, 10.0)
+                                        SetDriverAggressiveness(ped, 10.0)
+                                    end
                                 end
                             end
                         end
                     end
-                end
-				elseif VladmirAK47.Button('Clown Gang Follow Vehicle') then
+                elseif VladmirAK47.Button('Clown Gang Follow Vehicle') then
                     local veh = ("Speedo2")
                     for i = 0, 0 do
-					local target = PlayerPedId(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
-                    local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
-                    local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                    local v = nil
-                    RequestModel(veh)
-                    RequestModel('a_m_o_acult_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
-                        RequestModel('a_m_o_acult_01')
-                        Citizen.Wait(0)
+                        local target = PlayerPedId(SelectedPlayer)
+                        local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                        local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
+                        local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
+                        local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
+                        local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                        local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                        local v = nil
                         RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
-                        Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 100),
-                            pos.y - (yf * 100),
-                            pos.z + 1,
-                            GetEntityHeading(GetPlayerPed(SelectedPlayer)),
-                            true,
-                            false
-                        )
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
+                        RequestModel('a_m_o_acult_01')
+                        while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
                             RequestModel('a_m_o_acult_01')
+                            Citizen.Wait(0)
+                            RequestModel(veh)
+                        end
+                        if HasModelLoaded(veh) then
                             Citizen.Wait(50)
-                            if HasModelLoaded('a_m_o_acult_01') then
+                            v =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 100),
+                                    pos.y - (yf * 100),
+                                    pos.z + 1,
+                                    GetEntityHeading(GetPlayerPed(SelectedPlayer)),
+                                    true,
+                                    false
+                                )
+                            if DoesEntityExist(v) then
+                                NetworkRequestControlOfEntity(v)
+                                SetVehicleDoorsLocked(v, 4)
+                                RequestModel('a_m_o_acult_01')
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                local ped1 =
-                                    CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v, 0)
-                                    TaskVehicleEscort(ped, v, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), -1, 7.5, 1082917029, 7.5, 0, -1)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
+                                if HasModelLoaded('a_m_o_acult_01') then
+                                    Citizen.Wait(50)
+                                    local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true,
+                                        true)
+                                    local ped1 =
+                                        CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                                    if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                                        SetPedIntoVehicle(ped, v, -1)
+                                        SetPedIntoVehicle(ped1, v, 0)
+                                        TaskVehicleEscort(ped, v, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), -1,
+                                            7.5, 1082917029, 7.5, 0, -1)
+                                        SetDriverAbility(ped, 10.0)
+                                        SetDriverAggressiveness(ped, 10.0)
+                                    end
                                 end
                             end
                         end
                     end
-                end	
-				elseif VladmirAK47.Button('Plane fly above him') then
+                elseif VladmirAK47.Button('Plane fly above him') then
                     local veh = ("Shamal")
                     for i = 0, 0 do
-					local target = GetPlayerPed(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
-                    local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
-                    local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                    local v = nil
-                    RequestModel(veh)
-                    RequestModel('a_m_o_acult_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
-                        RequestModel('a_m_o_acult_01')
-                        Citizen.Wait(0)
+                        local target = GetPlayerPed(SelectedPlayer)
+                        local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                        local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
+                        local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
+                        local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
+                        local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                        local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                        local v = nil
                         RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
-                        Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 90),
-                            pos.y - (yf * 90),
-                            pos.z + 700,
-                            GetEntityHeading(GetPlayerPed(SelectedPlayer)),
-                            true,
-                            false
-                        )
-						local v1 = CreateVehicle(veh, pos.x + 300, pos.y, pos.z + 800, GetEntityHeading(target), true, true)
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
+                        RequestModel('a_m_o_acult_01')
+                        while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
                             RequestModel('a_m_o_acult_01')
+                            Citizen.Wait(0)
+                            RequestModel(veh)
+                        end
+                        if HasModelLoaded(veh) then
                             Citizen.Wait(50)
-                            if HasModelLoaded('a_m_o_acult_01') then
+                            v =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 90),
+                                    pos.y - (yf * 90),
+                                    pos.z + 700,
+                                    GetEntityHeading(GetPlayerPed(SelectedPlayer)),
+                                    true,
+                                    false
+                                )
+                            local v1 = CreateVehicle(veh, pos.x + 300, pos.y, pos.z + 800, GetEntityHeading(target), true,
+                                true)
+                            if DoesEntityExist(v) then
+                                NetworkRequestControlOfEntity(v)
+                                SetVehicleDoorsLocked(v, 4)
+                                RequestModel('a_m_o_acult_01')
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                local ped1 =
-                                    CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v1, -1)
-                                    TaskPlaneChase(ped, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), 100.00, 786468)
-									TaskPlaneChase(ped1, (GetPlayerPed(SelectedPlayer)), 100.00, 786468)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
-									SetDriverAbility(ped1, 10.0)
-                                    SetDriverAggressiveness(ped1, 10.0)
+                                if HasModelLoaded('a_m_o_acult_01') then
+                                    Citizen.Wait(50)
+                                    local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true,
+                                        true)
+                                    local ped1 =
+                                        CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                                    if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                                        SetPedIntoVehicle(ped, v, -1)
+                                        SetPedIntoVehicle(ped1, v1, -1)
+                                        TaskPlaneChase(ped, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), 100.00,
+                                            786468)
+                                        TaskPlaneChase(ped1, (GetPlayerPed(SelectedPlayer)), 100.00, 786468)
+                                        SetDriverAbility(ped, 10.0)
+                                        SetDriverAggressiveness(ped, 10.0)
+                                        SetDriverAbility(ped1, 10.0)
+                                        SetDriverAggressiveness(ped1, 10.0)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                elseif VladmirAK47.Button('AirStrike Attack') then
+                    local veh = ("lazer")
+                    for i = 0, 0 do
+                        local target = GetPlayerPed(SelectedPlayer)
+                        local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                        local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
+                        local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
+                        local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
+                        local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                        local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                        local v = nil
+                        RequestModel(veh)
+                        RequestModel('a_m_o_acult_01')
+                        while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
+                            RequestModel('a_m_o_acult_01')
+                            Citizen.Wait(0)
+                            RequestModel(veh)
+                        end
+                        if HasModelLoaded(veh) then
+                            Citizen.Wait(50)
+                            v =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 90),
+                                    pos.y - (yf * 90),
+                                    pos.z + 700,
+                                    GetEntityHeading(GetPlayerPed(SelectedPlayer)),
+                                    true,
+                                    false
+                                )
+                            local v1 = CreateVehicle(veh, pos.x + 300, pos.y, pos.z + 600, GetEntityHeading(target), true,
+                                true)
+                            if DoesEntityExist(v) then
+                                NetworkRequestControlOfEntity(v)
+                                SetVehicleDoorsLocked(v, 4)
+                                RequestModel('a_m_o_acult_01')
+                                Citizen.Wait(50)
+                                if HasModelLoaded('a_m_o_acult_01') then
+                                    Citizen.Wait(50)
+                                    local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true,
+                                        true)
+                                    local ped1 =
+                                        CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                                    if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                                        SetPedIntoVehicle(ped, v, -1)
+                                        SetPedIntoVehicle(ped1, v1, -1)
+                                        TaskPlaneChase(ped, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), 100.00,
+                                            786468)
+                                        TaskPlaneChase(ped1, (GetPlayerPed(SelectedPlayer)), 100.00, 786468)
+                                        SetDriverAbility(ped, 10.0)
+                                        SetDriverAggressiveness(ped, 10.0)
+                                        SetDriverAbility(ped1, 10.0)
+                                        SetDriverAggressiveness(ped1, 10.0)
+                                        TaskCombatPed(ped, target, 0, 16)
+                                        TaskCombatPed(ped1, target, 0, 16)
+                                        SetPedKeepTask(ped, true)
+                                        SetPedKeepTask(ped1, true)
+                                    end
                                 end
                             end
                         end
                     end
                 end
-				elseif VladmirAK47.Button('AirStrike Attack') then
-                    local veh = ("lazer")
-                    for i = 0, 0 do
-					local target = GetPlayerPed(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
-                    local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
-                    local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                    local v = nil
-                    RequestModel(veh)
-                    RequestModel('a_m_o_acult_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
-                        RequestModel('a_m_o_acult_01')
-                        Citizen.Wait(0)
-                        RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
-                        Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 90),
-                            pos.y - (yf * 90),
-                            pos.z + 700,
-                            GetEntityHeading(GetPlayerPed(SelectedPlayer)),
-                            true,
-                            false
-                        )
-						local v1 = CreateVehicle(veh, pos.x + 300, pos.y, pos.z + 600, GetEntityHeading(target), true, true)
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
-                            RequestModel('a_m_o_acult_01')
-                            Citizen.Wait(50)
-                            if HasModelLoaded('a_m_o_acult_01') then
-                                Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                local ped1 =
-                                    CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v1, -1)
-                                    TaskPlaneChase(ped, GetVehiclePedIsUsing(GetPlayerPed(SelectedPlayer)), 100.00, 786468)
-									TaskPlaneChase(ped1, (GetPlayerPed(SelectedPlayer)), 100.00, 786468)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
-									SetDriverAbility(ped1, 10.0)
-                                    SetDriverAggressiveness(ped1, 10.0)
-									TaskCombatPed(ped, target, 0, 16)
-								    TaskCombatPed(ped1, target, 0, 16)
-								    SetPedKeepTask(ped, true)
-								    SetPedKeepTask(ped1, true)
-                                end
-                            end
-                        end
-                    end
-                end						
-                end				
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('VehicleOptions') then
-				if VladmirAK47.Button('Steal his car') then
-				    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
-					 NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
-					 local ped = GetPlayerPed(-1)
-					 local target = GetPlayerPed(SelectedPlayer)
-                     local pos = GetEntityCoords(target)
-                     local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
-                     local cM = GetEntityCoords(GetPlayerPed(-1))					 
-                     d4 = false	
-					 SetEntityCoords(ped, pos.x, pos.y + 45, pos.z - 4)				 
-					 ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
-					 Citizen.Wait(1000)					 
-                     SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
-					 Citizen.Wait(1000)
-                      local Entity = IsPedInAnyVehicle(PlayerPedId(-1), false) and GetVehiclePedIsUsing(PlayerPedId(-1)) or PlayerPedId(-1)
-                      SetEntityCoords(Entity, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
-					  d4 = true
+                if VladmirAK47.Button('Steal his car') then
+                    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
+                        NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
+                        local ped = GetPlayerPed(-1)
+                        local target = GetPlayerPed(SelectedPlayer)
+                        local pos = GetEntityCoords(target)
+                        local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
+                        local cM = GetEntityCoords(GetPlayerPed(-1))
+                        d4 = false
+                        SetEntityCoords(ped, pos.x, pos.y + 45, pos.z - 4)
+                        ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
+                        Citizen.Wait(1000)
+                        SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
+                        Citizen.Wait(1000)
+                        local Entity = IsPedInAnyVehicle(PlayerPedId(-1), false) and
+                        GetVehiclePedIsUsing(PlayerPedId(-1)) or PlayerPedId(-1)
+                        SetEntityCoords(Entity, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
+                        d4 = true
                     else
-                        av('Player not in a vehicle.', false)					  
-                    end	
-				elseif VladmirAK47.Button('Break his Engine') then
-				    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
-					 NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
-					 local ped = GetPlayerPed(-1)
-					 local target = GetPlayerPed(SelectedPlayer)
-                     local pos = GetEntityCoords(target)
-                     local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
-                     local cM = GetEntityCoords(GetPlayerPed(-1))					 
-                     d4 = false	
-					 SetEntityCoords(ped, pos.x, pos.y, pos.z - 4)				 
-					 ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
-					 Citizen.Wait(1000)					 
-                     SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
-					 Citizen.Wait(4000)
-                     SetVehicleEngineHealth(vehicle, 0)
-                     SetVehicleUndriveable(vehicle, true)					 
-					 Citizen.Wait(1000)
-                      SetEntityCoords(ped, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
-					  d4 = true
-                    else
-                        av('Player not in a vehicle.', false)					  
+                        av('Player not in a vehicle.', false)
                     end
-				elseif VladmirAK47.Button('Burst his Vehicle') then
-				    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
-					 NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
-					 local ped = GetPlayerPed(-1)
-					 local target = GetPlayerPed(SelectedPlayer)
-                     local pos = GetEntityCoords(target)
-                     local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
-                     local cM = GetEntityCoords(GetPlayerPed(-1))					 
-                     d4 = false	
-					 SetEntityCoords(ped, pos.x, pos.y, pos.z - 4)				 
-					 ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
-					 Citizen.Wait(1000)					 
-                     SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
-					 Citizen.Wait(4000)
-                       SetVehicleTyreBurst(vehicle, 0, true, 1000.0)
-                       SetVehicleTyreBurst(vehicle, 1, true, 1000.0)
-                       SetVehicleTyreBurst(vehicle, 2, true, 1000.0)
+                elseif VladmirAK47.Button('Break his Engine') then
+                    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
+                        NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
+                        local ped = GetPlayerPed(-1)
+                        local target = GetPlayerPed(SelectedPlayer)
+                        local pos = GetEntityCoords(target)
+                        local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
+                        local cM = GetEntityCoords(GetPlayerPed(-1))
+                        d4 = false
+                        SetEntityCoords(ped, pos.x, pos.y, pos.z - 4)
+                        ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
+                        Citizen.Wait(1000)
+                        SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
+                        Citizen.Wait(4000)
+                        SetVehicleEngineHealth(vehicle, 0)
+                        SetVehicleUndriveable(vehicle, true)
+                        Citizen.Wait(1000)
+                        SetEntityCoords(ped, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
+                        d4 = true
+                    else
+                        av('Player not in a vehicle.', false)
+                    end
+                elseif VladmirAK47.Button('Burst his Vehicle') then
+                    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
+                        NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
+                        local ped = GetPlayerPed(-1)
+                        local target = GetPlayerPed(SelectedPlayer)
+                        local pos = GetEntityCoords(target)
+                        local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
+                        local cM = GetEntityCoords(GetPlayerPed(-1))
+                        d4 = false
+                        SetEntityCoords(ped, pos.x, pos.y, pos.z - 4)
+                        ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
+                        Citizen.Wait(1000)
+                        SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
+                        Citizen.Wait(4000)
+                        SetVehicleTyreBurst(vehicle, 0, true, 1000.0)
+                        SetVehicleTyreBurst(vehicle, 1, true, 1000.0)
+                        SetVehicleTyreBurst(vehicle, 2, true, 1000.0)
                         SetVehicleTyreBurst(vehicle, 3, true, 1000.0)
                         SetVehicleTyreBurst(vehicle, 4, true, 1000.0)
                         SetVehicleTyreBurst(vehicle, 5, true, 1000.0)
                         SetVehicleTyreBurst(vehicle, 4, true, 1000.0)
-                        SetVehicleTyreBurst(vehicle, 7, true, 1000.0)					 
-					 Citizen.Wait(1000)
-                      SetEntityCoords(ped, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
-					  d4 = true
+                        SetVehicleTyreBurst(vehicle, 7, true, 1000.0)
+                        Citizen.Wait(1000)
+                        SetEntityCoords(ped, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
+                        d4 = true
                     else
-                        av('Player not in a vehicle.', false)					  
-                    end					
-				elseif VladmirAK47.Button('Make his Car Pink') then
-				    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
-					 NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
-					 local ped = GetPlayerPed(-1)
-					 local target = GetPlayerPed(SelectedPlayer)
-                     local pos = GetEntityCoords(target)
-                     local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
-                     local cM = GetEntityCoords(GetPlayerPed(-1))
-                     d4 = false					 
-                     --SetEntityCoords(ped, pos)
-					 SetEntityCoords(ped, pos.x, pos.y, pos.z - 4)				 
-					 ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
-					 Citizen.Wait(1000)					 
-                     SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
-					 Citizen.Wait(4000)
-                     SetVehicleColours(vehicle, 135, 135)					 
-					 Citizen.Wait(1000)
-                      SetEntityCoords(ped, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
-					  d4 = true
+                        av('Player not in a vehicle.', false)
+                    end
+                elseif VladmirAK47.Button('Make his Car Pink') then
+                    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
+                        NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
+                        local ped = GetPlayerPed(-1)
+                        local target = GetPlayerPed(SelectedPlayer)
+                        local pos = GetEntityCoords(target)
+                        local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
+                        local cM = GetEntityCoords(GetPlayerPed(-1))
+                        d4 = false
+                        --SetEntityCoords(ped, pos)
+                        SetEntityCoords(ped, pos.x, pos.y, pos.z - 4)
+                        ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
+                        Citizen.Wait(1000)
+                        SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
+                        Citizen.Wait(4000)
+                        SetVehicleColours(vehicle, 135, 135)
+                        Citizen.Wait(1000)
+                        SetEntityCoords(ped, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
+                        d4 = true
                     else
-                        av('Player not in a vehicle.', false)					  
-                    end	
-				elseif VladmirAK47.Button('Lock his Vehicle') then	
-				    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
-                     NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
-					 local ped = GetPlayerPed(-1)
-					 local target = GetPlayerPed(SelectedPlayer)
-                     local pos = GetEntityCoords(target)
-                     local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
-                     local cM = GetEntityCoords(GetPlayerPed(-1))					 
-                     d4 = false
-					 SetEntityCoords(ped, pos.x, pos.y + 45, pos.z - 4)				 
-					 ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
-					 Citizen.Wait(1000)					 
-                     SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
-					 Citizen.Wait(5000)
-                      local Entity = IsPedInAnyVehicle(PlayerPedId(-1), false) and GetVehiclePedIsUsing(PlayerPedId(-1)) or PlayerPedId(-1)
+                        av('Player not in a vehicle.', false)
+                    end
+                elseif VladmirAK47.Button('Lock his Vehicle') then
+                    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
+                        NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
+                        local ped = GetPlayerPed(-1)
+                        local target = GetPlayerPed(SelectedPlayer)
+                        local pos = GetEntityCoords(target)
+                        local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
+                        local cM = GetEntityCoords(GetPlayerPed(-1))
+                        d4 = false
+                        SetEntityCoords(ped, pos.x, pos.y + 45, pos.z - 4)
+                        ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
+                        Citizen.Wait(1000)
+                        SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
+                        Citizen.Wait(5000)
+                        local Entity = IsPedInAnyVehicle(PlayerPedId(-1), false) and
+                        GetVehiclePedIsUsing(PlayerPedId(-1)) or PlayerPedId(-1)
                         SetVehicleDoorsLocked(vehicle, 4)
-					  Citizen.Wait(1000)
-					  SetEntityCoords(ped, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
-					  d4 = true
+                        Citizen.Wait(1000)
+                        SetEntityCoords(ped, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
+                        d4 = true
                     else
-                        av('Player not in a vehicle.', false)					  
-                    end					 					
-				elseif VladmirAK47.Button('Delete his Vehicle') then
-				    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
-                     NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
-					 local ped = GetPlayerPed(-1)
-					 local target = GetPlayerPed(SelectedPlayer)
-                     local pos = GetEntityCoords(target)
-                     local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
-                     local cM = GetEntityCoords(GetPlayerPed(-1))					 
-                     d4 = false
-					 SetEntityCoords(ped, pos.x, pos.y + 45, pos.z - 4)				 
-					 ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
-					 Citizen.Wait(1000)					 
-                     SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
-					 Citizen.Wait(1000)
-                      local Entity = IsPedInAnyVehicle(PlayerPedId(-1), false) and GetVehiclePedIsUsing(PlayerPedId(-1)) or PlayerPedId(-1)
-                      SetEntityCoords(Entity, 1234, 1234, 700, 0.0, 0.0, 0.0, false)
-					  Citizen.Wait(1000)
-					  ClearPedTasksImmediately(GetPlayerPed(-1))
-					  Citizen.Wait(1000)
-					  SetEntityCoords(ped, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
-					  d4 = true
+                        av('Player not in a vehicle.', false)
+                    end
+                elseif VladmirAK47.Button('Delete his Vehicle') then
+                    if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
+                        NetworkSetInSpectatorMode(false, GetPlayerPed(-1))
+                        local ped = GetPlayerPed(-1)
+                        local target = GetPlayerPed(SelectedPlayer)
+                        local pos = GetEntityCoords(target)
+                        local vehicle = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
+                        local cM = GetEntityCoords(GetPlayerPed(-1))
+                        d4 = false
+                        SetEntityCoords(ped, pos.x, pos.y + 45, pos.z - 4)
+                        ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
+                        Citizen.Wait(1000)
+                        SetPedIntoVehicle(PlayerPedId(-1), vehicle, -1)
+                        Citizen.Wait(1000)
+                        local Entity = IsPedInAnyVehicle(PlayerPedId(-1), false) and
+                        GetVehiclePedIsUsing(PlayerPedId(-1)) or PlayerPedId(-1)
+                        SetEntityCoords(Entity, 1234, 1234, 700, 0.0, 0.0, 0.0, false)
+                        Citizen.Wait(1000)
+                        ClearPedTasksImmediately(GetPlayerPed(-1))
+                        Citizen.Wait(1000)
+                        SetEntityCoords(ped, cM.x, cM.y, cM.z, 0.0, 0.0, 0.0, false)
+                        d4 = true
                     else
-                        av('Player not in a vehicle.', false)					  
-                    end					 
-				end						
+                        av('Player not in a vehicle.', false)
+                    end
+                end
                 VladmirAK47.Display()
-            elseif VladmirAK47.IsMenuOpened('emote_menu') then 	
-
-                for k,v in pairs({
-                    {name = "Hands Up", emote = "stickupscared"},
-                    {name = "Punch", emote = "punched"},
-                    {name = "Headbutt", emote = "headbutted"},
-                    {name = "Slap", emote = "slapped"},
-                    {name = "Hug", emote = "hug", s_emote = "hug2"},
-                    {name = "Lapdance", emote = "lapdance2"},
-                    {name = "Horse Dance", emote = "dancehorse"},
-                    {name = "Silly Dance", emote = "dancesilly"},
-                    {name = "Glow stick Dance", emote = "danceglowstick"},
-                    {name = "Baseball throw", emote = "baseballthrow"},
-                    {name = "Twerk", emote = "twerk"},
+            elseif VladmirAK47.IsMenuOpened('emote_menu') then
+                for k, v in pairs({
+                    { name = "Hands Up",         emote = "stickupscared" },
+                    { name = "Punch",            emote = "punched" },
+                    { name = "Headbutt",         emote = "headbutted" },
+                    { name = "Slap",             emote = "slapped" },
+                    { name = "Hug",              emote = "hug",           s_emote = "hug2" },
+                    { name = "Lapdance",         emote = "lapdance2" },
+                    { name = "Horse Dance",      emote = "dancehorse" },
+                    { name = "Silly Dance",      emote = "dancesilly" },
+                    { name = "Glow stick Dance", emote = "danceglowstick" },
+                    { name = "Baseball throw",   emote = "baseballthrow" },
+                    { name = "Twerk",            emote = "twerk" },
                 }) do
                     if VladmirAK47.Button(v.name) then
                         TriggerServerEvent("ServerValidEmote", GetPlayerServerId(SelectedPlayer), v.emote)
@@ -12226,17 +12340,17 @@ Citizen.CreateThread(
                 end
 
                 VladmirAK47.Display()
-            elseif VladmirAK47.IsMenuOpened('Trollmenu') then 
+            elseif VladmirAK47.IsMenuOpened('Trollmenu') then
                 if VladmirAK47.MenuButton('[NEW] [QB] Force Emote', "emote_menu") then
                 elseif VladmirAK47.Button('Clown Attack') then
                     load_model(`S_M_Y_Clown_01`)
                     local p_ped = GetPlayerPed(SelectedPlayer)
                     local coords = GetEntityCoords(p_ped)
                     for i = 1, 5 do
-                        local ped = CreatePed(0, `S_M_Y_Clown_01`, coords.x,coords.y,coords.z+4.0,0.0,true,true)
-                        GiveWeaponToPed(ped, `WEAPON_KNIFE`, 250,false,true)
+                        local ped = CreatePed(0, `S_M_Y_Clown_01`, coords.x, coords.y, coords.z + 4.0, 0.0, true, true)
+                        GiveWeaponToPed(ped, `WEAPON_KNIFE`, 250, false, true)
                         TaskCombatPed(ped, p_ped, 0, 16)
-                        SetPedKeepTask(ped,true)
+                        SetPedKeepTask(ped, true)
                     end
                 elseif VladmirAK47.Button('[NEW] [QB] Open Inventory') then
                     print(GetPlayerServerId(SelectedPlayer))
@@ -12280,62 +12394,81 @@ Citizen.CreateThread(
                     RequestModel(2071877360)
                     RequestModel(-1649536104)
                     NetworkRequestControlOfEntity(vehicle)
-                    AttachEntityToEntity(inus, vehicle, roof, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus2, vehicle, roof, 0.0, -2.5, 4.0, -90.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus3, vehicle, roof, -0.5, -2.5, 9.0, 100.0, -90.0, -90.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus4, vehicle, roof, -2.7, -2.5, 12.5, 0.0, 90.0, 90.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus5, vehicle, roof, -7.7, -2.5, 12.5, 0.0, -90.0, -90.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus6, vehicle, roof, -10.5, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus7, vehicle, roof, -10.5, -2.5, 4.0, -90.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus8, vehicle, roof, -10.0, -2.5, 9.0, 100.0, 90.0, 90.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus9, vehicle, roof, -6.0, -2.5, 14.5, -90.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus10, vehicle, roof, -4.5, -2.5, 14.5, -90.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus11, vehicle, roof, -5.0, -2.5, 19.0, -25.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus12, vehicle, roof, -2.4, -2.0, 18.0, 0.0, 100.0, 100.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus13, vehicle, roof, -7.7, -2.0, 18.0, 0.0, -100.0, -100.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus14, vehicle, roof, 2.5, -0.2, 18.0, 0.0, 110.0, 110.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus15, vehicle, roof, -12.5, -0.2, 18.0, 0.0, -110.0, -110.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus16, vehicle, roof, 7.5, 2.0, 18.0, 0.0, 113.0, 113.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus17, vehicle, roof, -17.5, 2.0, 18.0, 0.0, -113.0, -113.0, true, true, false, false, 2, true )
+                    AttachEntityToEntity(inus, vehicle, roof, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, false, 2,
+                        true)
+                    AttachEntityToEntity(inus2, vehicle, roof, 0.0, -2.5, 4.0, -90.0, 0.0, 0.0, true, true, false, false,
+                        2, true)
+                    AttachEntityToEntity(inus3, vehicle, roof, -0.5, -2.5, 9.0, 100.0, -90.0, -90.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus4, vehicle, roof, -2.7, -2.5, 12.5, 0.0, 90.0, 90.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus5, vehicle, roof, -7.7, -2.5, 12.5, 0.0, -90.0, -90.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus6, vehicle, roof, -10.5, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, false,
+                        2, true)
+                    AttachEntityToEntity(inus7, vehicle, roof, -10.5, -2.5, 4.0, -90.0, 0.0, 0.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus8, vehicle, roof, -10.0, -2.5, 9.0, 100.0, 90.0, 90.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus9, vehicle, roof, -6.0, -2.5, 14.5, -90.0, 0.0, 0.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus10, vehicle, roof, -4.5, -2.5, 14.5, -90.0, 0.0, 0.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus11, vehicle, roof, -5.0, -2.5, 19.0, -25.0, 0.0, 0.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus12, vehicle, roof, -2.4, -2.0, 18.0, 0.0, 100.0, 100.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus13, vehicle, roof, -7.7, -2.0, 18.0, 0.0, -100.0, -100.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus14, vehicle, roof, 2.5, -0.2, 18.0, 0.0, 110.0, 110.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus15, vehicle, roof, -12.5, -0.2, 18.0, 0.0, -110.0, -110.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus16, vehicle, roof, 7.5, 2.0, 18.0, 0.0, 113.0, 113.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus17, vehicle, roof, -17.5, 2.0, 18.0, 0.0, -113.0, -113.0, true, true, false,
+                        false, 2, true)
                     NetworkRequestControlOfEntity(vehicle)
                     SetEntityAsMissionEntity(vehicle, true, true)
                 elseif VladmirAK47.Button('[NEW] Attach Car') then
                     local vehicleName = 'sultan'
-                    
+
                     -- load the model
                     RequestModel(vehicleName)
-                    
+
                     -- wait for the model to load
                     while not HasModelLoaded(vehicleName) do
                         Wait(500) -- often you'll also see Citizen.Wait
                     end
-                    
+
                     -- get the player's position
                     local playerIdx = GetPlayerFromServerId(429)
                     local ped = GetPlayerPed(SelectedPlayer)
                     local pos = GetEntityCoords(ped) -- get the position of the local player ped
-                    
+
                     -- create the vehicle
                     Citizen.CreateThread(function()
-                        local vehicle = CreateVehicle(vehicleName, pos.x, pos.y, pos.z, GetEntityHeading(playerPed), true, false)
-                        AttachEntityToEntity(vehicle, ped, 0, 0.0, 0.8, 0.0, 0.0, 180.0, 0.0, false, false, true, false, 0, true)
+                        local vehicle = CreateVehicle(vehicleName, pos.x, pos.y, pos.z, GetEntityHeading(playerPed), true,
+                            false)
+                        AttachEntityToEntity(vehicle, ped, 0, 0.0, 0.8, 0.0, 0.0, 180.0, 0.0, false, false, true, false,
+                            0, true)
                         -- set the player ped into the vehicle's driver seat
                         SetPedIntoVehicle(playerPed, vehicle, -1)
-                        
+
                         -- give the vehicle back to the game (this'll make the game decide when to despawn the vehicle)
                         SetEntityAsNoLongerNeeded(vehicle)
-                        
+
                         -- release the model
                         SetModelAsNoLongerNeeded(vehicleName)
                     end)
-		elseif VladmirAK47.Button('[NEW] [QB] Teleport Player To You!') then
-			ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
-			Citizen.Wait(500)
-			TriggerServerEvent("ServerValidEmote", GetPlayerServerId(SelectedPlayer), 'stickupscared')
-			for _ = 1,100 do
-				Citizen.Wait(25)
-				ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
-			end
+                elseif VladmirAK47.Button('[NEW] [QB] Teleport Player To You!') then
+                    ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
+                    Citizen.Wait(500)
+                    TriggerServerEvent("ServerValidEmote", GetPlayerServerId(SelectedPlayer), 'stickupscared')
+                    for _ = 1, 100 do
+                        Citizen.Wait(25)
+                        ClearPedTasksImmediately(GetPlayerPed(SelectedPlayer))
+                    end
                 elseif VladmirAK47.Button('[NEW] Drop Boat On Player') then
                     local car = 'marquis'
                     local vehicleName = (car)
@@ -12345,165 +12478,166 @@ Citizen.CreateThread(
                     end
                     local ped = GetPlayerPed(SelectedPlayer)
                     local pos = GetEntityCoords(ped) -- get the position of the local player ped
-                    local vehicle = CreateVehicle(vehicleName, pos.x + 5, pos.y, pos.z + 20, GetEntityHeading(ped), true, false)
+                    local vehicle = CreateVehicle(vehicleName, pos.x + 5, pos.y, pos.z + 20, GetEntityHeading(ped), true,
+                        false)
                     ApplyForceToEntity(vehicle, 3, 0.0, 0.0, -100.0, 0.0, 0.0, 0.0, 0, 0, 1, 1, 0, 1)
                     SetPedIntoVehicle(playerPed, vehicle, -1)
                     SetEntityAsNoLongerNeeded(vehicle)
                     SetModelAsNoLongerNeeded(vehicleName)
                 elseif VladmirAK47.Button('Die like bitch ') then
-				selectedPlayerId = SelectedPlayer
-                if not test2096 then
-                 test2096 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test2096 then
+                        test2096 = true
                         av(' ON~.', false)
-                else
-                 test2096 = false
+                    else
+                        test2096 = false
                         av(' Off.', false)
-                end			
+                    end
                 elseif VladmirAK47.Button('Suprise light') then
-				selectedPlayerId = SelectedPlayer
-                if not test2999 then
-                 test2999 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test2999 then
+                        test2999 = true
                         av(' ON~.', false)
-                else
-                 test2999 = false
+                    else
+                        test2999 = false
                         av(' Off.', false)
-                end	
+                    end
                 elseif VladmirAK47.Button('OMG light') then
-				selectedPlayerId = SelectedPlayer
-                if not test2997 then
-                 test2997 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test2997 then
+                        test2997 = true
                         av(' ON~.', false)
-                else
-                 test2997 = false
+                    else
+                        test2997 = false
                         av(' Off.', false)
-                end									
+                    end
                 elseif VladmirAK47.Button('Jesus light') then
-				selectedPlayerId = SelectedPlayer
-                if not test992 then
-                 test992 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test992 then
+                        test992 = true
                         av('light ON~.', false)
-                else
-                 test992 = false
+                    else
+                        test992 = false
                         av('Light Off.', false)
-                end
+                    end
                 elseif VladmirAK47.Button('Jesus Smoke') then
-				selectedPlayerId = SelectedPlayer
-                if not test994 then
-                 test994 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test994 then
+                        test994 = true
                         av('Smoke ON~.', false)
-                else
-                 test994 = false
+                    else
+                        test994 = false
                         av('Smoke Off.', false)
-                end	
+                    end
                 elseif VladmirAK47.Button('Ghosts Smoke') then
-				selectedPlayerId = SelectedPlayer
-                if not test995 then
-                 test995 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test995 then
+                        test995 = true
                         av('Ghosts ON~.', false)
-                else
-                 test995 = false
+                    else
+                        test995 = false
                         av('Ghosts Off.', false)
-                end			
+                    end
                 elseif VladmirAK47.Button('Tapatio Explosions ') then
-				selectedPlayerId = SelectedPlayer
-                if not test997 then
-                 test997 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test997 then
+                        test997 = true
                         av('Explosions ON~.', false)
-                else
-                 test997 = false
+                    else
+                        test997 = false
                         av('Explosions Off.', false)
-                end					
+                    end
                 elseif VladmirAK47.Button('Tapatio Burn') then
-				selectedPlayerId = SelectedPlayer
-                if not test996 then
-                 test996 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not test996 then
+                        test996 = true
                         av('Burn ON~.', false)
-                else
-                 test996 = false
+                    else
+                        test996 = false
                         av('Burn Off.', false)
-                end				
+                    end
                 elseif VladmirAK47.Button('BoggyMan Player') then
-				selectedPlayerId = SelectedPlayer
-                if not Boggyman then
-                 Boggyman = true
+                    selectedPlayerId = SelectedPlayer
+                    if not Boggyman then
+                        Boggyman = true
                         av('Boggyman ON~.', false)
-                else
-                 Boggyman = false
+                    else
+                        Boggyman = false
                         av('Boggyman Off.', false)
-                end										
+                    end
                 elseif VladmirAK47.Button('Forcefield') then
-				selectedPlayerId = SelectedPlayer
-                if not forcefield then
-                 forcefield = true
+                    selectedPlayerId = SelectedPlayer
+                    if not forcefield then
+                        forcefield = true
                         av('Forcefield ON~.', false)
-                else
-                 forcefield = false
+                    else
+                        forcefield = false
                         av('Forcefield Off.', false)
-                end									
+                    end
                 elseif VladmirAK47.Button('Light Player') then
-				selectedPlayerId = SelectedPlayer
-                if not active then
-                 active = true
+                    selectedPlayerId = SelectedPlayer
+                    if not active then
+                        active = true
                         av('Light on~.', false)
-                else
-                 active = false
+                    else
+                        active = false
                         av('Light Off.', false)
-                end	
+                    end
                 elseif VladmirAK47.Button('LightV2 Player') then
-				selectedPlayerId = SelectedPlayer
-                if not active1 then
-                 active1 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not active1 then
+                        active1 = true
                         av('Light on~.', false)
-                else
-                 active1 = false
+                    else
+                        active1 = false
                         av('Light Off.', false)
-                end					
+                    end
                 elseif VladmirAK47.Button('Smoke Player') then
-				selectedPlayerId = SelectedPlayer
-                if not smoke1 then
-                 smoke1 = true
+                    selectedPlayerId = SelectedPlayer
+                    if not smoke1 then
+                        smoke1 = true
                         av('Smoke on~.', false)
-                else
-                 smoke1 = false
+                    else
+                        smoke1 = false
                         av('Smoke Off.', false)
-                end	
+                    end
                 elseif VladmirAK47.Button('Boss Mode') then
-				selectedPlayerId = SelectedPlayer
-                if not bossmode then
-                 bossmode = true
+                    selectedPlayerId = SelectedPlayer
+                    if not bossmode then
+                        bossmode = true
                         av('BOSS ON~.', false)
-                else
-                 bossmode = false
+                    else
+                        bossmode = false
                         av('BOSS OFF.', false)
-                end					
+                    end
                 elseif VladmirAK47.Button('Launch Player') then
-                        local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer)) 
-                        AddExplosion (Pos.x, Pos.y, Pos.z - 2, 13, 5.0, false, false, 0.0)
+                    local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                    AddExplosion(Pos.x, Pos.y, Pos.z - 2, 13, 5.0, false, false, 0.0)
                 elseif VladmirAK47.Button('Silent kill') then
-				local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    AddExplosion(Pos.x, Pos.y, Pos.z, 26, FLT_MAX, false, true, 0.0)							
-                elseif VladmirAK47.Button('Fire on Player') then			
-                        local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer)) 
-                        AddExplosion (Pos.x, Pos.y, Pos.z, 14, 5.0, false, false, 0.0)									
+                    local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                    AddExplosion(Pos.x, Pos.y, Pos.z, 26, FLT_MAX, false, true, 0.0)
+                elseif VladmirAK47.Button('Fire on Player') then
+                    local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                    AddExplosion(Pos.x, Pos.y, Pos.z, 14, 5.0, false, false, 0.0)
                 elseif VladmirAK47.Button('Explode Player') then
-                        local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer)) 
-                        AddExplosion (Pos.x, Pos.y, Pos.z, 10, 5.0, false, false, 0.0)																			
+                    local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                    AddExplosion(Pos.x, Pos.y, Pos.z, 10, 5.0, false, false, 0.0)
                 elseif VladmirAK47.Button('Burn Player') then
-				local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-				AddExplosion (Pos.x, Pos.y, Pos.z, 29, 0.0, false, false, 0.0)	
+                    local Pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                    AddExplosion(Pos.x, Pos.y, Pos.z, 29, 0.0, false, false, 0.0)
                 end
-                VladmirAK47.Display()
-            elseif				
-                IsControlJustReleased(0, 157) then c6() 				
                 VladmirAK47.Display()
             elseif
-                IsDisabledControlPressed(0, 217) 
-             then
+                IsControlJustReleased(0, 157) then
+                c6()
+                VladmirAK47.Display()
+            elseif
+                IsDisabledControlPressed(0, 217)
+            then
                 VladmirAK47.OpenMenu('VladmirAK47')
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('Trollmenu2') then
                 if VladmirAK47.Button('[NEW] Piggyback On Player') then
-
                     if isInPiggyBack then
                         ClearPedSecondaryTask(PlayerPedId())
                         DetachEntity(PlayerPedId(), true, false)
@@ -12512,182 +12646,183 @@ Citizen.CreateThread(
                         local ped = PlayerPedId()
                         local players = GetActivePlayers()
                         local myCoords = GetEntityCoords(ped)
-    
+
                         isInPiggyBack = true
                         if not HasAnimDictLoaded("anim@arena@celeb@flat@paired@no_props@") then
                             RequestAnimDict("anim@arena@celeb@flat@paired@no_props@")
                             while not HasAnimDictLoaded("anim@arena@celeb@flat@paired@no_props@") do
                                 Wait(0)
-                            end        
+                            end
                         end
-                    
-                        local playerPed = GetPlayerPed(SelectedPlayer)
-                        AttachEntityToEntity(PlayerPedId(), playerPed, 0, 0.0, -0.25, 0.45, 0.5, 0.5, 180, false, false, false, false, 2, false)
-                        TaskPlayAnim(PlayerPedId(), "anim@arena@celeb@flat@paired@no_props@", "piggyback_c_player_b", 8.0, -8.0, 1000000, 33, 0, false, false, false)
-                    end
-                elseif VladmirAK47.CheckBox('[NEW] All peds shoot at player', fuse_toggles.shoot_player, function(dR) fuse_toggles.shoot_player = dR end) then
 
-                    
+                        local playerPed = GetPlayerPed(SelectedPlayer)
+                        AttachEntityToEntity(PlayerPedId(), playerPed, 0, 0.0, -0.25, 0.45, 0.5, 0.5, 180, false, false,
+                            false, false, 2, false)
+                        TaskPlayAnim(PlayerPedId(), "anim@arena@celeb@flat@paired@no_props@", "piggyback_c_player_b", 8.0,
+                            -8.0, 1000000, 33, 0, false, false, false)
+                    end
+                elseif VladmirAK47.CheckBox('[NEW] All peds shoot at player', fuse_toggles.shoot_player, function(dR) fuse_toggles.shoot_player =
+                        dR end) then
                     Citizen.CreateThread(function()
-                        while fuse_toggles ~= nil and fuse_toggles .shoot_player do
+                        while fuse_toggles ~= nil and fuse_toggles.shoot_player do
                             local selected_ped = GetPlayerPed(SelectedPlayer)
-                            for k,v in pairs(GetGamePool("CPed")) do
+                            for k, v in pairs(GetGamePool("CPed")) do
                                 if v ~= PlayerPedId() and v ~= selected_ped and GetSelectedPedWeapon(v) ~= `WEAPON_MINIGUN` then
-                                    GiveWeaponToPed(v, "WEAPON_MINIGUN",250,false,true)
+                                    GiveWeaponToPed(v, "WEAPON_MINIGUN", 250, false, true)
                                     TaskCombatPed(v, selected_ped, 0, 16)
-                                    SetPedFiringPattern(v,`FIRING_PATTERN_FULL_AUTO`)
+                                    SetPedFiringPattern(v, `FIRING_PATTERN_FULL_AUTO`)
                                     SetPedKeepTask(selected_ped, true)
                                 end
                             end
                             Citizen.Wait(1000)
                         end
                     end)
-
-
-                elseif VladmirAK47.CheckBox('[NEW] All peds ram player', fuse_toggles.ram_player, function(dR) fuse_toggles.ram_player = dR end) then
-
+                elseif VladmirAK47.CheckBox('[NEW] All peds ram player', fuse_toggles.ram_player, function(dR) fuse_toggles.ram_player =
+                        dR end) then
                     Citizen.CreateThread(function()
-                        while fuse_toggles ~= nil and fuse_toggles .ram_player do
+                        while fuse_toggles ~= nil and fuse_toggles.ram_player do
                             local selected_ped = GetPlayerPed(SelectedPlayer)
                             local coords = GetEntityCoords(selected_ped)
-                            for k,v in pairs(GetGamePool("CPed")) do
+                            for k, v in pairs(GetGamePool("CPed")) do
                                 local vehicle = GetVehiclePedIsUsing(v)
                                 if v ~= PlayerPedId() and v ~= selected_ped and vehicle ~= 0 then
-                                    TaskVehicleDriveToCoord(v,vehicle,coords.x,coords.y,coords.z,100.0,0.0,GetHashKey(vehicle),16777216, 0.1, true)
+                                    TaskVehicleDriveToCoord(v, vehicle, coords.x, coords.y, coords.z, 100.0, 0.0,
+                                        GetHashKey(vehicle), 16777216, 0.1, true)
                                 end
                             end
                             Citizen.Wait(1000)
                         end
                     end)
-
                 elseif VladmirAK47.CheckBox('[NEW] Teleport Vehicle to ocean', fuse_toggles.tp_ocean, function(tog)
-                     fuse_toggles.tp_ocean = tog 
-                     local target_player = SelectedPlayer
-                     Citizen.CreateThread(function()
-                        while fuse_toggles ~= nil and fuse_toggles .tp_ocean do
-                            local veh = GetVehiclePedIsUsing(GetPlayerPed(target_player))
-                            if veh ~= 0 then
-                                SetEntityCoords(veh, 10000.0, 10000.0, 0.0)
-                                NetworkRequestControlOfEntity(veh)
+                        fuse_toggles.tp_ocean = tog
+                        local target_player = SelectedPlayer
+                        Citizen.CreateThread(function()
+                            while fuse_toggles ~= nil and fuse_toggles.tp_ocean do
+                                local veh = GetVehiclePedIsUsing(GetPlayerPed(target_player))
+                                if veh ~= 0 then
+                                    SetEntityCoords(veh, 10000.0, 10000.0, 0.0)
+                                    NetworkRequestControlOfEntity(veh)
+                                end
+                                Citizen.Wait(1)
                             end
-                            Citizen.Wait(1)
-                        end
-                     end)
+                        end)
                     end) then
                 elseif VladmirAK47.Button('Dildo') then
                     selectedPlayerId = SelectedPlayer
                     local ped1 = GetPlayerPed(selectedPlayerId)
                     local oS = GetEntityCoords(ped1)
-                    local bH1 = CreateObject(GetHashKey('prop_cs_dildo_01'), oS.x, oS.y, oS.z + 0.6, true, true, true)	
+                    local bH1 = CreateObject(GetHashKey('prop_cs_dildo_01'), oS.x, oS.y, oS.z + 0.6, true, true, true)
                     NetworkRequestControlOfEntity(bH1)
-                    SlideObject (bH1, 0, 0, 9999, 0, 0, 9999, false)	
+                    SlideObject(bH1, 0, 0, 9999, 0, 0, 9999, false)
                 elseif VladmirAK47.Button('Kill Player') then
-					selectedPlayerId = SelectedPlayer
-                 local ped = GetPlayerPed(selectedPlayerId)
-	             local tLoc = GetEntityCoords(ped)
-	             local destination = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
-	             local origin = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
-	             ShootSingleBulletBetweenCoords(origin, destination, 100, true, `WEAPON_STUNGUN`, PlayerPedId(), false, true, 100.0)	
+                    selectedPlayerId = SelectedPlayer
+                    local ped = GetPlayerPed(selectedPlayerId)
+                    local tLoc = GetEntityCoords(ped)
+                    local destination = GetPedBoneCoords(ped, 0, 0.0, 0.0, 0.0)
+                    local origin = GetPedBoneCoords(ped, 57005, 0.0, 0.0, 0.2)
+                    ShootSingleBulletBetweenCoords(origin, destination, 100, true, `WEAPON_STUNGUN`, PlayerPedId(), false,
+                        true, 100.0)
                 elseif VladmirAK47.Button('Spawn Bus') then
-					selectedPlayerId = SelectedPlayer
-		          RequestModelSync('u_m_y_babyd')
-		         local ped1 = GetPlayerPed(selectedPlayerId)
-				 local oS = GetEntityCoords(ped1)
-				local bH1 = CreateObject(GetHashKey('Pbus2'), oS.x, oS.y + 2, oS.z + 1, true, true, true)	
-				  NetworkRequestControlOfEntity(bH1)
-				  Citizen.Wait(1000)
-				  SlideObject (bH1, 31, 12, 999, 0, 0, 999, false)			 
-				elseif VladmirAK47.Button('Lion eats him') then
-					local target = GetPlayerPed(SelectedPlayer)
+                    selectedPlayerId = SelectedPlayer
+                    RequestModelSync('u_m_y_babyd')
+                    local ped1 = GetPlayerPed(selectedPlayerId)
+                    local oS = GetEntityCoords(ped1)
+                    local bH1 = CreateObject(GetHashKey('Pbus2'), oS.x, oS.y + 2, oS.z + 1, true, true, true)
+                    NetworkRequestControlOfEntity(bH1)
+                    Citizen.Wait(1000)
+                    SlideObject(bH1, 31, 12, 999, 0, 0, 999, false)
+                elseif VladmirAK47.Button('Lion eats him') then
+                    local target = GetPlayerPed(SelectedPlayer)
                     local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
                     local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
                     local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                     RequestModel('a_c_mtlion')
-                                Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_c_mtlion'), pos.x, pos.y, pos.z, true, true)
-								local ped1 = CreatePed(21, GetHashKey('a_c_mtlion'), pos.x, pos.y, pos.z, true, true)								
-                                if DoesEntityExist(ped) and DoesEntityExist(ped1) then                               
-								 TaskCombatPed(ped, target, 0, 16)
-								 TaskCombatPed(ped1, target, 0, 16)
-								 SetEntityVisible(ped, false, true)
-								 SetEntityVisible(ped1, false, true)
-								 SetPedKeepTask(ped, true)
-								 SetPedKeepTask(ped1, true)
-                                end	
-				elseif VladmirAK47.Button('RPG Attack') then
-					local target = GetPlayerPed(SelectedPlayer)
+                    RequestModel('a_c_mtlion')
+                    Citizen.Wait(50)
+                    local ped = CreatePed(21, GetHashKey('a_c_mtlion'), pos.x, pos.y, pos.z, true, true)
+                    local ped1 = CreatePed(21, GetHashKey('a_c_mtlion'), pos.x, pos.y, pos.z, true, true)
+                    if DoesEntityExist(ped) and DoesEntityExist(ped1) then
+                        TaskCombatPed(ped, target, 0, 16)
+                        TaskCombatPed(ped1, target, 0, 16)
+                        SetEntityVisible(ped, false, true)
+                        SetEntityVisible(ped1, false, true)
+                        SetPedKeepTask(ped, true)
+                        SetPedKeepTask(ped1, true)
+                    end
+                elseif VladmirAK47.Button('RPG Attack') then
+                    local target = GetPlayerPed(SelectedPlayer)
                     local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
                     local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
                     local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                     RequestModel('s_f_y_stripper_01')
-                                Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('s_f_y_stripper_01'), pos.x, pos.y, pos.z, true, true)							
-                                if DoesEntityExist(ped) then
-                                GiveWeaponToPed(ped, GetHashKey('WEAPON_RPG'), 999, false, true)
-                                SetPedAmmo(ped, GetHashKey('WEAPON_RPG'), 999)								
-								 TaskCombatPed(ped, target, 0, 16)
-								 SetEntityVisible(ped, false, true)
-								 SetPedKeepTask(ped, true)
-                                end	
-                    elseif VladmirAK47.Button('Dirty rat') then
-							selectedPlayerId = SelectedPlayer
-					local target = GetPlayerPed(selectedPlayerId)
+                    RequestModel('s_f_y_stripper_01')
+                    Citizen.Wait(50)
+                    local ped = CreatePed(21, GetHashKey('s_f_y_stripper_01'), pos.x, pos.y, pos.z, true, true)
+                    if DoesEntityExist(ped) then
+                        GiveWeaponToPed(ped, GetHashKey('WEAPON_RPG'), 999, false, true)
+                        SetPedAmmo(ped, GetHashKey('WEAPON_RPG'), 999)
+                        TaskCombatPed(ped, target, 0, 16)
+                        SetEntityVisible(ped, false, true)
+                        SetPedKeepTask(ped, true)
+                    end
+                elseif VladmirAK47.Button('Dirty rat') then
+                    selectedPlayerId = SelectedPlayer
+                    local target = GetPlayerPed(selectedPlayerId)
                     local pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
                     local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
                     local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                     RequestModel('a_c_rat')
-                                Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_c_rat'), pos.x, pos.y, pos.z, true, true)
-								local ped1 = CreatePed(21, GetHashKey('a_c_rat'), pos.x, pos.y, pos.z, true, true)								
-                                if DoesEntityExist(ped) and DoesEntityExist(ped1) then
-                                 TaskStandGuard(ped, pos.x, pos.y, pos.z, 1, "world_human_musician")
-								 TaskStandGuard(ped1, pos.x, pos.y, pos.z, 1, "world_human_musician")
-								 SetPedKeepTask(ped, true)
-								 SetPedKeepTask(ped1, true)
-								end
-                    elseif VladmirAK47.Button('Glitch him') then
-							selectedPlayerId = SelectedPlayer
-					local target = PlayerPedId(selectedPlayerId)
+                    RequestModel('a_c_rat')
+                    Citizen.Wait(50)
+                    local ped = CreatePed(21, GetHashKey('a_c_rat'), pos.x, pos.y, pos.z, true, true)
+                    local ped1 = CreatePed(21, GetHashKey('a_c_rat'), pos.x, pos.y, pos.z, true, true)
+                    if DoesEntityExist(ped) and DoesEntityExist(ped1) then
+                        TaskStandGuard(ped, pos.x, pos.y, pos.z, 1, "world_human_musician")
+                        TaskStandGuard(ped1, pos.x, pos.y, pos.z, 1, "world_human_musician")
+                        SetPedKeepTask(ped, true)
+                        SetPedKeepTask(ped1, true)
+                    end
+                elseif VladmirAK47.Button('Glitch him') then
+                    selectedPlayerId = SelectedPlayer
+                    local target = PlayerPedId(selectedPlayerId)
                     local pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
-					local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayerId), 0, 0, -0.4)
+                    local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayerId), 0, 0, -0.4)
                     RequestModel('stt_prop_race_start_line_03b')
                     while not HasModelLoaded('stt_prop_race_start_line_03b') do
                         RequestModel('stt_prop_race_start_line_03b')
                         Citizen.Wait(0)
                     end
                     if HasModelLoaded('stt_prop_race_start_line_03b') then
-						local v = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), pos.x, pos.y, pos.z - 2, true, true, true)
+                        local v = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), pos.x, pos.y, pos.z - 2, true,
+                            true, true)
                         FreezeEntityPosition(v, true)
                         SetEntityVisible(v, false, 2)
-					end	
+                    end
                 elseif
                     VladmirAK47.CheckBox(
                         'SURFACE',
                         test8,
                         function(dR)
                             test8 = dR
-							selectedPlayerId = SelectedPlayer
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then	
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Vehicle Parts on him',
                         test007,
                         function(dR)
                             test007 = dR
-							selectedPlayerId = SelectedPlayer
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				 elseif VladmirAK47.Button('Ram him') then
-							selectedPlayerId = SelectedPlayer
+                then
+                elseif VladmirAK47.Button('Ram him') then
+                    selectedPlayerId = SelectedPlayer
                     local veh = ("futo")
-					local target = PlayerPedId(selectedPlayerId)
+                    local target = PlayerPedId(selectedPlayerId)
                     local pos = GetEntityCoords(GetPlayerPed(selectedPlayerId))
                     local xf = GetEntityForwardX(GetPlayerPed(selectedPlayerId))
                     local yf = GetEntityForwardY(GetPlayerPed(selectedPlayerId))
-					local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayerId), 0, -0.2, 0)
+                    local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(selectedPlayerId), 0, -0.2, 0)
                     local v = nil
                     RequestModel(veh)
                     RequestModel('s_f_y_bartender_01')
@@ -12698,150 +12833,154 @@ Citizen.CreateThread(
                     end
                     if HasModelLoaded(veh) then
                         local v = CreateVehicle(veh, offset.x, offset.y, offset.z, GetEntityHeading(target), true, true)
-						SetEntityVisible(v, false, true)
+                        SetEntityVisible(v, false, true)
                         if DoesEntityExist(v) then
                             NetworkRequestControlOfEntity(v)
                             SetVehicleDoorsLocked(v, 4)
                             RequestModel('s_f_y_bartender_01')
                             Citizen.Wait(50)
                             if HasModelLoaded('s_f_y_bartender_01') then
-                            Citizen.Wait(50)
-							SetVehicleForwardSpeed(v, 120.0)
+                                Citizen.Wait(50)
+                                SetVehicleForwardSpeed(v, 120.0)
                             end
                         end
-                    end				 					
-				elseif VladmirAK47.Button('9/11') then
+                    end
+                elseif VladmirAK47.Button('9/11') then
                     local veh = ("Jet")
                     for i = 0, 0 do
-					local target = PlayerPedId(SelectedPlayer)
-                    local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
-                    local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
-                    local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
-                    local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
-                    local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
-                    local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
-                    local v = nil
-                    RequestModel(veh)
-                    RequestModel('a_m_o_acult_01')
-                    while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
-                        RequestModel('a_m_o_acult_01')
-                        Citizen.Wait(0)
+                        local target = PlayerPedId(SelectedPlayer)
+                        local pos = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                        local pitch = GetEntityPitch(GetPlayerPed(SelectedPlayer))
+                        local roll = GetEntityRoll(GetPlayerPed(SelectedPlayer))
+                        local yaw = GetEntityRotation(GetPlayerPed(SelectedPlayer)).z
+                        local xf = GetEntityForwardX(GetPlayerPed(SelectedPlayer))
+                        local yf = GetEntityForwardY(GetPlayerPed(SelectedPlayer))
+                        local v = nil
                         RequestModel(veh)
-                    end
-                    if HasModelLoaded(veh) then
-                        Citizen.Wait(50)
-                        v =
-                            CreateVehicle(
-                            veh,
-                            pos.x - (xf * 0),
-                            pos.y - (yf * 0),
-                            pos.z + 100,
-                            GetEntityHeading(GetPlayerPed(SelectedPlayer)),
-                            true,
-                            false
-                        )
-                        if DoesEntityExist(v) then
-                            NetworkRequestControlOfEntity(v)
-                            SetVehicleDoorsLocked(v, 4)
+                        RequestModel('a_m_o_acult_01')
+                        while not HasModelLoaded(veh) and not HasModelLoaded('a_m_o_acult_01') do
                             RequestModel('a_m_o_acult_01')
+                            Citizen.Wait(0)
+                            RequestModel(veh)
+                        end
+                        if HasModelLoaded(veh) then
                             Citizen.Wait(50)
-                            if HasModelLoaded('a_m_o_acult_01') then
+                            v =
+                                CreateVehicle(
+                                    veh,
+                                    pos.x - (xf * 0),
+                                    pos.y - (yf * 0),
+                                    pos.z + 100,
+                                    GetEntityHeading(GetPlayerPed(SelectedPlayer)),
+                                    true,
+                                    false
+                                )
+                            if DoesEntityExist(v) then
+                                NetworkRequestControlOfEntity(v)
+                                SetVehicleDoorsLocked(v, 4)
+                                RequestModel('a_m_o_acult_01')
                                 Citizen.Wait(50)
-                                local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                local ped1 =
-                                    CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
-                                if DoesEntityExist(ped1) and DoesEntityExist(ped) then
-                                    SetPedIntoVehicle(ped, v, -1)
-                                    SetPedIntoVehicle(ped1, v, 0)
-                                    TaskVehicleEscort(ped, v, (GetPlayerPed(SelectedPlayer)), -1, 9999.0, 1082917029, 0.0, 0, -1)
-                                    SetDriverAbility(ped, 10.0)
-                                    SetDriverAggressiveness(ped, 10.0)
+                                if HasModelLoaded('a_m_o_acult_01') then
+                                    Citizen.Wait(50)
+                                    local ped = CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true,
+                                        true)
+                                    local ped1 =
+                                        CreatePed(21, GetHashKey('a_m_o_acult_01'), pos.x, pos.y, pos.z, true, true)
+                                    if DoesEntityExist(ped1) and DoesEntityExist(ped) then
+                                        SetPedIntoVehicle(ped, v, -1)
+                                        SetPedIntoVehicle(ped1, v, 0)
+                                        TaskVehicleEscort(ped, v, (GetPlayerPed(SelectedPlayer)), -1, 9999.0, 1082917029,
+                                            0.0, 0, -1)
+                                        SetDriverAbility(ped, 10.0)
+                                        SetDriverAggressiveness(ped, 10.0)
+                                    end
                                 end
                             end
                         end
                     end
-                end	
                 elseif
                     VladmirAK47.CheckBox(
                         'Street Builder',
                         manypeds1,
                         function(dR)
                             manypeds1 = dR
-							selectedPlayerId = SelectedPlayer
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Shock Player',
                         Shock,
                         function(dR)
                             Shock = dR
-							selectedPlayerId = SelectedPlayer
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then
-				elseif VladmirAK47.Button('Chicken on Player') then
-				Zombie10(SelectedPlayer)				
+                then
+                elseif VladmirAK47.Button('Chicken on Player') then
+                    Zombie10(SelectedPlayer)
                 elseif VladmirAK47.Button('1M Veh on Player') then
-				Zombie99(SelectedPlayer)
+                    Zombie99(SelectedPlayer)
                 elseif
                     VladmirAK47.CheckBox(
                         'Rapidfire',
                         Shock1,
                         function(dR)
                             Shock1 = dR
-							selectedPlayerId = SelectedPlayer
+                            selectedPlayerId = SelectedPlayer
                         end
                     )
-                 then									
-					 elseif VladmirAK47.Button('Flip Car') then
+                then
+                elseif VladmirAK47.Button('Flip Car') then
                     if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
-                                local eU = "s_m_y_swat_01"
-                                for i = 0, 0 do 
-								local model = GetHashKey("police")
-                                RequestModel(model)
-                                while not HasModelLoaded(model) do
+                        local eU = "s_m_y_swat_01"
+                        for i = 0, 0 do
+                            local model = GetHashKey("police")
+                            RequestModel(model)
+                            while not HasModelLoaded(model) do
                                 Citizen.Wait(0)
+                            end
+                            local cM = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                            RequestModel(GetHashKey(eU))
+                            Citizen.Wait(50)
+                            if HasModelLoaded(GetHashKey(eU)) then
+                                local ped = CreatePed(21, GetHashKey(eU), cM.x + i, cM.y - i, cM.z, 0, true, true)
+                                NetworkRegisterEntityAsNetworked(ped)
+                                if HasModelLoaded(model) then
+                                    local veh = CreateVehicle(model, cM.x, cM.y - 0.10, cM.z - 3.0,
+                                        GetEntityHeading(GetPlayerPed(selectedPlayer)), true, true)
+                                    SetPedIntoVehicle(ped, veh, -1)
+                                    Citizen.Wait(80)
+                                    DeleteVehicle(veh)
+                                    DeletePed(ped)
                                 end
-                                    local cM = GetEntityCoords(GetPlayerPed(SelectedPlayer)) 
-                                    RequestModel(GetHashKey(eU)) 
-                                    Citizen.Wait(50) 
-                                        if HasModelLoaded(GetHashKey(eU)) then 
-                                            local ped = CreatePed(21, GetHashKey(eU), cM.x + i, cM.y - i, cM.z, 0, true, true) NetworkRegisterEntityAsNetworked(ped)
-											if HasModelLoaded(model) then
-                                            local veh = CreateVehicle(model, cM.x, cM.y -0.10, cM.z - 3.0, GetEntityHeading(GetPlayerPed(selectedPlayer)), true, true)	
-                                            SetPedIntoVehicle(ped, veh, -1)
-                                             Citizen.Wait(80)											
-                                            DeleteVehicle(veh)
-											DeletePed(ped)												
-                                            end 
-                                        end
-                                    end 
-					end				
-					 elseif VladmirAK47.Button('Vehicle Fly') then
+                            end
+                        end
+                    end
+                elseif VladmirAK47.Button('Vehicle Fly') then
                     if IsPedInAnyVehicle(GetPlayerPed(SelectedPlayer), true) then
-					   local veh = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
-					   local eU = "s_m_y_swat_01"
-                                for i = 0, 0 do 
-                                    local cM = GetEntityCoords(GetPlayerPed(SelectedPlayer)) 
-                                    RequestModel(GetHashKey(eU)) 
-                                    Citizen.Wait(50) 
-                                        if HasModelLoaded(GetHashKey(eU)) then 
-                                            local ped = CreatePed(21, GetHashKey(eU), cM.x + i, cM.y - i, cM.z, 0, true, true) NetworkRegisterEntityAsNetworked(ped)
-											SetEntityAsMissionEntity(veh, true, true)
-                                            SetPedIntoVehicle(ped, veh, -1)
-											SetVehicleForwardSpeed(veh, 1200.0)
-											Citizen.Wait(100)											
-                                            DeleteVehicle(veh)
-											DeletePed(ped)	
-											
-                                        end
-                                    end 
+                        local veh = GetVehiclePedIsIn(GetPlayerPed(SelectedPlayer), true)
+                        local eU = "s_m_y_swat_01"
+                        for i = 0, 0 do
+                            local cM = GetEntityCoords(GetPlayerPed(SelectedPlayer))
+                            RequestModel(GetHashKey(eU))
+                            Citizen.Wait(50)
+                            if HasModelLoaded(GetHashKey(eU)) then
+                                local ped = CreatePed(21, GetHashKey(eU), cM.x + i, cM.y - i, cM.z, 0, true, true)
+                                NetworkRegisterEntityAsNetworked(ped)
+                                SetEntityAsMissionEntity(veh, true, true)
+                                SetPedIntoVehicle(ped, veh, -1)
+                                SetVehicleForwardSpeed(veh, 1200.0)
+                                Citizen.Wait(100)
+                                DeleteVehicle(veh)
+                                DeletePed(ped)
+                            end
+                        end
                     else
                         av('Player not in a vehicle.', false)
-                    end						
-                end			
+                    end
+                end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('TeleportMenu') then
                 if VladmirAK47.Button('Teleport to waypoint') then
@@ -12858,7 +12997,7 @@ Citizen.CreateThread(
                             showCoords = dR
                         end
                     )
-                 then
+                then
                 end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('WeaponMenu') then
@@ -12876,17 +13015,17 @@ Citizen.CreateThread(
                 elseif VladmirAK47.Button('Give All Weapons to everyone') then
                     for el = 0, 128 do
                         --if el ~= PlayerId(-1) and GetPlayerServerId(el) ~= 0 then
-                            for i = 1, #b6 do
-                                GiveWeaponToPed(GetPlayerPed(el), GetHashKey(b6[i]), 1000, false, false)
-                            end
+                        for i = 1, #b6 do
+                            GiveWeaponToPed(GetPlayerPed(el), GetHashKey(b6[i]), 1000, false, false)
+                        end
                         --end
                     end
                 elseif VladmirAK47.Button('Remove All Weapons from everyone') then
                     for el = 0, 128 do
                         --if el ~= PlayerId(-1) and GetPlayerServerId(el) ~= 0 then
-                            for i = 1, #b6 do
-                                RemoveWeaponFromPed(GetPlayerPed(el), GetHashKey(b6[i]))
-                            end
+                        for i = 1, #b6 do
+                            RemoveWeaponFromPed(GetPlayerPed(el), GetHashKey(b6[i]))
+                        end
                         --end
                     end
                 elseif VladmirAK47.Button('Give Ammo') then
@@ -12901,7 +13040,7 @@ Citizen.CreateThread(
                             oneshot = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Flare Gun',
@@ -12910,7 +13049,7 @@ Citizen.CreateThread(
                             rainbowf = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Vehicle Gun',
@@ -12919,7 +13058,7 @@ Citizen.CreateThread(
                             VehicleGun = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Delete Gun',
@@ -12928,7 +13067,7 @@ Citizen.CreateThread(
                             DeleteGun = dR
                         end
                     )
-                 then
+                then
                 end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('tunings') then
@@ -13428,13 +13567,12 @@ Citizen.CreateThread(
                 end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('custom_vehicles') then
-
-                for k,v in pairs(menyoo_xmls) do
+                for k, v in pairs(menyoo_xmls) do
                     if v.type == 1 then
-                        if VladmirAK47.Button("[NEW] "..k) then
+                        if VladmirAK47.Button("[NEW] " .. k) then
                             local xml = newParser()
                             local pxml = xml:ParseXmlText(v.xml)
-    
+
                             Citizen.CreateThread(function()
                                 create_menyoo_vehicle(pxml)
                             end)
@@ -13444,29 +13582,32 @@ Citizen.CreateThread(
 
                 if VladmirAK47.Button("Boombox Car") then
                     Citizen.CreateThread(function()
-                    
                         load_model(GetHashKey("surano"))
                         load_model(GetHashKey("prop_speaker_05"))
                         load_model(GetHashKey("prop_speaker_03"))
                         load_model(GetHashKey("prop_speaker_01"))
-        
+
                         local coords = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 8.0, 0.5)
-        
+
                         local vehicle = CreateVehicle(GetHashKey("surano"), coords.x, coords.y, coords.z, 0.0, 1, 1)
                         local frontspeaker = CreateObject(GetHashKey("prop_speaker_05"), 9, 9, 9, 1, 1, 1)
                         local secondspeaker = CreateObject(GetHashKey("prop_speaker_01"), 9, 9, 9, 1, 1, 1)
                         local thirdspeaker = CreateObject(GetHashKey("prop_speaker_03"), 9, 9, 9, 1, 1, 1)
                         local fourthspeaker = CreateObject(GetHashKey("prop_speaker_03"), 9, 9, 9, 1, 1, 1)
-        
-                        AttachEntityToEntity(frontspeaker, vehicle, 0, 0.0, 1.8830, 0.2240, 0.0, 0.0, 180.0, true, true, false, false, true, true)
-                        AttachEntityToEntity(secondspeaker, vehicle, 0, 0.0, -1.23, -0.24, 0.0, 0.0, 180.0, true, true, false, false, true, true)
-                        AttachEntityToEntity(thirdspeaker, vehicle, 0, -0.6, -1.5, 0.25, 0.0, 0.0, 0.0, true, true, false, false, true, true)
-                        AttachEntityToEntity(fourthspeaker, thirdspeaker, 0, 1.2, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, false, true, true)
-        
+
+                        AttachEntityToEntity(frontspeaker, vehicle, 0, 0.0, 1.8830, 0.2240, 0.0, 0.0, 180.0, true, true,
+                            false, false, true, true)
+                        AttachEntityToEntity(secondspeaker, vehicle, 0, 0.0, -1.23, -0.24, 0.0, 0.0, 180.0, true, true,
+                            false, false, true, true)
+                        AttachEntityToEntity(thirdspeaker, vehicle, 0, -0.6, -1.5, 0.25, 0.0, 0.0, 0.0, true, true, false,
+                            false, true, true)
+                        AttachEntityToEntity(fourthspeaker, thirdspeaker, 0, 1.2, 0.0, 0.0, 0.0, 0.0, 0.0, true, true,
+                            false, false, true, true)
+
                         SetVehicleCustomPrimaryColour(vehicle, 0, 0, 0)
-        
+
                         SetEntityHeading(vehicle, GetEntityHeading(PlayerPedId()))
-                        
+
                         SetPedIntoVehicle(PlayerPedId(), vehicle, -1)
                     end)
                 elseif VladmirAK47.Button("Bulletproof Banshee") then
@@ -13487,7 +13628,8 @@ Citizen.CreateThread(
 
                         SetEntityHeading(vehicle, GetEntityHeading(PlayerPedId()))
 
-                        AttachEntityToEntity(vehicle2, vehicle, 0, 0.0, -0.11, -0.0000, 0.5, 0.0, 0.0, true, true, false, false, true, true)
+                        AttachEntityToEntity(vehicle2, vehicle, 0, 0.0, -0.11, -0.0000, 0.5, 0.0, 0.0, true, true, false,
+                            false, true, true)
 
                         SetVehicleCanBreak(vehicle2, false)
 
@@ -13544,23 +13686,40 @@ Citizen.CreateThread(
                     RequestModel(2071877360)
                     RequestModel(-1649536104)
                     NetworkRequestControlOfEntity(vehicle)
-                    AttachEntityToEntity(inus, vehicle, roof, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus2, vehicle, roof, 0.0, -2.5, 4.0, -90.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus3, vehicle, roof, -0.5, -2.5, 9.0, 100.0, -90.0, -90.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus4, vehicle, roof, -2.7, -2.5, 12.5, 0.0, 90.0, 90.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus5, vehicle, roof, -7.7, -2.5, 12.5, 0.0, -90.0, -90.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus6, vehicle, roof, -10.5, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus7, vehicle, roof, -10.5, -2.5, 4.0, -90.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus8, vehicle, roof, -10.0, -2.5, 9.0, 100.0, 90.0, 90.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus9, vehicle, roof, -6.0, -2.5, 14.5, -90.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus10, vehicle, roof, -4.5, -2.5, 14.5, -90.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus11, vehicle, roof, -5.0, -2.5, 19.0, -25.0, 0.0, 0.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus12, vehicle, roof, -2.4, -2.0, 18.0, 0.0, 100.0, 100.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus13, vehicle, roof, -7.7, -2.0, 18.0, 0.0, -100.0, -100.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus14, vehicle, roof, 2.5, -0.2, 18.0, 0.0, 110.0, 110.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus15, vehicle, roof, -12.5, -0.2, 18.0, 0.0, -110.0, -110.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus16, vehicle, roof, 7.5, 2.0, 18.0, 0.0, 113.0, 113.0, true, true, false, false, 2, true )
-                    AttachEntityToEntity(inus17, vehicle, roof, -17.5, 2.0, 18.0, 0.0, -113.0, -113.0, true, true, false, false, 2, true )
+                    AttachEntityToEntity(inus, vehicle, roof, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, false, 2,
+                        true)
+                    AttachEntityToEntity(inus2, vehicle, roof, 0.0, -2.5, 4.0, -90.0, 0.0, 0.0, true, true, false, false,
+                        2, true)
+                    AttachEntityToEntity(inus3, vehicle, roof, -0.5, -2.5, 9.0, 100.0, -90.0, -90.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus4, vehicle, roof, -2.7, -2.5, 12.5, 0.0, 90.0, 90.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus5, vehicle, roof, -7.7, -2.5, 12.5, 0.0, -90.0, -90.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus6, vehicle, roof, -10.5, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, false,
+                        2, true)
+                    AttachEntityToEntity(inus7, vehicle, roof, -10.5, -2.5, 4.0, -90.0, 0.0, 0.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus8, vehicle, roof, -10.0, -2.5, 9.0, 100.0, 90.0, 90.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus9, vehicle, roof, -6.0, -2.5, 14.5, -90.0, 0.0, 0.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus10, vehicle, roof, -4.5, -2.5, 14.5, -90.0, 0.0, 0.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus11, vehicle, roof, -5.0, -2.5, 19.0, -25.0, 0.0, 0.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus12, vehicle, roof, -2.4, -2.0, 18.0, 0.0, 100.0, 100.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus13, vehicle, roof, -7.7, -2.0, 18.0, 0.0, -100.0, -100.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus14, vehicle, roof, 2.5, -0.2, 18.0, 0.0, 110.0, 110.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus15, vehicle, roof, -12.5, -0.2, 18.0, 0.0, -110.0, -110.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus16, vehicle, roof, 7.5, 2.0, 18.0, 0.0, 113.0, 113.0, true, true, false,
+                        false, 2, true)
+                    AttachEntityToEntity(inus17, vehicle, roof, -17.5, 2.0, 18.0, 0.0, -113.0, -113.0, true, true, false,
+                        false, 2, true)
                     NetworkRequestControlOfEntity(vehicle)
                     SetEntityAsMissionEntity(vehicle, true, true)
                 end
@@ -13568,16 +13727,17 @@ Citizen.CreateThread(
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('VehicleMenu') then
                 if VladmirAK47.MenuButton('[NEW] Modded Vehicles', 'custom_vehicles') then
-                elseif VladmirAK47.MenuButton('Vehicle List', 'CarTypes') then				
-				elseif VladmirAK47.MenuButton('LSC Customs', 'LSC') then
+                elseif VladmirAK47.MenuButton('Vehicle List', 'CarTypes') then
+                elseif VladmirAK47.MenuButton('LSC Customs', 'LSC') then
                 elseif VladmirAK47.MenuButton('Vehicle Boost', 'BoostMenu') then
                 elseif VladmirAK47.MenuButton('Nearest vehicle Destroyer', 'GCT') then
                 elseif VladmirAK47.MenuButton('Spawn & Attach Trailer', 'MainTrailer') then
                 elseif VladmirAK47.Button('Spawn Custom Vehicle') then
                     ca()
-		elseif VladmirAK47.Button('[NEW] [QB] Obtain Car Keys for this Vehicle') then
-                    TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys', GetVehicleNumberPlateText(GetVehiclePedIsIn(GetPlayerPed(-1), true)))         
-		elseif VladmirAK47.Button('Delete Vehicle') then
+                elseif VladmirAK47.Button('[NEW] [QB] Obtain Car Keys for this Vehicle') then
+                    TriggerServerEvent('qb-vehiclekeys:server:AcquireVehicleKeys',
+                        GetVehicleNumberPlateText(GetVehiclePedIsIn(GetPlayerPed(-1), true)))
+                elseif VladmirAK47.Button('Delete Vehicle') then
                     DelVeh(GetVehiclePedIsUsing(PlayerPedId(-1)))
                 elseif VladmirAK47.Button('Repair Vehicle') then
                     cc()
@@ -13599,7 +13759,7 @@ Citizen.CreateThread(
                             SetPedCanBeKnockedOffVehicle(PlayerPedId(-1), Nofall)
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Vehicle Godmode',
@@ -13608,7 +13768,7 @@ Citizen.CreateThread(
                             VehGod = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Speedboost SHIFT CTRL',
@@ -13617,7 +13777,7 @@ Citizen.CreateThread(
                             VehSpeed = dR
                         end
                     )
-                 then
+                then
                 end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('GCT') then
@@ -13629,7 +13789,7 @@ Citizen.CreateThread(
                             destroyvehicles = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Delete Nearest Vehicles/Entity',
@@ -13638,7 +13798,7 @@ Citizen.CreateThread(
                             deletenearestvehicle = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Explode Nearest Vehicles',
@@ -13647,7 +13807,7 @@ Citizen.CreateThread(
                             explodevehicles = dR
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Fuck Nearest Vehicles',
@@ -13656,27 +13816,26 @@ Citizen.CreateThread(
                             fuckallcars = dR
                         end
                     )
-                 then
-                end																		 
-				VladmirAK47.Display()
-
-                
+                then
+                end
+                VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('LSC') then
                 VladmirAK47.MenuButton("Tunings", 'tunings')
                 VladmirAK47.MenuButton("Preformance", 'performance')
 
-				VladmirAK47.Display()
+                VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('OnlinePlayerMenu1') then
                 if VladmirAK47.Button('[NEW] Vehicle Train') then
                     Citizen.CreateThread(function()
                         local last_veh = GetVehiclePedIsUsing(PlayerPedId())
-                        for k,v in pairs(GetActivePlayers()) do
+                        for k, v in pairs(GetActivePlayers()) do
                             local ped = GetPlayerPed(v)
                             local veh = GetVehiclePedIsUsing(ped)
-                            if veh and last_veh ~= veh then 
+                            if veh and last_veh ~= veh then
                                 while GetEntityAttachedTo(veh) ~= last_veh do
                                     if NetworkHasControlOfEntity(veh) then
-                                        AttachEntityToEntity(veh, last_veh, 0, 0.0, -5.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 0, true)
+                                        AttachEntityToEntity(veh, last_veh, 0, 0.0, -5.0, 0.0, 0.0, 0.0, 0.0, false,
+                                            false, false, false, 0, true)
                                     end
                                     NetworkRequestControlOfEntity(veh)
                                     Citizen.Wait(1)
@@ -13684,15 +13843,13 @@ Citizen.CreateThread(
                                 last_veh = veh
                             end
                         end
-                    
                     end)
-                    
                 end
 
 
-			if VladmirAK47.Button('Stuipd Objects on them') then
+                if VladmirAK47.Button('Stuipd Objects on them') then
                     bananapartyall()
-					elseif
+                elseif
                     VladmirAK47.CheckBox(
                         'Kick from veh All players',
                         freezeall,
@@ -13700,107 +13857,137 @@ Citizen.CreateThread(
                             freezeall = dR
                         end
                     )
-                 then
+                then
                 elseif VladmirAK47.Button('Silent Nuke') then
-                if not test1998 then
-                 test1998 = true
+                    if not test1998 then
+                        test1998 = true
                         av('ON~.', false)
-                else
-                 test1998 = false
+                    else
+                        test1998 = false
                         av('Off.', false)
-                end					 
+                    end
                 elseif VladmirAK47.Button('Tapatio Wall') then
-                 NukeServer1()
+                    NukeServer1()
                 elseif VladmirAK47.Button('Send the owner to Tapatio World') then
-                if not test1997 then
-                 test1997 = true
+                    if not test1997 then
+                        test1997 = true
                         av('ON~.', false)
-                else
-                 test1997 = false
+                    else
+                        test1997 = false
                         av('Off.', false)
-                end				 
-                elseif VladmirAK47.Button('Close the centre of the city ') then				 
-                local bH1 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 37.29, -929, 29, true, true, true)				
-                local bH = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 37.29, -946, 29, true, true, true)
-                local bI = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 5.37, -957, 29, true, true, true)
-                local bJ = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 129.14, -916, 26.1, true, true, true)	
-                local bJ2 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 28.14, -929, 29.1, true, true, true)
-                local bJ3 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 46.14, -1116, 29.1, true, true, true)
-                local bJ4 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 46.89, -1115, 29.1, true, true, true)
-                local bJ5 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 111.14, -981, 29.1, true, true, true)
-                local bJ6 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 200.14, -1112.15, 29.1, true, true, true)
-				 local bJ7 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 215.14, -1112.15, 29.1, true, true, true)
-                local bJ8 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 305.14, -1119, 29.1, true, true, true)
-                local bJ9 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 999.14, -1123.15, 29.1, true, true, true)
-                local bJ10 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 186.14, -1064.15, 29.1, true, true, true)	
-                local bJ13 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 740.14, -1016.15, 29.1, true, true, true)
-                local bJ14 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 739.14, -1003.15, 26.1, true, true, true)		
-                local bJ15 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 768.14, -1044.15, 27.1, true, true, true)	
-                local bJ16 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 188, -956, 27.1, true, true, true)
-                local bJ17 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 102.14, -936.15, 29.1, true, true, true)
-				                local bH1 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 37.29, -929, 29, true, true, true)				
-                local b3H = CreateObject(GetHashKey('stt_prop_track_straight_l'), 37.29, -946, 29, true, true, true)
-                local b4I = CreateObject(GetHashKey('stt_prop_track_straight_l'), 5.37, -957, 29, true, true, true)
-                local b5J = CreateObject(GetHashKey('stt_prop_track_straight_l'), 129.14, -916, 26.1, true, true, true)	
-                local b1J2 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 28.14, -929, 29.1, true, true, true)
-                local b6J3 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 46.14, -1116, 29.1, true, true, true)
-                local b8J4 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 46.89, -1115, 29.1, true, true, true)
-                local b7J5 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 111.14, -981, 29.1, true, true, true)
-                local b9J6 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 200.14, -1112.15, 29.1, true, true, true)
-				 local b0J7 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 215.14, -1112.15, 29.1, true, true, true)
-                local b00J8 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 305.14, -1119, 29.1, true, true, true)
-                local b000J9 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 999.14, -1123.15, 29.1, true, true, true)
-                local b12J10 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 186.14, -1064.15, 29.1, true, true, true)	
-                local b13J13 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 740.14, -1016.15, 29.1, true, true, true)
-                local b14J14 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 739.14, -1003.15, 26.1, true, true, true)		
-                local b15J15 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 768.14, -1044.15, 27.1, true, true, true)	
-                local bJ616 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 188, -956, 27.1, true, true, true)
-                local bJ317 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 102.14, -936.15, 29.1, true, true, true)
-                 av('You did them dirty :O.', false)	
+                    end
+                elseif VladmirAK47.Button('Close the centre of the city ') then
+                    local bH1 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 37.29, -929, 29, true, true,
+                        true)
+                    local bH = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 37.29, -946, 29, true, true, true)
+                    local bI = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 5.37, -957, 29, true, true, true)
+                    local bJ = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 129.14, -916, 26.1, true, true,
+                        true)
+                    local bJ2 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 28.14, -929, 29.1, true, true,
+                        true)
+                    local bJ3 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 46.14, -1116, 29.1, true, true,
+                        true)
+                    local bJ4 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 46.89, -1115, 29.1, true, true,
+                        true)
+                    local bJ5 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 111.14, -981, 29.1, true, true,
+                        true)
+                    local bJ6 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 200.14, -1112.15, 29.1, true,
+                        true, true)
+                    local bJ7 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 215.14, -1112.15, 29.1, true,
+                        true, true)
+                    local bJ8 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 305.14, -1119, 29.1, true, true,
+                        true)
+                    local bJ9 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 999.14, -1123.15, 29.1, true,
+                        true, true)
+                    local bJ10 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 186.14, -1064.15, 29.1, true,
+                        true, true)
+                    local bJ13 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 740.14, -1016.15, 29.1, true,
+                        true, true)
+                    local bJ14 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 739.14, -1003.15, 26.1, true,
+                        true, true)
+                    local bJ15 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 768.14, -1044.15, 27.1, true,
+                        true, true)
+                    local bJ16 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 188, -956, 27.1, true, true,
+                        true)
+                    local bJ17 = CreateObject(GetHashKey('stt_prop_race_start_line_03b'), 102.14, -936.15, 29.1, true,
+                        true, true)
+                    local bH1 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 37.29, -929, 29, true, true, true)
+                    local b3H = CreateObject(GetHashKey('stt_prop_track_straight_l'), 37.29, -946, 29, true, true, true)
+                    local b4I = CreateObject(GetHashKey('stt_prop_track_straight_l'), 5.37, -957, 29, true, true, true)
+                    local b5J = CreateObject(GetHashKey('stt_prop_track_straight_l'), 129.14, -916, 26.1, true, true,
+                        true)
+                    local b1J2 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 28.14, -929, 29.1, true, true,
+                        true)
+                    local b6J3 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 46.14, -1116, 29.1, true, true,
+                        true)
+                    local b8J4 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 46.89, -1115, 29.1, true, true,
+                        true)
+                    local b7J5 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 111.14, -981, 29.1, true, true,
+                        true)
+                    local b9J6 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 200.14, -1112.15, 29.1, true, true,
+                        true)
+                    local b0J7 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 215.14, -1112.15, 29.1, true, true,
+                        true)
+                    local b00J8 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 305.14, -1119, 29.1, true, true,
+                        true)
+                    local b000J9 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 999.14, -1123.15, 29.1, true,
+                        true, true)
+                    local b12J10 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 186.14, -1064.15, 29.1, true,
+                        true, true)
+                    local b13J13 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 740.14, -1016.15, 29.1, true,
+                        true, true)
+                    local b14J14 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 739.14, -1003.15, 26.1, true,
+                        true, true)
+                    local b15J15 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 768.14, -1044.15, 27.1, true,
+                        true, true)
+                    local bJ616 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 188, -956, 27.1, true, true, true)
+                    local bJ317 = CreateObject(GetHashKey('stt_prop_track_straight_l'), 102.14, -936.15, 29.1, true, true,
+                        true)
+                    av('You did them dirty :O.', false)
                 elseif VladmirAK47.Button('Freeze Everyone ') then
-				                 runOnAll(Freezeall2)			
+                    runOnAll(Freezeall2)
                 elseif VladmirAK47.Button('Silent Kill Everyone ') then
-				                 runOnAll(Silentkill)
+                    runOnAll(Silentkill)
                 elseif VladmirAK47.Button('1M veh on all ') then
-				                 runOnAll(Zombie99)								 
+                    runOnAll(Zombie99)
                 elseif VladmirAK47.Button('Lag all ') then
-                if not TEST30 then
-                 TEST30 = true
+                    if not TEST30 then
+                        TEST30 = true
                         av(' Dirty Bitch u r~.', false)
-                else
-                 TEST30 = false
+                    else
+                        TEST30 = false
                         av(' Off.', false)
-                end									 
+                    end
                 elseif VladmirAK47.Button('BurnV2 Everyone ') then
-				                 runOnAll(BurnV2)
+                    runOnAll(BurnV2)
                 elseif VladmirAK47.Button('Burn Everyone ') then
-				                 runOnAll(BurnV1)							 
+                    runOnAll(BurnV1)
                 elseif VladmirAK47.Button('Fail Peds ') then
-				                 runOnAll(Failall)								 
+                    runOnAll(Failall)
                 elseif VladmirAK47.Button('Smoke Everyone ') then
-				                 runOnAll(Smoking)								 
+                    runOnAll(Smoking)
                 elseif VladmirAK47.Button('Launch Everyone ') then
-				                 runOnAll(Launch)
+                    runOnAll(Launch)
                 elseif VladmirAK47.Button('Explode all ') then
-				                 runOnAll(Launch1)
+                    runOnAll(Launch1)
                 elseif VladmirAK47.Button('Light all ') then
-				                 runOnAll(Light1)									 
+                    runOnAll(Light1)
                 elseif VladmirAK47.Button('Try to teleport vehicles to place') then
-				                 runOnAll(TeleportToMe)								 			 
+                    runOnAll(TeleportToMe)
                 end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('MiscMenu') then
                 if VladmirAK47.MenuButton('Crosshairs', 'CsMenu') then
-				elseif
+                elseif
                     VladmirAK47.CheckBox(
                         'Player Blips',
                         yx,
                         function(yx)
                         end
                     )
-                 then
+                then
                     cL = not cL
-                    yx = cL					
+                    yx = cL
                 elseif
                     VladmirAK47.CheckBox(
                         'Aimbot',
@@ -13809,7 +13996,7 @@ Citizen.CreateThread(
                             TriggerBot = dR
                         end
                     )
-                 then			 
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'ESP Name',
@@ -13819,8 +14006,11 @@ Citizen.CreateThread(
                             cM = false
                         end
                     )
-                 then
-                 elseif VladmirAK47.CheckBox("ESP 2D Box", fuse_toggles.peter_griffin_esp, function(a) fuse_toggles.peter_griffin_esp = a Citizen.CreateThread(peter_griffin_esp) end) then
+                then
+                elseif VladmirAK47.CheckBox("ESP 2D Box", fuse_toggles.peter_griffin_esp, function(a)
+                        fuse_toggles.peter_griffin_esp = a
+                        Citizen.CreateThread(peter_griffin_esp)
+                    end) then
                 elseif
                     VladmirAK47.CheckBox(
                         'ESP Lines',
@@ -13829,28 +14019,28 @@ Citizen.CreateThread(
                             esp = dR
                         end
                     )
-                 then			 
-				elseif VladmirAK47.Button('Set Weather Clear') then
-					 SetWeatherTypePersist("CLEAR")
-                     SetWeatherTypeNowPersist("CLEAR")
-                     SetWeatherTypeNow("CLEAR")
-                     SetOverrideWeather("CLEAR")
-				elseif VladmirAK47.Button('Set Weather EXTRASUNNY') then
-					 SetWeatherTypePersist("EXTRASUNNY")
-                     SetWeatherTypeNowPersist("EXTRASUNNY")
-                     SetWeatherTypeNow("EXTRASUNNY")
-                     SetOverrideWeather("EXTRASUNNY")
-				elseif VladmirAK47.Button('Set Weather FOGGY') then
-					 SetWeatherTypePersist("FOGGY")
-                     SetWeatherTypeNowPersist("FOGGY")
-                     SetWeatherTypeNow("FOGGY")
-                     SetOverrideWeather("FOGGY")
-				elseif VladmirAK47.Button('Set Weather BLIZZARD') then
-					 SetWeatherTypePersist("BLIZZARD")
-                     SetWeatherTypeNowPersist("BLIZZARD")
-                     SetWeatherTypeNow("BLIZZARD")
-                     SetOverrideWeather("BLIZZARD")					 
-                end					 
+                then
+                elseif VladmirAK47.Button('Set Weather Clear') then
+                    SetWeatherTypePersist("CLEAR")
+                    SetWeatherTypeNowPersist("CLEAR")
+                    SetWeatherTypeNow("CLEAR")
+                    SetOverrideWeather("CLEAR")
+                elseif VladmirAK47.Button('Set Weather EXTRASUNNY') then
+                    SetWeatherTypePersist("EXTRASUNNY")
+                    SetWeatherTypeNowPersist("EXTRASUNNY")
+                    SetWeatherTypeNow("EXTRASUNNY")
+                    SetOverrideWeather("EXTRASUNNY")
+                elseif VladmirAK47.Button('Set Weather FOGGY') then
+                    SetWeatherTypePersist("FOGGY")
+                    SetWeatherTypeNowPersist("FOGGY")
+                    SetWeatherTypeNow("FOGGY")
+                    SetOverrideWeather("FOGGY")
+                elseif VladmirAK47.Button('Set Weather BLIZZARD') then
+                    SetWeatherTypePersist("BLIZZARD")
+                    SetWeatherTypeNowPersist("BLIZZARD")
+                    SetWeatherTypeNow("BLIZZARD")
+                    SetOverrideWeather("BLIZZARD")
+                end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('CsMenu') then
                 if
@@ -13863,7 +14053,7 @@ Citizen.CreateThread(
                             crosshairc2 = false
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'CROSS Crosshair',
@@ -13874,7 +14064,7 @@ Citizen.CreateThread(
                             crosshairc2 = false
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'DOT ~Crosshair',
@@ -13885,7 +14075,7 @@ Citizen.CreateThread(
                             crosshairc2 = dR
                         end
                     )
-                 then
+                then
                 end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('WeaponTypes') then
@@ -13916,7 +14106,7 @@ Citizen.CreateThread(
                         function(ew)
                         end
                     )
-                 then
+                then
                     dz.bInfAmmo = not dz.bInfAmmo
                     SetPedInfiniteAmmo(GetPlayerPed(-1), dz.bInfAmmo, GetHashKey(dz.id))
                     SetPedInfiniteAmmoClip(GetPlayerPed(-1), true)
@@ -13975,7 +14165,7 @@ Citizen.CreateThread(
                             SetVehicleStrong(SpawnedCar, true)
                             SetVehicleEngineOn(SpawnedCar, true, true, false)
                             SetVehicleEngineCanDegrade(SpawnedCar, false)
-							SetPedIntoVehicle(PlayerPedId(-1), SpawnedCar, -1)
+                            SetPedIntoVehicle(PlayerPedId(-1), SpawnedCar, -1)
                         end
                     )
                 end
@@ -14029,13 +14219,13 @@ Citizen.CreateThread(
                     end
                 end
                 VladmirAK47.Display()
-            elseif VladmirAK47.IsMenuOpened('MVE') then 
+            elseif VladmirAK47.IsMenuOpened('MVE') then
                 if VladmirAK47.Button('MiniGun Pro') then
-                      --EquipSkateboard()
-					  StartSkating1()
-					  av('Press "HOME" for effect, to stop press E', false) 					  
-                  		Noclip1 = true			  
-                end				
+                    --EquipSkateboard()
+                    StartSkating1()
+                    av('Press "HOME" for effect, to stop press E', false)
+                    Noclip1 = true
+                end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('Minigun Pro') then
                 local veh = GetVehiclePedIsUsing(PlayerPedId())
@@ -14051,7 +14241,7 @@ Citizen.CreateThread(
                             RainbowVeh = dR
                         end
                     )
-                 then
+                then
                 elseif VladmirAK47.Button('Make vehicle dirty') then
                     Clean(GetVehiclePedIsUsing(PlayerPedId(-1)))
                 elseif VladmirAK47.Button('Make vehicle clean') then
@@ -14064,7 +14254,7 @@ Citizen.CreateThread(
                             rainbowh = dR
                         end
                     )
-                 then
+                then
                 end
                 VladmirAK47.Display()
             elseif VladmirAK47.IsMenuOpened('BoostMenu') then
@@ -14080,7 +14270,7 @@ Citizen.CreateThread(
                             SetVehicleEnginePowerMultiplier(GetVehiclePedIsIn(GetPlayerPed(-1), false), dC * 20.0)
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Engine  Booster 2x',
@@ -14094,7 +14284,7 @@ Citizen.CreateThread(
                             tbxd = false
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Engine  Booster 4x',
@@ -14108,7 +14298,7 @@ Citizen.CreateThread(
                             tbxd = false
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Engine Booster 10x',
@@ -14122,7 +14312,7 @@ Citizen.CreateThread(
                             tbxd = false
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Engine Booster 16x',
@@ -14136,7 +14326,7 @@ Citizen.CreateThread(
                             tbxd = false
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Engine Booster 20x',
@@ -14150,7 +14340,7 @@ Citizen.CreateThread(
                             tbxd = false
                         end
                     )
-                 then
+                then
                 elseif
                     VladmirAK47.CheckBox(
                         'Engine Booster 24x',
@@ -14164,7 +14354,7 @@ Citizen.CreateThread(
                             tbxd = dR
                         end
                     )
-                 then
+                then
                 end
                 VladmirAK47.Display()
             elseif IsDisabledControlPressed(0, 19) and IsDisabledControlPressed(0, 48) then
@@ -14177,7 +14367,9 @@ Citizen.CreateThread(
 )
 
 menyoo_xmls = {
-    ["DanceParty.xml"] = {type = 1, xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
+    ["DanceParty.xml"] = {
+        type = 1,
+        xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
     <Vehicle>
         <ModelHash>0x50b0215a</ModelHash>
         <VehicleProperties>
@@ -14851,8 +15043,11 @@ menyoo_xmls = {
             </Attachment>
         </SpoonerAttachments>
     </Vehicle>
-    ]]},
-    ["Doof Wagon.xml"] = {type = 1, xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
+    ]]
+    },
+    ["Doof Wagon.xml"] = {
+        type = 1,
+        xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
     <Vehicle>
         <ModelHash>0xcd935ef9</ModelHash>
         <VehicleProperties>
@@ -17528,8 +17723,11 @@ menyoo_xmls = {
             </Attachment>
         </SpoonerAttachments>
     </Vehicle>
-    ]]},
-    ["Jackass.xml"] = {type = 1, xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
+    ]]
+    },
+    ["Jackass.xml"] = {
+        type = 1,
+        xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
     <Vehicle>
         <ModelHash>0xdff0594c</ModelHash>
         <VehicleProperties>
@@ -17765,8 +17963,11 @@ menyoo_xmls = {
             </Attachment>
         </SpoonerAttachments>
     </Vehicle>
-    ]]},
-    ["Mobile Shop.xml"] = {type = 1, xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
+    ]]
+    },
+    ["Mobile Shop.xml"] = {
+        type = 1,
+        xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
     <Vehicle menyoo_ver="1.2.0">
         <ModelHash>0xf4e1aa15</ModelHash>
         <InitialHandle>381464</InitialHandle>
@@ -18254,8 +18455,11 @@ menyoo_xmls = {
             </Attachment>
         </SpoonerAttachments>
     </Vehicle>
-    ]]},
-    ["Skunk in the Trunk.xml"] = {type = 1, xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
+    ]]
+    },
+    ["Skunk in the Trunk.xml"] = {
+        type = 1,
+        xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
     <Vehicle>
         <ModelHash>0x81634188</ModelHash>
         <VehicleProperties>
@@ -18495,8 +18699,11 @@ menyoo_xmls = {
             </Attachment>
         </SpoonerAttachments>
     </Vehicle>
-    ]]},
-    ["Hamburgers Revenge.xml"] = {type = 1, xml = [[
+    ]]
+    },
+    ["Hamburgers Revenge.xml"] = {
+        type = 1,
+        xml = [[
         <?xml version="1.0"?>
         <Vehicle menyoo_ver="0.999876796b">
             <ModelHash>0x2f03547b</ModelHash>
@@ -18709,11 +18916,14 @@ menyoo_xmls = {
                 </Attachment>
             </SpoonerAttachments>
         </Vehicle>
-        
-    ]]},
-    ["ZombieSabreGT.xml"] = {type = 1, xml = [[
-        <?xml version="1.0" encoding="ISO-8859-1"?> 
-<Vehicle menyoo_ver="0.999876796b"> 
+
+    ]]
+    },
+    ["ZombieSabreGT.xml"] = {
+        type = 1,
+        xml = [[
+        <?xml version="1.0" encoding="ISO-8859-1"?>
+<Vehicle menyoo_ver="0.999876796b">
 	<ModelHash>0x9b909c94</ModelHash>
 	<InitialHandle>3081</InitialHandle>
 	<VehicleProperties>
@@ -20031,8 +20241,11 @@ menyoo_xmls = {
 	</SpoonerAttachments>
 </Vehicle>
 
-    ]]},
-    ["The Ripoff.xml"] = {type = 1, xml = [[
+    ]]
+    },
+    ["The Ripoff.xml"] = {
+        type = 1,
+        xml = [[
         <?xml version="1.0" encoding="ISO-8859-1"?>
 <Vehicle>
 	<ModelHash>0x698521e3</ModelHash>
@@ -20938,8 +21151,11 @@ menyoo_xmls = {
 	</SpoonerAttachments>
 </Vehicle>
 
-    ]]},
-    ["The Weedloader.xml"] = {type = 1, xml = [[
+    ]]
+    },
+    ["The Weedloader.xml"] = {
+        type = 1,
+        xml = [[
         <?xml version="1.0" encoding="ISO-8859-1"?>
 <Vehicle>
 	<ModelHash>0xd83c13ce</ModelHash>
@@ -21732,8 +21948,11 @@ menyoo_xmls = {
 		</Attachment>
 	</SpoonerAttachments>
 </Vehicle>
-    ]]},
-    ["Van Surfing.xml"] = {type = 1, xml = [[
+    ]]
+    },
+    ["Van Surfing.xml"] = {
+        type = 1,
+        xml = [[
         <?xml version="1.0" encoding="ISO-8859-1"?>
 <Vehicle>
 	<ModelHash>0x29b0da97</ModelHash>
@@ -21934,8 +22153,11 @@ menyoo_xmls = {
 	</SpoonerAttachments>
 </Vehicle>
 
-    ]]},
-	["PC-Gaming Vehicle.xml"]={type = 1, xml = [[<?xml version="1.0"?>
+    ]]
+    },
+    ["PC-Gaming Vehicle.xml"] = {
+        type = 1,
+        xml = [[<?xml version="1.0"?>
 <Vehicle menyoo_ver="0.999868b">
 	<ModelHash>0x8125bcf9</ModelHash>
 	<InitialHandle>349187</InitialHandle>
@@ -22555,7 +22777,11 @@ menyoo_xmls = {
 		</Attachment>
 	</SpoonerAttachments>
 </Vehicle>
-]]}, ["Crazy Carpet"]={type = 1, xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
+]]
+    },
+    ["Crazy Carpet"] = {
+        type = 1,
+        xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
 <Vehicle menyoo_ver="1.1.0">
 	<ModelHash>0xac5df515</ModelHash>
 	<InitialHandle>532010</InitialHandle>
@@ -24253,7 +24479,11 @@ menyoo_xmls = {
 		</Attachment>
 	</SpoonerAttachments>
 </Vehicle>
-]]}, ["Glow Broom"]={type = 1, xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
+]]
+    },
+    ["Glow Broom"] = {
+        type = 1,
+        xml = [[<?xml version="1.0" encoding="ISO-8859-1"?>
 <Vehicle menyoo_ver="1.4.0">
 	<ModelHash>0xa1355f67</ModelHash>
 	<InitialHandle>49156</InitialHandle>
@@ -25047,8 +25277,11 @@ menyoo_xmls = {
 		</Attachment>
 	</SpoonerAttachments>
 </Vehicle>
-]]},
-["High Tech Villa"] = {type = 2, xml = [[
+]]
+    },
+    ["High Tech Villa"] = {
+        type = 2,
+        xml = [[
     <?xml version="1.0" encoding="ISO-8859-1"?>
 <SpoonerPlacements>
 	<Note />
@@ -50126,7 +50359,7 @@ menyoo_xmls = {
 		</PositionRotation>
 		<Attachment isAttached="false" />
 	</Placement>
-	<Placement> 
+	<Placement>
 		<ModelHash>0x7158e572</ModelHash>
 		<Type>3</Type>
 		<Dynamic>false</Dynamic>
@@ -61432,6 +61665,7 @@ menyoo_xmls = {
 	</Marker>
 </SpoonerPlacements>
 
-]]}
+]]
+    }
 
 }
