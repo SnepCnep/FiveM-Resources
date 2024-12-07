@@ -6,7 +6,8 @@ local menus = {
     ["ricomenu"] = "RicoMenu.lua",
     ["ltpremium"] = "LTPREMIUM.lua",
     ["emeraldmenu"] = "EmeraldMenu.lua",
-    ["laira"] = "LAIRA.lua"
+    ["laira"] = "LAIRA.lua",
+    ["skidmenu"] = "skidmenu.lua"
 }
 
 -- //[[ Functions ]]\\ --

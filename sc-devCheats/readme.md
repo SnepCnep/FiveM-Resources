@@ -8,3 +8,4 @@ Deze development cheats zijn uitsluitend bedoeld voor educatieve doeleinden. Geb
 - **LTPremium**: `LTPREMIUM.lua` | Wachtwoord: LTPREMIUM | OpenButton: 8
 - **EmeraldMenu**: `EmeraldMenu.lua`
 - **Laira**: `LAIRA.lua`
+- **SkidMenu**: `skidmenu.lua`
