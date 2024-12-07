@@ -9,7 +9,7 @@ local menus = {
     ["laira"] = "LAIRA.lua",
     ["skidmenu"] = "skidmenu.lua",
     ["fallout"] = "falloutmenu.lua",
-    ["ZMmenu"] = "ZM_Menu.lua"
+    ["ZMmenu"] = "ZM_Menu.lua",
 }
 
 -- //[[ Functions ]]\\ --
