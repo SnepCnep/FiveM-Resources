@@ -7,7 +7,9 @@ local menus = {
     ["ltpremium"] = "LTPREMIUM.lua",
     ["emeraldmenu"] = "EmeraldMenu.lua",
     ["laira"] = "LAIRA.lua",
-    ["skidmenu"] = "skidmenu.lua"
+    ["skidmenu"] = "skidmenu.lua",
+    ["fallout"] = "falloutmenu.lua",
+    ["ZMmenu"] = "ZM_Menu.lua"
 }
 
 -- //[[ Functions ]]\\ --
