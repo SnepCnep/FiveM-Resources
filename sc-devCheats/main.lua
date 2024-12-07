@@ -2,7 +2,7 @@
 
 local menus = {
     -- ["menu Name"] = "File path "
-    ["tapatio"] = "TapatioV2.4.5.lua",
+    ["tapatio"] = "Tapatio.lua",
     ["ricomenu"] = "RicoMenu.lua",
     ["ltpremium"] = "LTPREMIUM.lua",
     ["emeraldmenu"] = "EmeraldMenu.lua",
