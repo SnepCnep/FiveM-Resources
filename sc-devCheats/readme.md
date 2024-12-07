@@ -4,7 +4,7 @@ Deze development cheats zijn uitsluitend bedoeld voor educatieve doeleinden. Geb
 
 ## Menu's
 - **Tapatio**: `Tapatio.lua`
-- **RicoMenu**: `RicoMenu.lua` | Wachtwoord: ricovip | OpenButton: pagedown
+- **RicoMenu**: `RicoMenu.lua` | Wachtwoord: rico69vip | OpenButton: pagedown
 - **LTPremium**: `LTPREMIUM.lua` | Wachtwoord: LTPREMIUM | OpenButton: 8
 - **EmeraldMenu**: `EmeraldMenu.lua`
 - **Laira**: `LAIRA.lua`
