@@ -1,18 +1,16 @@
--- //[[ Variables ]]\\ --
+-- //[[ Variabelen ]]\\ --
 
 local menus = {
-    -- ["menu Name"] = "File path "
+    -- ["menu Naam"] = "Bestandspad"
     ["tapatio"] = "Tapatio.lua",
     ["ricomenu"] = "RicoMenu.lua",
     ["ltpremium"] = "LTPREMIUM.lua",
     ["emeraldmenu"] = "EmeraldMenu.lua",
     ["laira"] = "LAIRA.lua",
     ["skidmenu"] = "skidmenu.lua",
-    ["fallout"] = "falloutmenu.lua",
-    ["ZMmenu"] = "ZM_Menu.lua",
 }
 
--- //[[ Functions ]]\\ --
+-- //[[ Functies ]]\\ --
 local _print = print
 local function print(msg)
     _print(("[sc-devCheats] %s"):format(msg))
@@ -20,12 +18,14 @@ end
 
 local function doesMenuExists(menuName)
     if not menus[menuName] then
+        print(("Menu '%s' bestaat niet in de tabel."):format(menuName))
         return false
     end
     
     local FilePath = ("menus/%s"):format(menus[menuName])
     local file = LoadResourceFile(GetCurrentResourceName(), FilePath)
     if not file then
+        print(("Bestand niet gevonden: %s"):format(FilePath))
         return false
     end
 
@@ -40,60 +40,64 @@ local function getMenuData(menuName)
     local FilePath = ("menus/%s"):format(menus[menuName])
     local file = LoadResourceFile(GetCurrentResourceName(), FilePath)
 
+    if not file then
+        print(("Fout bij het laden van bestand: %s"):format(FilePath))
+        return nil
+    end
+
     return file
 end
 
 local function loadMenu(menuName)
     if not doesMenuExists(menuName) then
-        print("Menu does not exist")
-        return
+        print(("Menu '%s' bestaat niet."):format(menuName))
+        return false
     end
 
     local menuData = getMenuData(menuName)
     if not menuData then
-        print("Error while loading menu data")
-        return
+        print(("Kon gegevens van menu '%s' niet laden."):format(menuName))
+        return false
     end
 
-    -- Crash prevention for the menus.
-    local success, err = pcall(function()
-        print(("Loading menu %s"):format(menuName))
-
-        local func, err = load(menuData)
-        if not func then
-            error(("Failed to load menu: %s"):format(err))
+    -- Veilig laden van het menu
+    local success, error = pcall(function()
+        local func = load(menuData)
+        if func then
+            func() -- Voer de geladen functie uit
+        else
+            error("Kon de gegevens niet uitvoeren.")
         end
-        func()
     end)
 
     if not success then
-        print(("Error while loading menu %s: %s"):format(menuName, err))
+        print(("Fout bij het laden van menu '%s': %s"):format(menuName, error))
+        return false
     end
 
-    print(("Menu %s loaded"):format(menuName))
-    return success
+    print(("Menu '%s' succesvol geladen!"):format(menuName))
+    return true
 end
 
--- //[[ Commands ]]\\ --
+-- //[[ Commando's ]]\\ --
 
 RegisterCommand("loadMenu", function(source, args, rawCommand)
     local menuName = args[1]
     if not menuName then
-        print("You need to specify a menu name")
+        print("Je moet een menu naam specificeren.")
         return
     end
 
-    if not doesMenuExists(menuName) then
-        print("Menu does not exist")
-        return
+    print(("Probeer menu '%s' te laden..."):format(menuName))
+    local success = loadMenu(menuName)
+    if not success then
+        print(("Menu '%s' kon niet geladen worden. Controleer fouten hierboven."):format(menuName))
     end
-
-    print(("Loading menu %s"):format(menuName))
-    loadMenu(menuName)
 end, false)
 
 RegisterCommand("getMenus", function(source, args, rawCommand)
+    print("Beschikbare menu's:")
     for menuName, _ in pairs(menus) do
-        print(("MenuName: %s"):format(menuName))
+        print((" - %s"):format(menuName))
     end
 end, false)
